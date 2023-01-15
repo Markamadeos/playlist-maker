@@ -1,10 +1,10 @@
 package com.guap.vkr.playlistmaker
 
-import androidx.appcompat.app.AppCompatActivity
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
-import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -17,18 +17,20 @@ class MainActivity : AppCompatActivity() {
 
         val imageClickListener: View.OnClickListener = object : View.OnClickListener {
             override fun onClick(v: View?) {
-                Toast.makeText(this@MainActivity, "Нажата кнопка поиска!", Toast.LENGTH_SHORT)
-                    .show()
+                val searchIntent = Intent(this@MainActivity, SearchActivity::class.java)
+                startActivity(searchIntent)
             }
         }
         searchButton.setOnClickListener(imageClickListener)
 
         libraryButton.setOnClickListener {
-            Toast.makeText(this@MainActivity, "Нажата кнопка медиатеки!", Toast.LENGTH_SHORT).show()
+            val libraryIntent = Intent(this, LibraryActivity::class.java)
+            startActivity(libraryIntent)
         }
 
         settingsButton.setOnClickListener {
-            Toast.makeText(this@MainActivity, "Нажата кнопка настроек!", Toast.LENGTH_SHORT).show()
+            val settingsIntent = Intent(this, SettingsActivity::class.java)
+            startActivity(settingsIntent)
         }
     }
 }
