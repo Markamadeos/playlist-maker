@@ -29,21 +29,25 @@
     </LinearLayout>
 
     <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/btn_dark_theme"
         style="@style/SettingsTextStyle"
         android:layout_width="match_parent"
         android:text="@string/settings_dark_theme_text" />
 
     <TextView
+        android:id="@+id/btn_share"
         style="@style/SettingsTextStyle"
         android:text="@string/settings_share_text"
         app:drawableEndCompat="@drawable/ic_baseline_share_24" />
 
     <TextView
+        android:id="@+id/btn_feedback"
         style="@style/SettingsTextStyle"
         android:text="@string/settings_support_text"
         app:drawableEndCompat="@drawable/ic_baseline_support_agent_24" />
 
     <TextView
+        android:id="@+id/btn_license"
         style="@style/SettingsTextStyle"
         android:text="@string/settings_license_agreement_text"
         app:drawableEndCompat="@drawable/ic_baseline_keyboard_arrow_right_24" />
