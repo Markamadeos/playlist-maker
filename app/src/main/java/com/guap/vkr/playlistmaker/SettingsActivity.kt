@@ -27,9 +27,13 @@ class SettingsActivity : AppCompatActivity() {
             startActivity(mainActivityIntent)
         }
 
+        // в тз не требуется, но я попробовал сделать
         darkThemeButton.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_YES)
-            else AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_NO)
+            if (isChecked) {
+                AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_YES)
+            } else {
+                AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_NO)
+            }
         }
 
         shareButton.setOnClickListener {

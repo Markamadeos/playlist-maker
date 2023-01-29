@@ -18,19 +18,19 @@
 
     <Button
         android:id="@+id/btn_search"
-        style="@style/ButtonStyle"
+        style="@style/MainButtonStyle"
         android:text="@string/btn_text_search"
         app:icon="@drawable/ic_baseline_search_24" />
 
     <Button
         android:id="@+id/btn_library"
-        style="@style/ButtonStyle"
+        style="@style/MainButtonStyle"
         android:text="@string/btn_text_library"
         app:icon="@drawable/ic_baseline_library_music_24" />
 
     <Button
         android:id="@+id/btn_settings"
-        style="@style/ButtonStyle"
+        style="@style/MainButtonStyle"
         android:text="@string/btn_text_setting"
         app:icon="@drawable/ic_baseline_settings_24" />
 
