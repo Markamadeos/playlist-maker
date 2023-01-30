@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
@@ -25,6 +26,7 @@ class SearchActivity : AppCompatActivity() {
 
         clearButton.setOnClickListener {
             inputSearch.setText("")
+            inputSearch.onEditorAction(EditorInfo.IME_ACTION_DONE)
         }
 
         val textWatcher = object : TextWatcher {
