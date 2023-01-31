@@ -23,5 +23,6 @@
         <item name="hint_color">@color/black</item>
         <item name="drawable_tint_color">@color/white</item>
         <item name="icon_color">@color/black</item>
+        <item name="input_text_color">@color/black</item>
     </style>
 </resources>

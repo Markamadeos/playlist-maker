@@ -2,6 +2,7 @@ package com.guap.vkr.playlistmaker
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
@@ -11,6 +12,9 @@ import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 
 class SearchActivity : AppCompatActivity() {
+
+    private var userInput: String = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
@@ -36,6 +40,7 @@ class SearchActivity : AppCompatActivity() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 clearButton.visibility = clearButtonVisibility(s)
+                userInput = s.toString()
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -43,6 +48,17 @@ class SearchActivity : AppCompatActivity() {
             }
         }
         inputSearch.addTextChangedListener(textWatcher)
+        inputSearch.setText(userInput)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle) {
+        super.onSaveInstanceState(outState, outPersistentState)
+        outState.putString(USER_INPUT, userInput)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        userInput = savedInstanceState.getString(USER_INPUT, "")
     }
 
     private fun clearButtonVisibility(s: CharSequence?): Int {
@@ -51,5 +67,9 @@ class SearchActivity : AppCompatActivity() {
         } else {
             View.VISIBLE
         }
+    }
+
+    companion object {
+        private const val USER_INPUT = "USER_INPUT"
     }
 }
