@@ -10,4 +10,6 @@
     <string name="settings_title_text">Настройки</string>
     <string name="input_hint">Поиск</string>
     <string name="search_title_text">Поиск</string>
+    <string name="android_developer_url">https://practicum.yandex.ru/android-developer/</string>
+    <string name="license_url">https://yandex.ru/legal/practicum_offer/</string>
 </resources>
