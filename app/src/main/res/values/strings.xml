@@ -12,4 +12,7 @@
     <string name="search_title_text">Поиск</string>
     <string name="android_developer_url">https://practicum.yandex.ru/android-developer/</string>
     <string name="license_url">https://yandex.ru/legal/practicum_offer/</string>
+    <string name="letter_body">Спасибо разработчикам и разработчицам за крутое приложение!</string>
+    <string name="letter_topic">«Сообщение разработчикам и разработчицам приложения Playlist Maker»</string>
+    <string name="developer_email">student@yndex.ru</string>
 </resources>

@@ -1,6 +1,5 @@
 package com.guap.vkr.playlistmaker
 
-import android.content.Intent
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.text.Editable
@@ -24,8 +23,7 @@ class SearchActivity : AppCompatActivity() {
         val backButton = findViewById<ImageView>(R.id.btn_back)
 
         backButton.setOnClickListener {
-            val mainActivityIntent = Intent(this, MainActivity::class.java)
-            startActivity(mainActivityIntent)
+            finish()
         }
 
         clearButton.setOnClickListener {

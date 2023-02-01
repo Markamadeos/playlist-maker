@@ -23,8 +23,7 @@ class SettingsActivity : AppCompatActivity() {
         val licenseButton = findViewById<TextView>(R.id.btn_license)
 
         backButton.setOnClickListener {
-            val mainActivityIntent = Intent(this, MainActivity::class.java)
-            startActivity(mainActivityIntent)
+            finish()
         }
 
         // в тз не требуется, но я попробовал сделать
@@ -49,14 +48,14 @@ class SettingsActivity : AppCompatActivity() {
             val feedbackIntent = Intent().apply {
                 action = Intent.ACTION_SENDTO
                 data = Uri.parse("mailto:")
-                putExtra(Intent.EXTRA_EMAIL, arrayOf("student@yndex.ru"))
+                putExtra(Intent.EXTRA_EMAIL, arrayOf(getString(R.string.developer_email)))
                 putExtra(
                     Intent.EXTRA_SUBJECT,
-                    "«Сообщение разработчикам и разработчицам приложения Playlist Maker»"
+                    getString(R.string.letter_topic)
                 )
                 putExtra(
                     Intent.EXTRA_TEXT,
-                    "Спасибо разработчикам и разработчицам за крутое приложение!"
+                    getString(R.string.letter_body)
                 )
             }
             startActivity(feedbackIntent)
