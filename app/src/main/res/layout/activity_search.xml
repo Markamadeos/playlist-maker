@@ -35,6 +35,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/search_round_shape"
+        android:layout_marginBottom="24dp"
         android:orientation="horizontal">
 
         <EditText
@@ -64,5 +65,12 @@
             app:tint="?attr/hint_color" />
 
     </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/track_item_view"/>
 
 </LinearLayout>

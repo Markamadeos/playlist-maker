@@ -5,4 +5,13 @@
     <dimen name="btn_icon_padding">10dp</dimen>
     <dimen name="settings_text_size">16sp</dimen>
     <dimen name="settings_margin">21dp</dimen>
+    <dimen name="track_name_text_size">16sp</dimen>
+    <dimen name="artist_name_text_size">11sp</dimen>
+    <dimen name="track_time_margin_5dp">5dp</dimen>
+    <dimen name="img_size_45dp">45dp</dimen>
+    <dimen name="img_margin_8dp">8dp</dimen>
+    <dimen name="artist_name_text_margin_14dp">14dp</dimen>
+    <dimen name="artist_name_text_margin_1dp">1dp</dimen>
+    <dimen name="corner_radius_2dp">2dp</dimen>
+    <dimen name="title_text_size">22sp</dimen>
 </resources>
