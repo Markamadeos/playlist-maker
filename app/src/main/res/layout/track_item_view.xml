@@ -53,7 +53,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_marginEnd="4dp"
-        android:src="@drawable/ic_baseline_arrow_forward_ios_24"
+        android:src="@drawable/ic_track_item_arrow"
         app:tint="?attr/arrow_track_item_color" />
 
 </LinearLayout>
