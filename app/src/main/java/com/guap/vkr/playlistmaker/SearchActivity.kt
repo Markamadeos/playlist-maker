@@ -9,6 +9,8 @@ import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 
 class SearchActivity : AppCompatActivity() {
 
@@ -21,6 +23,10 @@ class SearchActivity : AppCompatActivity() {
         val inputSearch = findViewById<EditText>(R.id.et_search)
         val clearButton = findViewById<ImageView>(R.id.img_clear)
         val backButton = findViewById<ImageView>(R.id.btn_back)
+        val recyclerView = findViewById<RecyclerView>(R.id.recycler_view)
+        recyclerView.layoutManager = LinearLayoutManager(this)
+        val trackAdapter = TrackAdapter(trackList)
+        recyclerView.adapter = trackAdapter
 
         backButton.setOnClickListener {
             finish()

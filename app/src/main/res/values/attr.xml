@@ -11,4 +11,8 @@
     <attr name="input_text_color" format="reference" />
     <attr name="hint_color" format="reference" />
     <attr name="btn_tint_color" format="reference" />
+    <attr name="track_name_color" format="reference" />
+    <attr name="artist_name_color" format="reference" />
+    <attr name="track_time_color" format="reference" />
+    <attr name="arrow_track_item_color" format="reference" />
 </resources>
