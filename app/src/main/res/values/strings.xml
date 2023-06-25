@@ -15,4 +15,6 @@
     <string name="letter_body">Спасибо разработчикам и разработчицам за крутое приложение!</string>
     <string name="letter_topic">«Сообщение разработчикам и разработчицам приложения Playlist Maker»</string>
     <string name="developer_email">student@yndex.ru</string>
+    <string name="nothing_found">Ничего не нашлось</string>
+    <string name="something_went_wrong">Проблемы со связью</string>
 </resources>

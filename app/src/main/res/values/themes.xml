@@ -28,5 +28,7 @@
         <item name="artist_name_color">@color/yp_text_gray</item>
         <item name="track_time_color">@color/yp_text_gray</item>
         <item name="arrow_track_item_color">@color/yp_text_gray</item>
+        <item name="ic_internet_err_pic">@drawable/ic_internet_err_white</item>
+        <item name="ic_nothing_err_pic">@drawable/ic_search_err_white</item>
     </style>
 </resources>

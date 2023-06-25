@@ -15,4 +15,6 @@
     <attr name="artist_name_color" format="reference" />
     <attr name="track_time_color" format="reference" />
     <attr name="arrow_track_item_color" format="reference" />
+    <attr name="ic_nothing_err_pic" format="reference" />
+    <attr name="ic_internet_err_pic" format="reference" />
 </resources>

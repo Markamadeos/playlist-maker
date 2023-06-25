@@ -1,4 +1,4 @@
-package com.guap.vkr.playlistmaker
+package com.guap.vkr.playlistmaker.model
 
 data class Track(
     val trackName: String,
