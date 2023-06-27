@@ -116,7 +116,6 @@ class SearchActivity : AppCompatActivity() {
                                 tracks.clear()
                                 tracks.addAll(response.body()?.results!!)
                                 adapter.notifyDataSetChanged()
-                                showMessage("", "")
                             } else {
                                 showMessage(getString(R.string.nothing_found), "")
                             }
