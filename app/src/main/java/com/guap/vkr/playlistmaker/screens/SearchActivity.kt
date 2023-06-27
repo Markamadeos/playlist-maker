@@ -9,12 +9,7 @@ import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -23,7 +18,10 @@ import com.guap.vkr.playlistmaker.TrackAdapter
 import com.guap.vkr.playlistmaker.api.ITunesApi
 import com.guap.vkr.playlistmaker.api.SearchResponse
 import com.guap.vkr.playlistmaker.model.Track
-import retrofit2.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 class SearchActivity : AppCompatActivity() {
@@ -38,6 +36,9 @@ class SearchActivity : AppCompatActivity() {
     private val tracks = ArrayList<Track>()
     private val adapter = TrackAdapter(tracks)
     private lateinit var placeholderContainer : LinearLayout
+    private lateinit var placeholderImage : ImageView
+    private lateinit var placeholderMessage : TextView
+    private lateinit var refreshButton : Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,10 +48,10 @@ class SearchActivity : AppCompatActivity() {
         val clearButton = findViewById<ImageView>(R.id.img_clear)
         val backButton = findViewById<ImageView>(R.id.btn_back)
         val trackList = findViewById<RecyclerView>(R.id.recycler_view)
-        placeholderContainer = findViewById<LinearLayout>(R.id.placeholder_container)
-        val placeholderImage = findViewById<ImageView>(R.id.iv_placeholder_message)
-        val placeholderMessage = findViewById<TextView>(R.id.tv_placeholder)
-        val refreshButton = findViewById<Button>(R.id.btn_refresh)
+        placeholderContainer = findViewById(R.id.placeholder_container)
+        placeholderImage = findViewById(R.id.iv_placeholder_message)
+        placeholderMessage = findViewById(R.id.tv_placeholder)
+        refreshButton = findViewById(R.id.btn_refresh)
         trackList.adapter = adapter
         trackList.layoutManager = LinearLayoutManager(
             this,
@@ -124,24 +125,27 @@ class SearchActivity : AppCompatActivity() {
                             tracks.addAll(response.body()?.results!!)
                             adapter.notifyDataSetChanged()
                         } else {
-                            showMessage(EMPTY_RESPONSE, this)
+                            showMessage(EMPTY_RESPONSE)
                         }
 
                     } else {
-                        showMessage(NETWORK_ERROR, this)
+                        showMessage(NETWORK_ERROR)
                     }
 
                 }
 
                 override fun onFailure(call: Call<SearchResponse>, t: Throwable) {
-                    showMessage(NETWORK_ERROR, this)
+                    showMessage(NETWORK_ERROR)
                 }
             })
     }
 
-    private fun showMessage(mess: String, context: Context) {
+    private fun showMessage(mess: String) {
         if(mess == EMPTY_RESPONSE){
+            tracks.clear()
+            adapter.notifyDataSetChanged()
             placeholderContainer.visibility = View.VISIBLE
+            placeholderImage.setBackgroundResource(R.drawable.ic_search_err_white)
         }
     }
 
