@@ -9,8 +9,11 @@ import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -34,6 +37,7 @@ class SearchActivity : AppCompatActivity() {
     private val iTunesService = retrofit.create(ITunesApi::class.java)
     private val tracks = ArrayList<Track>()
     private val adapter = TrackAdapter(tracks)
+    private lateinit var placeholderContainer : LinearLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +47,10 @@ class SearchActivity : AppCompatActivity() {
         val clearButton = findViewById<ImageView>(R.id.img_clear)
         val backButton = findViewById<ImageView>(R.id.btn_back)
         val trackList = findViewById<RecyclerView>(R.id.recycler_view)
+        placeholderContainer = findViewById<LinearLayout>(R.id.placeholder_container)
+        val placeholderImage = findViewById<ImageView>(R.id.iv_placeholder_message)
+        val placeholderMessage = findViewById<TextView>(R.id.tv_placeholder)
+        val refreshButton = findViewById<Button>(R.id.btn_refresh)
         trackList.adapter = adapter
         trackList.layoutManager = LinearLayoutManager(
             this,
@@ -110,48 +118,49 @@ class SearchActivity : AppCompatActivity() {
                     call: Call<SearchResponse>,
                     response: Response<SearchResponse>
                 ) {
-                    when (response.code()) {
-                        200 -> {
-                            if (response.body()?.results?.isNotEmpty() == true) {
-                                tracks.clear()
-                                tracks.addAll(response.body()?.results!!)
-                                adapter.notifyDataSetChanged()
-                            } else {
-                                showMessage(getString(R.string.nothing_found), "")
-                            }
-
+                    if (response.code() == 200) {
+                        if (response.body()?.results?.isNotEmpty() == true) {
+                            tracks.clear()
+                            tracks.addAll(response.body()?.results!!)
+                            adapter.notifyDataSetChanged()
+                        } else {
+                            showMessage(EMPTY_RESPONSE, this)
                         }
-                        else -> showMessage(
-                            getString(R.string.something_went_wrong),
-                            response.code().toString()
-                        )
+
+                    } else {
+                        showMessage(NETWORK_ERROR, this)
                     }
 
                 }
 
                 override fun onFailure(call: Call<SearchResponse>, t: Throwable) {
-                    showMessage(getString(R.string.something_went_wrong), t.message.toString())
+                    showMessage(NETWORK_ERROR, this)
                 }
-
             })
     }
 
-    private fun showMessage(mess: String, addMess: String) {
-        Toast.makeText(this, "oops", Toast.LENGTH_LONG).show()
+    private fun showMessage(mess: String, context: Context) {
+        if(mess == EMPTY_RESPONSE){
+            placeholderContainer.visibility = View.VISIBLE
+        }
     }
+
 
     private fun Activity.hideKeyboard() {
         hideKeyboard(currentFocus ?: View(this))
     }
 
     private fun Context.hideKeyboard(view: View) {
-        val inputMethodManager = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        val inputMethodManager =
+            getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
 
-
     companion object {
         private const val USER_INPUT = "USER_INPUT"
+        private const val NETWORK_ERROR = "NETWORK_ERROR"
+        private const val EMPTY_RESPONSE = "EMPTY_RESPONSE"
+
     }
 }
