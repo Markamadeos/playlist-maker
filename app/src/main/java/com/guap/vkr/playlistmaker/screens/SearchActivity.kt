@@ -9,7 +9,11 @@ import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.*
+import android.widget.Button
+import android.widget.EditText
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -35,10 +39,10 @@ class SearchActivity : AppCompatActivity() {
     private val iTunesService = retrofit.create(ITunesApi::class.java)
     private val tracks = ArrayList<Track>()
     private val adapter = TrackAdapter(tracks)
-    private lateinit var placeholderContainer : LinearLayout
-    private lateinit var placeholderImage : ImageView
-    private lateinit var placeholderMessage : TextView
-    private lateinit var refreshButton : Button
+    private lateinit var placeholderContainer: LinearLayout
+    private lateinit var placeholderImage: ImageView
+    private lateinit var placeholderMessage: TextView
+    private lateinit var refreshButton: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -123,6 +127,7 @@ class SearchActivity : AppCompatActivity() {
                         if (response.body()?.results?.isNotEmpty() == true) {
                             tracks.clear()
                             tracks.addAll(response.body()?.results!!)
+                            placeholderContainer.visibility = View.GONE
                             adapter.notifyDataSetChanged()
                         } else {
                             showMessage(EMPTY_RESPONSE)
@@ -131,7 +136,6 @@ class SearchActivity : AppCompatActivity() {
                     } else {
                         showMessage(NETWORK_ERROR)
                     }
-
                 }
 
                 override fun onFailure(call: Call<SearchResponse>, t: Throwable) {
@@ -140,15 +144,19 @@ class SearchActivity : AppCompatActivity() {
             })
     }
 
-    private fun showMessage(mess: String) {
-        if(mess == EMPTY_RESPONSE){
-            tracks.clear()
-            adapter.notifyDataSetChanged()
-            placeholderContainer.visibility = View.VISIBLE
-            placeholderImage.setBackgroundResource(R.drawable.ic_search_err_white)
+
+    private fun showMessage(status: String) {
+        tracks.clear()
+        adapter.notifyDataSetChanged()
+        placeholderContainer.visibility = View.VISIBLE
+        if (status == EMPTY_RESPONSE) {
+            placeholderImage.setImageResource(R.drawable.ic_search_err_dark)
+            placeholderMessage.setText(R.string.error_nothing_found)
+        } else {
+            placeholderImage.setImageResource(R.drawable.ic_internet_err_dark)
+            placeholderMessage.setText(R.string.error_network_faild)
         }
     }
-
 
     private fun Activity.hideKeyboard() {
         hideKeyboard(currentFocus ?: View(this))
@@ -165,6 +173,5 @@ class SearchActivity : AppCompatActivity() {
         private const val USER_INPUT = "USER_INPUT"
         private const val NETWORK_ERROR = "NETWORK_ERROR"
         private const val EMPTY_RESPONSE = "EMPTY_RESPONSE"
-
     }
 }
