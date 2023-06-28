@@ -74,6 +74,10 @@ class SearchActivity : AppCompatActivity() {
             adapter.notifyDataSetChanged()
         }
 
+        refreshButton.setOnClickListener {
+            search()
+        }
+
         val textWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
                 //empty
@@ -152,9 +156,11 @@ class SearchActivity : AppCompatActivity() {
         if (status == EMPTY_RESPONSE) {
             placeholderImage.setImageResource(R.drawable.ic_search_err_dark)
             placeholderMessage.setText(R.string.error_nothing_found)
+            refreshButton.visibility = View.GONE
         } else {
             placeholderImage.setImageResource(R.drawable.ic_internet_err_dark)
             placeholderMessage.setText(R.string.error_network_faild)
+            refreshButton.visibility = View.VISIBLE
         }
     }
 
