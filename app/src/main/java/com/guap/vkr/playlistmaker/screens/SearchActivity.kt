@@ -154,11 +154,11 @@ class SearchActivity : AppCompatActivity() {
         adapter.notifyDataSetChanged()
         placeholderContainer.visibility = View.VISIBLE
         if (status == EMPTY_RESPONSE) {
-            placeholderImage.setImageResource(R.drawable.ic_search_err_dark)
+            placeholderImage.setImageResource(R.drawable.ic_search_err)
             placeholderMessage.setText(R.string.error_nothing_found)
             refreshButton.visibility = View.GONE
         } else {
-            placeholderImage.setImageResource(R.drawable.ic_internet_err_dark)
+            placeholderImage.setImageResource(R.drawable.ic_internet_err)
             placeholderMessage.setText(R.string.error_network_faild)
             refreshButton.visibility = View.VISIBLE
         }

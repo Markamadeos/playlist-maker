@@ -35,18 +35,25 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                app:drawableEndCompat="@drawable/baseline_circle_24"
                 tools:text="The Beatles" />
+
+            <ImageView
+                android:layout_width="@dimen/circle_artist_size"
+                android:layout_height="@dimen/circle_artist_size"
+                android:layout_gravity="center_vertical"
+                android:layout_marginHorizontal="@dimen/track_time_margin_5dp"
+                android:src="@drawable/baseline_circle_24"
+                app:tint="?attr/drawable_tint_color" />
 
             <TextView
                 android:id="@+id/tv_track_time"
                 style="@style/ArtistTextStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/track_time_margin_5dp"
                 tools:text="3:46" />
 
         </LinearLayout>
+
     </LinearLayout>
 
     <ImageView
