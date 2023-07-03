@@ -14,5 +14,8 @@
     <string name="license_url">https://yandex.ru/legal/practicum_offer/</string>
     <string name="letter_body">Спасибо разработчикам и разработчицам за крутое приложение!</string>
     <string name="letter_topic">«Сообщение разработчикам и разработчицам приложения Playlist Maker»</string>
-    <string name="developer_email">student@yndex.ru</string>
+    <string name="developer_email">student@yandex.ru</string>
+    <string name="error_nothing_found">Ничего не нашлось</string>
+    <string name="error_network_faild">Проблемы со связью \n\nЗагрузка не удалась. Проверьте подключение к интернету</string>
+    <string name="refresh_button_text">Обновить</string>
 </resources>

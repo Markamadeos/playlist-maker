@@ -1,4 +1,4 @@
-package com.guap.vkr.playlistmaker
+package com.guap.vkr.playlistmaker.screens
 
 import android.content.Intent
 import android.net.Uri
@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
 import androidx.appcompat.widget.SwitchCompat
+import com.guap.vkr.playlistmaker.R
 
 class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
