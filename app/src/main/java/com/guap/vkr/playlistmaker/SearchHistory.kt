@@ -19,6 +19,9 @@ class SearchHistory(private val sharedPref: SharedPreferences) {
     }
 
     fun addTrackToHistory(track: Track) {
+        if (historyList.contains(track)) {
+            historyList.remove(track)
+        }
         historyList.add(0, track)
         updateSharedPref()
     }
