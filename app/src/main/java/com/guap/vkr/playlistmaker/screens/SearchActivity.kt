@@ -19,10 +19,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.guap.vkr.playlistmaker.R
+import com.guap.vkr.playlistmaker.SearchHistory
 import com.guap.vkr.playlistmaker.TrackAdapter
 import com.guap.vkr.playlistmaker.api.ITunesApi
 import com.guap.vkr.playlistmaker.api.SearchResponse
 import com.guap.vkr.playlistmaker.model.Track
+import com.guap.vkr.playlistmaker.utils.SEARCH_HISTORY_KEY
 import com.guap.vkr.playlistmaker.utils.iTunesBaseUrl
 import retrofit2.Call
 import retrofit2.Callback
@@ -44,18 +46,23 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var placeholderImage: ImageView
     private lateinit var placeholderMessage: TextView
     private lateinit var refreshButton: Button
+    private lateinit var placeholderSearchHistory: LinearLayout
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
         val queryInput = findViewById<EditText>(R.id.et_search)
-        val clearButton = findViewById<ImageView>(R.id.img_clear)
+        val clearButton = findViewById<ImageView>(R.id.iv_clear)
         val backButton = findViewById<ImageView>(R.id.btn_back)
         val trackList = findViewById<RecyclerView>(R.id.recycler_view)
-        placeholderContainer = findViewById(R.id.placeholder_container)
-        placeholderImage = findViewById(R.id.iv_placeholder_message)
-        placeholderMessage = findViewById(R.id.tv_placeholder)
+        val sharedPref = getSharedPreferences(SEARCH_HISTORY_KEY, MODE_PRIVATE)
+        val searchHistory = SearchHistory(sharedPref)
+
+        placeholderContainer = findViewById(R.id.error_container)
+        placeholderImage = findViewById(R.id.iv_error_message)
+        placeholderMessage = findViewById(R.id.tv_error_pic)
         refreshButton = findViewById(R.id.btn_refresh)
+
         trackList.adapter = searchAdapter
         trackList.layoutManager = LinearLayoutManager(
             this,
@@ -146,6 +153,10 @@ class SearchActivity : AppCompatActivity() {
                     showMessage(NETWORK_ERROR)
                 }
             })
+    }
+
+    private fun showSearchHistory() {
+        //TODO
     }
 
     private fun showMessage(status: String) {
