@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.PersistableBundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
@@ -25,12 +26,14 @@ import com.guap.vkr.playlistmaker.api.ITunesApi
 import com.guap.vkr.playlistmaker.api.SearchResponse
 import com.guap.vkr.playlistmaker.model.Track
 import com.guap.vkr.playlistmaker.utils.SEARCH_HISTORY_KEY
+import com.guap.vkr.playlistmaker.utils.SHARED_PREFERENCES
 import com.guap.vkr.playlistmaker.utils.iTunesBaseUrl
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import kotlin.math.log
 
 class SearchActivity : AppCompatActivity() {
 
@@ -46,17 +49,15 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var placeholderImage: ImageView
     private lateinit var placeholderMessage: TextView
     private lateinit var refreshButton: Button
-    private lateinit var placeholderSearchHistory: LinearLayout
+
+    // private lateinit var placeholderSearchHistory: LinearLayout
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
-
         val queryInput = findViewById<EditText>(R.id.et_search)
         val clearButton = findViewById<ImageView>(R.id.iv_clear)
         val backButton = findViewById<ImageView>(R.id.btn_back)
         val trackList = findViewById<RecyclerView>(R.id.recycler_view)
-        val sharedPref = getSharedPreferences(SEARCH_HISTORY_KEY, MODE_PRIVATE)
-        val searchHistory = SearchHistory(sharedPref)
 
         placeholderContainer = findViewById(R.id.error_container)
         placeholderImage = findViewById(R.id.iv_error_message)
@@ -156,7 +157,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun showSearchHistory() {
-        //TODO
+        //empty
     }
 
     private fun showMessage(status: String) {
@@ -185,7 +186,10 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun trackClick(track: Track) {
-        Toast.makeText(applicationContext, track.trackId.toString(), Toast.LENGTH_LONG).show()
+        val searchHistory = SearchHistory(getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE))
+        searchHistory.addTrackToHistory(track)
+        Toast.makeText(applicationContext, searchHistory.getSearchHistory().toString(), Toast.LENGTH_LONG ).show()
+        Log.d("WTF", searchHistory.getSearchHistory().toString())
     }
 
     companion object {
