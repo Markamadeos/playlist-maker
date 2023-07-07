@@ -6,7 +6,6 @@ import android.os.Bundle
 import android.os.PersistableBundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
@@ -40,7 +39,7 @@ class SearchActivity : AppCompatActivity() {
         .addConverterFactory(GsonConverterFactory.create())
         .build()
     private val iTunesService = retrofit.create(ITunesApi::class.java)
-    private val adapter = TrackAdapter(tracks) { trackClick(it) }
+    private val searchAdapter = TrackAdapter(tracks) { trackClick(it) }
     private lateinit var placeholderContainer: LinearLayout
     private lateinit var placeholderImage: ImageView
     private lateinit var placeholderMessage: TextView
@@ -57,7 +56,7 @@ class SearchActivity : AppCompatActivity() {
         placeholderImage = findViewById(R.id.iv_placeholder_message)
         placeholderMessage = findViewById(R.id.tv_placeholder)
         refreshButton = findViewById(R.id.btn_refresh)
-        trackList.adapter = adapter
+        trackList.adapter = searchAdapter
         trackList.layoutManager = LinearLayoutManager(
             this,
             LinearLayoutManager.VERTICAL,
@@ -72,7 +71,7 @@ class SearchActivity : AppCompatActivity() {
             queryInput.setText("")
             hideKeyboard()
             tracks.clear()
-            adapter.notifyDataSetChanged()
+            searchAdapter.notifyDataSetChanged()
         }
 
         refreshButton.setOnClickListener {
@@ -133,7 +132,7 @@ class SearchActivity : AppCompatActivity() {
                             tracks.clear()
                             tracks.addAll(response.body()?.results!!)
                             placeholderContainer.visibility = View.GONE
-                            adapter.notifyDataSetChanged()
+                            searchAdapter.notifyDataSetChanged()
                         } else {
                             showMessage(EMPTY_RESPONSE)
                         }
@@ -151,7 +150,7 @@ class SearchActivity : AppCompatActivity() {
 
     private fun showMessage(status: String) {
         tracks.clear()
-        adapter.notifyDataSetChanged()
+        searchAdapter.notifyDataSetChanged()
         placeholderContainer.visibility = View.VISIBLE
         if (status == EMPTY_RESPONSE) {
             placeholderImage.setImageResource(R.drawable.ic_search_err)
