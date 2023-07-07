@@ -9,11 +9,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
 import com.guap.vkr.playlistmaker.App
 import com.guap.vkr.playlistmaker.R
-import com.guap.vkr.playlistmaker.SHARED_PREFERENCES
-import com.guap.vkr.playlistmaker.THEME_SWITCH_KEY
-
+import com.guap.vkr.playlistmaker.utils.SHARED_PREFERENCES
+import com.guap.vkr.playlistmaker.utils.THEME_SWITCH_KEY
 class SettingsActivity : AppCompatActivity() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)

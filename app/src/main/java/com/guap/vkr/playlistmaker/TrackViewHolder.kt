@@ -23,8 +23,8 @@ class TrackViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
     fun bind(model: Track) {
         val cornerRadius = itemView.resources.getDimensionPixelSize(R.dimen.corner_radius_2dp)
 
-        trackName.text = model.trackName.trim()
-        artistName.text = model.artistName.trim()
+        trackName.text = model.trackName
+        artistName.text = model.artistName
         trackTime.text =
             SimpleDateFormat("mm:ss", Locale.getDefault()).format(model.trackTimeMillis)
 

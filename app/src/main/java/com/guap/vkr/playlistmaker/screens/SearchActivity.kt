@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.PersistableBundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
@@ -14,6 +15,7 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -22,6 +24,7 @@ import com.guap.vkr.playlistmaker.TrackAdapter
 import com.guap.vkr.playlistmaker.api.ITunesApi
 import com.guap.vkr.playlistmaker.api.SearchResponse
 import com.guap.vkr.playlistmaker.model.Track
+import com.guap.vkr.playlistmaker.utils.iTunesBaseUrl
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -30,20 +33,18 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class SearchActivity : AppCompatActivity() {
 
+    private val tracks = ArrayList<Track>()
     private var userInput = ""
-    private val iTunesBaseUrl = "https://itunes.apple.com/"
     private val retrofit = Retrofit.Builder()
         .baseUrl(iTunesBaseUrl)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
     private val iTunesService = retrofit.create(ITunesApi::class.java)
-    private val tracks = ArrayList<Track>()
-    private val adapter = TrackAdapter(tracks)
+    private val adapter = TrackAdapter(tracks) { trackClick(it) }
     private lateinit var placeholderContainer: LinearLayout
     private lateinit var placeholderImage: ImageView
     private lateinit var placeholderMessage: TextView
     private lateinit var refreshButton: Button
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
@@ -148,7 +149,6 @@ class SearchActivity : AppCompatActivity() {
             })
     }
 
-
     private fun showMessage(status: String) {
         tracks.clear()
         adapter.notifyDataSetChanged()
@@ -174,6 +174,9 @@ class SearchActivity : AppCompatActivity() {
         inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
+    private fun trackClick(track: Track) {
+        Toast.makeText(applicationContext, track.trackId.toString(), Toast.LENGTH_LONG).show()
+    }
 
     companion object {
         private const val USER_INPUT = "USER_INPUT"
