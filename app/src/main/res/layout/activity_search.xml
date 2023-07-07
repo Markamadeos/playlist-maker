@@ -58,7 +58,7 @@
             app:drawableTint="?attr/hint_color" />
 
         <ImageView
-            android:id="@+id/img_clear"
+            android:id="@+id/iv_clear"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -76,7 +76,7 @@
         tools:listitem="@layout/track_item_view" />
 
     <LinearLayout
-        android:id="@+id/placeholder_container"
+        android:id="@+id/error_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="110dp"
@@ -85,12 +85,12 @@
         android:visibility="gone">
 
         <ImageView
-            android:id="@+id/iv_placeholder_message"
+            android:id="@+id/iv_error_message"
             android:layout_width="120dp"
             android:layout_height="120dp" />
 
         <TextView
-            android:id="@+id/tv_placeholder"
+            android:id="@+id/tv_error_pic"
             style="@style/PlaceholderTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

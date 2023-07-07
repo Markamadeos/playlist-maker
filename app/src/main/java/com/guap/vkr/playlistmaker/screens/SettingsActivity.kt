@@ -6,12 +6,11 @@ import android.os.Bundle
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
-import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO
-import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
 import androidx.appcompat.widget.SwitchCompat
+import com.guap.vkr.playlistmaker.App
 import com.guap.vkr.playlistmaker.R
-
+import com.guap.vkr.playlistmaker.utils.SHARED_PREFERENCES
+import com.guap.vkr.playlistmaker.utils.THEME_SWITCH_KEY
 class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,18 +21,15 @@ class SettingsActivity : AppCompatActivity() {
         val shareButton = findViewById<TextView>(R.id.btn_share)
         val feedbackButton = findViewById<TextView>(R.id.btn_feedback)
         val licenseButton = findViewById<TextView>(R.id.btn_license)
+        val sharedPref = getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE)
 
         backButton.setOnClickListener {
             finish()
         }
 
-        // в тз не требуется, но я попробовал сделать
-        darkThemeButton.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_YES)
-            } else {
-                AppCompatDelegate.setDefaultNightMode(MODE_NIGHT_NO)
-            }
+        darkThemeButton.isChecked = sharedPref.getBoolean(THEME_SWITCH_KEY, false)
+        darkThemeButton.setOnCheckedChangeListener { _, checked ->
+            (applicationContext as App).switchTheme(checked)
         }
 
         shareButton.setOnClickListener {

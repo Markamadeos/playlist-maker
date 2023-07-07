@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.PersistableBundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
@@ -14,49 +15,56 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.guap.vkr.playlistmaker.R
+import com.guap.vkr.playlistmaker.SearchHistory
 import com.guap.vkr.playlistmaker.TrackAdapter
 import com.guap.vkr.playlistmaker.api.ITunesApi
 import com.guap.vkr.playlistmaker.api.SearchResponse
 import com.guap.vkr.playlistmaker.model.Track
+import com.guap.vkr.playlistmaker.utils.SEARCH_HISTORY_KEY
+import com.guap.vkr.playlistmaker.utils.SHARED_PREFERENCES
+import com.guap.vkr.playlistmaker.utils.iTunesBaseUrl
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import kotlin.math.log
 
 class SearchActivity : AppCompatActivity() {
 
+    private val tracks = ArrayList<Track>()
     private var userInput = ""
-    private val iTunesBaseUrl = "https://itunes.apple.com/"
     private val retrofit = Retrofit.Builder()
         .baseUrl(iTunesBaseUrl)
         .addConverterFactory(GsonConverterFactory.create())
         .build()
     private val iTunesService = retrofit.create(ITunesApi::class.java)
-    private val tracks = ArrayList<Track>()
-    private val adapter = TrackAdapter(tracks)
+    private val searchAdapter = TrackAdapter(tracks) { trackClick(it) }
     private lateinit var placeholderContainer: LinearLayout
     private lateinit var placeholderImage: ImageView
     private lateinit var placeholderMessage: TextView
     private lateinit var refreshButton: Button
 
+    // private lateinit var placeholderSearchHistory: LinearLayout
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
-
         val queryInput = findViewById<EditText>(R.id.et_search)
-        val clearButton = findViewById<ImageView>(R.id.img_clear)
+        val clearButton = findViewById<ImageView>(R.id.iv_clear)
         val backButton = findViewById<ImageView>(R.id.btn_back)
         val trackList = findViewById<RecyclerView>(R.id.recycler_view)
-        placeholderContainer = findViewById(R.id.placeholder_container)
-        placeholderImage = findViewById(R.id.iv_placeholder_message)
-        placeholderMessage = findViewById(R.id.tv_placeholder)
+
+        placeholderContainer = findViewById(R.id.error_container)
+        placeholderImage = findViewById(R.id.iv_error_message)
+        placeholderMessage = findViewById(R.id.tv_error_pic)
         refreshButton = findViewById(R.id.btn_refresh)
-        trackList.adapter = adapter
+
+        trackList.adapter = searchAdapter
         trackList.layoutManager = LinearLayoutManager(
             this,
             LinearLayoutManager.VERTICAL,
@@ -71,7 +79,7 @@ class SearchActivity : AppCompatActivity() {
             queryInput.setText("")
             hideKeyboard()
             tracks.clear()
-            adapter.notifyDataSetChanged()
+            searchAdapter.notifyDataSetChanged()
         }
 
         refreshButton.setOnClickListener {
@@ -132,7 +140,7 @@ class SearchActivity : AppCompatActivity() {
                             tracks.clear()
                             tracks.addAll(response.body()?.results!!)
                             placeholderContainer.visibility = View.GONE
-                            adapter.notifyDataSetChanged()
+                            searchAdapter.notifyDataSetChanged()
                         } else {
                             showMessage(EMPTY_RESPONSE)
                         }
@@ -148,10 +156,13 @@ class SearchActivity : AppCompatActivity() {
             })
     }
 
+    private fun showSearchHistory() {
+        //empty
+    }
 
     private fun showMessage(status: String) {
         tracks.clear()
-        adapter.notifyDataSetChanged()
+        searchAdapter.notifyDataSetChanged()
         placeholderContainer.visibility = View.VISIBLE
         if (status == EMPTY_RESPONSE) {
             placeholderImage.setImageResource(R.drawable.ic_search_err)
@@ -174,6 +185,12 @@ class SearchActivity : AppCompatActivity() {
         inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
+    private fun trackClick(track: Track) {
+        val searchHistory = SearchHistory(getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE))
+        searchHistory.addTrackToHistory(track)
+        Toast.makeText(applicationContext, searchHistory.getSearchHistory().toString(), Toast.LENGTH_LONG ).show()
+        Log.d("WTF", searchHistory.getSearchHistory().toString())
+    }
 
     companion object {
         private const val USER_INPUT = "USER_INPUT"
