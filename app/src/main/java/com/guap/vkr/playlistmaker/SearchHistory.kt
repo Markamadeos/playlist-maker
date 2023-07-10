@@ -11,7 +11,6 @@ class SearchHistory(private val sharedPref: SharedPreferences) {
 
     private val historyList = readFromSharedPref()
     fun getSearchHistory() = historyList
-
     fun clearHistory() {
         historyList.clear()
         updateSharedPref()
@@ -21,7 +20,10 @@ class SearchHistory(private val sharedPref: SharedPreferences) {
         if (historyList.contains(track)) {
             historyList.remove(track)
         }
-        historyList.add(0, track)
+        if (historyList.size == HISTORY_LIST_SIZE) {
+            historyList.removeLast()
+        }
+        historyList.add(FIRST, track)
         updateSharedPref()
     }
 
@@ -33,5 +35,10 @@ class SearchHistory(private val sharedPref: SharedPreferences) {
         val json = sharedPref.getString(SEARCH_HISTORY_KEY, null) ?: return ArrayList()
         val type: Type = object : TypeToken<ArrayList<Track?>?>() {}.type
         return Gson().fromJson<Any>(json, type) as ArrayList<Track>
+    }
+
+    companion object {
+        private const val HISTORY_LIST_SIZE = 10
+        private const val FIRST = 0
     }
 }

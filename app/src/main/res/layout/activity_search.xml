@@ -76,6 +76,7 @@
         tools:listitem="@layout/track_item_view" />
 
     <LinearLayout
+        android:id="@+id/placeholder_search_history"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">

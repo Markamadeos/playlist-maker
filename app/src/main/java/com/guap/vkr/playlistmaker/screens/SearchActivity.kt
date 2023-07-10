@@ -64,6 +64,7 @@ class SearchActivity : AppCompatActivity() {
         placeholderContainer = findViewById(R.id.error_container)
         placeholderImage = findViewById(R.id.iv_error_message)
         placeholderMessage = findViewById(R.id.tv_error_pic)
+        placeholderSearchHistory = findViewById(R.id.placeholder_search_history)
         refreshButton = findViewById(R.id.btn_refresh)
         clearHistoryButton = findViewById(R.id.btn_clear_history)
 
@@ -90,6 +91,7 @@ class SearchActivity : AppCompatActivity() {
 
         clearHistoryButton.setOnClickListener {
             searchHistory.clearHistory()
+            searchHistoryVisibility(userInput, searchHistory)
             historyAdapter.notifyDataSetChanged()
         }
 
@@ -104,6 +106,7 @@ class SearchActivity : AppCompatActivity() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 clearButton.visibility = clearButtonVisibility(s)
+                placeholderSearchHistory.visibility = searchHistoryVisibility(s,searchHistory)
                 userInput = s.toString()
             }
 
@@ -136,6 +139,14 @@ class SearchActivity : AppCompatActivity() {
             View.GONE
         } else {
             View.VISIBLE
+        }
+    }
+
+    private fun searchHistoryVisibility(s: CharSequence?, searchHistory: SearchHistory): Int {
+        return if (s.isNullOrEmpty() && searchHistory.getSearchHistory().isNotEmpty()) {
+            View.VISIBLE
+        } else {
+            View.GONE
         }
     }
 
@@ -199,7 +210,7 @@ class SearchActivity : AppCompatActivity() {
         searchHistory.addTrackToHistory(track)
         Toast.makeText(
             applicationContext,
-            searchHistory.getSearchHistory().toString(),
+            track.trackName + " saved! :)",
             Toast.LENGTH_LONG
         ).show()
     }
