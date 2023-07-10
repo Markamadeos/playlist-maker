@@ -10,7 +10,6 @@ import java.lang.reflect.Type
 class SearchHistory(private val sharedPref: SharedPreferences) {
 
     private val historyList = readFromSharedPref()
-
     fun getSearchHistory() = historyList
 
     fun clearHistory() {

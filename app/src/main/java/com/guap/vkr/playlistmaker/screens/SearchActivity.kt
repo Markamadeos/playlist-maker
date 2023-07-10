@@ -2,11 +2,11 @@ package com.guap.vkr.playlistmaker.screens
 
 import android.app.Activity
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
@@ -25,7 +25,6 @@ import com.guap.vkr.playlistmaker.TrackAdapter
 import com.guap.vkr.playlistmaker.api.ITunesApi
 import com.guap.vkr.playlistmaker.api.SearchResponse
 import com.guap.vkr.playlistmaker.model.Track
-import com.guap.vkr.playlistmaker.utils.SEARCH_HISTORY_KEY
 import com.guap.vkr.playlistmaker.utils.SHARED_PREFERENCES
 import com.guap.vkr.playlistmaker.utils.iTunesBaseUrl
 import retrofit2.Call
@@ -33,42 +32,49 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import kotlin.math.log
 
 class SearchActivity : AppCompatActivity() {
 
     private val tracks = ArrayList<Track>()
     private var userInput = ""
-    private val retrofit = Retrofit.Builder()
-        .baseUrl(iTunesBaseUrl)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
+    private val retrofit =
+        Retrofit.Builder().baseUrl(iTunesBaseUrl).addConverterFactory(GsonConverterFactory.create())
+            .build()
     private val iTunesService = retrofit.create(ITunesApi::class.java)
     private val searchAdapter = TrackAdapter(tracks) { trackClick(it) }
     private lateinit var placeholderContainer: LinearLayout
     private lateinit var placeholderImage: ImageView
     private lateinit var placeholderMessage: TextView
     private lateinit var refreshButton: Button
+    private lateinit var clearHistoryButton: Button
+    private lateinit var placeholderSearchHistory: LinearLayout
 
-    // private lateinit var placeholderSearchHistory: LinearLayout
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
+
         val queryInput = findViewById<EditText>(R.id.et_search)
         val clearButton = findViewById<ImageView>(R.id.iv_clear)
         val backButton = findViewById<ImageView>(R.id.btn_back)
-        val trackList = findViewById<RecyclerView>(R.id.recycler_view)
+        val rvtrackList = findViewById<RecyclerView>(R.id.recycler_view)
+        val rvhistoryList = findViewById<RecyclerView>(R.id.recycler_view_history)
+        val searchHistory = SearchHistory(getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE))
+        val historyAdapter = TrackAdapter(searchHistory.getSearchHistory()) { trackClick(it) }
 
         placeholderContainer = findViewById(R.id.error_container)
         placeholderImage = findViewById(R.id.iv_error_message)
         placeholderMessage = findViewById(R.id.tv_error_pic)
         refreshButton = findViewById(R.id.btn_refresh)
+        clearHistoryButton = findViewById(R.id.btn_clear_history)
 
-        trackList.adapter = searchAdapter
-        trackList.layoutManager = LinearLayoutManager(
-            this,
-            LinearLayoutManager.VERTICAL,
-            false
+        rvtrackList.adapter = searchAdapter
+        rvtrackList.layoutManager = LinearLayoutManager(
+            this, LinearLayoutManager.VERTICAL, false
+        )
+
+        rvhistoryList.adapter = historyAdapter
+        rvhistoryList.layoutManager = LinearLayoutManager(
+            this, LinearLayoutManager.VERTICAL, false
         )
 
         backButton.setOnClickListener {
@@ -80,6 +86,11 @@ class SearchActivity : AppCompatActivity() {
             hideKeyboard()
             tracks.clear()
             searchAdapter.notifyDataSetChanged()
+        }
+
+        clearHistoryButton.setOnClickListener {
+            searchHistory.clearHistory()
+            historyAdapter.notifyDataSetChanged()
         }
 
         refreshButton.setOnClickListener {
@@ -129,11 +140,9 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun search() {
-        iTunesService.search(userInput)
-            .enqueue(object : Callback<SearchResponse> {
+        iTunesService.search(userInput).enqueue(object : Callback<SearchResponse> {
                 override fun onResponse(
-                    call: Call<SearchResponse>,
-                    response: Response<SearchResponse>
+                    call: Call<SearchResponse>, response: Response<SearchResponse>
                 ) {
                     if (response.code() == 200) {
                         if (response.body()?.results?.isNotEmpty() == true) {
@@ -186,10 +195,12 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun trackClick(track: Track) {
-        val searchHistory = SearchHistory(getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE))
-        searchHistory.addTrackToHistory(track)
-        Toast.makeText(applicationContext, searchHistory.getSearchHistory().toString(), Toast.LENGTH_LONG ).show()
-        Log.d("WTF", searchHistory.getSearchHistory().toString())
+//        searchHistory.addTrackToHistory(track)
+//        Toast.makeText(
+//            applicationContext,
+//            searchHistory.getSearchHistory().toString(),
+//            Toast.LENGTH_LONG
+//        ).show()
     }
 
     companion object {
