@@ -141,28 +141,28 @@ class SearchActivity : AppCompatActivity() {
 
     private fun search() {
         iTunesService.search(userInput).enqueue(object : Callback<SearchResponse> {
-                override fun onResponse(
-                    call: Call<SearchResponse>, response: Response<SearchResponse>
-                ) {
-                    if (response.code() == 200) {
-                        if (response.body()?.results?.isNotEmpty() == true) {
-                            tracks.clear()
-                            tracks.addAll(response.body()?.results!!)
-                            placeholderContainer.visibility = View.GONE
-                            searchAdapter.notifyDataSetChanged()
-                        } else {
-                            showMessage(EMPTY_RESPONSE)
-                        }
-
+            override fun onResponse(
+                call: Call<SearchResponse>, response: Response<SearchResponse>
+            ) {
+                if (response.code() == 200) {
+                    if (response.body()?.results?.isNotEmpty() == true) {
+                        tracks.clear()
+                        tracks.addAll(response.body()?.results!!)
+                        placeholderContainer.visibility = View.GONE
+                        searchAdapter.notifyDataSetChanged()
                     } else {
-                        showMessage(NETWORK_ERROR)
+                        showMessage(EMPTY_RESPONSE)
                     }
-                }
 
-                override fun onFailure(call: Call<SearchResponse>, t: Throwable) {
+                } else {
                     showMessage(NETWORK_ERROR)
                 }
-            })
+            }
+
+            override fun onFailure(call: Call<SearchResponse>, t: Throwable) {
+                showMessage(NETWORK_ERROR)
+            }
+        })
     }
 
     private fun showSearchHistory() {
@@ -195,12 +195,13 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun trackClick(track: Track) {
-//        searchHistory.addTrackToHistory(track)
-//        Toast.makeText(
-//            applicationContext,
-//            searchHistory.getSearchHistory().toString(),
-//            Toast.LENGTH_LONG
-//        ).show()
+        val searchHistory = SearchHistory(getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE))
+        searchHistory.addTrackToHistory(track)
+        Toast.makeText(
+            applicationContext,
+            searchHistory.getSearchHistory().toString(),
+            Toast.LENGTH_LONG
+        ).show()
     }
 
     companion object {

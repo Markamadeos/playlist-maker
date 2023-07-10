@@ -73,28 +73,30 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        tools:listitem="@layout/track_item_view"
-        android:visibility="gone"/>
+        tools:listitem="@layout/track_item_view" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-<!--        android:visibility="gone">-->
+        <!--        android:visibility="gone">-->
+        <!--        >-->
+
 
         <TextView
             android:id="@+id/tv_history_title"
             style="@style/PlaceholderTextStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="?attr/placeholder_error_text_color"
+            android:paddingBottom="20dp"
             android:text="@string/your_search_history"
-            android:paddingBottom="20dp"/>
+            android:textColor="?attr/placeholder_error_text_color" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view_history"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="0.5"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/track_item_view" />
 
