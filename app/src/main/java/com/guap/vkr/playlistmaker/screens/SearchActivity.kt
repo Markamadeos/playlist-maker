@@ -2,7 +2,6 @@ package com.guap.vkr.playlistmaker.screens
 
 import android.app.Activity
 import android.content.Context
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.text.Editable
@@ -35,13 +34,13 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class SearchActivity : AppCompatActivity() {
 
-    private val tracks = ArrayList<Track>()
-    private var userInput = ""
     private val retrofit =
         Retrofit.Builder().baseUrl(iTunesBaseUrl).addConverterFactory(GsonConverterFactory.create())
             .build()
     private val iTunesService = retrofit.create(ITunesApi::class.java)
+    private val tracks = ArrayList<Track>()
     private val searchAdapter = TrackAdapter(tracks) { trackClick(it) }
+    private var userInput = ""
     private lateinit var placeholderContainer: LinearLayout
     private lateinit var placeholderImage: ImageView
     private lateinit var placeholderMessage: TextView
@@ -84,6 +83,7 @@ class SearchActivity : AppCompatActivity() {
 
         clearButton.setOnClickListener {
             queryInput.setText("")
+            //userInput = ""
             hideKeyboard()
             tracks.clear()
             searchAdapter.notifyDataSetChanged()
@@ -91,8 +91,8 @@ class SearchActivity : AppCompatActivity() {
 
         clearHistoryButton.setOnClickListener {
             searchHistory.clearHistory()
-            searchHistoryVisibility(userInput, searchHistory)
             historyAdapter.notifyDataSetChanged()
+            placeholderSearchHistory.visibility = View.GONE
         }
 
         refreshButton.setOnClickListener {
@@ -101,19 +101,19 @@ class SearchActivity : AppCompatActivity() {
 
         val textWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-                //empty
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 clearButton.visibility = clearButtonVisibility(s)
-                placeholderSearchHistory.visibility = searchHistoryVisibility(s,searchHistory)
+                placeholderSearchHistory.visibility = searchHistoryVisibility(s, searchHistory, queryInput.hasWindowFocus())
                 userInput = s.toString()
+
             }
 
             override fun afterTextChanged(s: Editable?) {
-                //empty
             }
         }
+
         queryInput.addTextChangedListener(textWatcher)
         queryInput.setText(userInput)
         queryInput.setOnEditorActionListener { _, actionId, _ ->
@@ -142,8 +142,11 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    private fun searchHistoryVisibility(s: CharSequence?, searchHistory: SearchHistory): Int {
-        return if (s.isNullOrEmpty() && searchHistory.getSearchHistory().isNotEmpty()) {
+    private fun searchHistoryVisibility(s: CharSequence?, searchHistory: SearchHistory, focus: Boolean): Int {
+        return if (s.isNullOrEmpty()
+            && searchHistory.getSearchHistory().isNotEmpty()
+            && focus
+        ) {
             View.VISIBLE
         } else {
             View.GONE
@@ -176,10 +179,6 @@ class SearchActivity : AppCompatActivity() {
         })
     }
 
-    private fun showSearchHistory() {
-        //empty
-    }
-
     private fun showMessage(status: String) {
         tracks.clear()
         searchAdapter.notifyDataSetChanged()
@@ -210,7 +209,7 @@ class SearchActivity : AppCompatActivity() {
         searchHistory.addTrackToHistory(track)
         Toast.makeText(
             applicationContext,
-            track.trackName + " saved! :)",
+            track.trackName + " saved!",
             Toast.LENGTH_LONG
         ).show()
     }
