@@ -83,7 +83,6 @@ class SearchActivity : AppCompatActivity() {
 
         clearButton.setOnClickListener {
             queryInput.setText("")
-            //userInput = ""
             hideKeyboard()
             tracks.clear()
             searchAdapter.notifyDataSetChanged()
@@ -105,7 +104,8 @@ class SearchActivity : AppCompatActivity() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 clearButton.visibility = clearButtonVisibility(s)
-                placeholderSearchHistory.visibility = searchHistoryVisibility(s, searchHistory, queryInput.hasWindowFocus())
+                placeholderSearchHistory.visibility =
+                    searchHistoryVisibility(s, searchHistory, queryInput.hasFocus())
                 userInput = s.toString()
 
             }
@@ -121,6 +121,11 @@ class SearchActivity : AppCompatActivity() {
                 search()
             }
             false
+        }
+        queryInput.setOnFocusChangeListener { view, hasFocus ->
+            placeholderSearchHistory.visibility = if (searchHistory.getSearchHistory()
+                    .isNotEmpty() && queryInput.text.isEmpty()
+            ) View.VISIBLE else View.GONE
         }
     }
 
@@ -142,11 +147,12 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    private fun searchHistoryVisibility(s: CharSequence?, searchHistory: SearchHistory, focus: Boolean): Int {
-        return if (s.isNullOrEmpty()
-            && searchHistory.getSearchHistory().isNotEmpty()
-            && focus
-        ) {
+    private fun searchHistoryVisibility(
+        s: CharSequence?,
+        searchHistory: SearchHistory,
+        focus: Boolean
+    ): Int {
+        return if (s.isNullOrEmpty() && searchHistory.getSearchHistory().isNotEmpty() && focus) {
             View.VISIBLE
         } else {
             View.GONE
@@ -154,29 +160,31 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun search() {
-        iTunesService.search(userInput).enqueue(object : Callback<SearchResponse> {
-            override fun onResponse(
-                call: Call<SearchResponse>, response: Response<SearchResponse>
-            ) {
-                if (response.code() == 200) {
-                    if (response.body()?.results?.isNotEmpty() == true) {
-                        tracks.clear()
-                        tracks.addAll(response.body()?.results!!)
-                        placeholderContainer.visibility = View.GONE
-                        searchAdapter.notifyDataSetChanged()
-                    } else {
-                        showMessage(EMPTY_RESPONSE)
-                    }
+        if (userInput.isNotEmpty()) {
+            iTunesService.search(userInput).enqueue(object : Callback<SearchResponse> {
+                override fun onResponse(
+                    call: Call<SearchResponse>, response: Response<SearchResponse>
+                ) {
+                    if (response.code() == 200) {
+                        if (response.body()?.results?.isNotEmpty() == true) {
+                            tracks.clear()
+                            tracks.addAll(response.body()?.results!!)
+                            placeholderContainer.visibility = View.GONE
+                            searchAdapter.notifyDataSetChanged()
+                        } else {
+                            showMessage(EMPTY_RESPONSE)
+                        }
 
-                } else {
+                    } else {
+                        showMessage(NETWORK_ERROR)
+                    }
+                }
+
+                override fun onFailure(call: Call<SearchResponse>, t: Throwable) {
                     showMessage(NETWORK_ERROR)
                 }
-            }
-
-            override fun onFailure(call: Call<SearchResponse>, t: Throwable) {
-                showMessage(NETWORK_ERROR)
-            }
-        })
+            })
+        }
     }
 
     private fun showMessage(status: String) {
@@ -208,9 +216,7 @@ class SearchActivity : AppCompatActivity() {
         val searchHistory = SearchHistory(getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE))
         searchHistory.addTrackToHistory(track)
         Toast.makeText(
-            applicationContext,
-            track.trackName + " saved!",
-            Toast.LENGTH_LONG
+            applicationContext, track.trackName + " saved!", Toast.LENGTH_SHORT
         ).show()
     }
 
