@@ -19,7 +19,6 @@ class App : Application() {
         } else {
             darkTheme = false
         }
-
     }
     fun switchTheme(darkThemeEnabled: Boolean) {
         darkTheme = darkThemeEnabled

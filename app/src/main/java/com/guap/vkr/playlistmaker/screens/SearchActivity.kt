@@ -39,7 +39,7 @@ class SearchActivity : AppCompatActivity() {
             .build()
     private val iTunesService = retrofit.create(ITunesApi::class.java)
     private val tracks = ArrayList<Track>()
-    private val searchAdapter = TrackAdapter(tracks) { trackClick(it) }
+    private val searchAdapter = TrackAdapter(tracks) { trackClickListener(it) }
     private var userInput = ""
     private lateinit var placeholderContainer: LinearLayout
     private lateinit var placeholderImage: ImageView
@@ -47,36 +47,43 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var refreshButton: Button
     private lateinit var clearHistoryButton: Button
     private lateinit var placeholderSearchHistory: LinearLayout
+    private lateinit var searchHistory: SearchHistory
+    private lateinit var queryInput: EditText
+    private lateinit var clearButton: ImageView
+    private lateinit var backButton: ImageView
+    private lateinit var rvTrackList: RecyclerView
+    private lateinit var rvHistoryList: RecyclerView
+    private lateinit var historyAdapter: TrackAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
-        val queryInput = findViewById<EditText>(R.id.et_search)
-        val clearButton = findViewById<ImageView>(R.id.iv_clear)
-        val backButton = findViewById<ImageView>(R.id.btn_back)
-        val rvtrackList = findViewById<RecyclerView>(R.id.recycler_view)
-        val rvhistoryList = findViewById<RecyclerView>(R.id.recycler_view_history)
-        val searchHistory = SearchHistory(getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE))
-        val historyAdapter = TrackAdapter(searchHistory.getSearchHistory()) { trackClick(it) }
+        initVariables()
+        initSearchResultRecycler()
+        initSearchHistoryRecycler()
+        buttonsConfig()
+        queryInputConfig(initTextWatcher())
+    }
 
-        placeholderContainer = findViewById(R.id.error_container)
-        placeholderImage = findViewById(R.id.iv_error_message)
-        placeholderMessage = findViewById(R.id.tv_error_pic)
-        placeholderSearchHistory = findViewById(R.id.placeholder_search_history)
-        refreshButton = findViewById(R.id.btn_refresh)
-        clearHistoryButton = findViewById(R.id.btn_clear_history)
+    private fun initTextWatcher(): TextWatcher {
 
-        rvtrackList.adapter = searchAdapter
-        rvtrackList.layoutManager = LinearLayoutManager(
-            this, LinearLayoutManager.VERTICAL, false
-        )
+        val textWatcher = object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
-        rvhistoryList.adapter = historyAdapter
-        rvhistoryList.layoutManager = LinearLayoutManager(
-            this, LinearLayoutManager.VERTICAL, false
-        )
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                clearButton.visibility = clearButtonVisibility(s)
+                placeholderSearchHistory.visibility =
+                    searchHistoryVisibility(s, searchHistory, queryInput.hasFocus())
+                userInput = s.toString()
+            }
 
+            override fun afterTextChanged(s: Editable?) {}
+        }
+        return textWatcher
+    }
+
+    private fun buttonsConfig() {
         backButton.setOnClickListener {
             finish()
         }
@@ -97,20 +104,9 @@ class SearchActivity : AppCompatActivity() {
         refreshButton.setOnClickListener {
             search()
         }
+    }
 
-        val textWatcher = object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                clearButton.visibility = clearButtonVisibility(s)
-                placeholderSearchHistory.visibility =
-                    searchHistoryVisibility(s, searchHistory, queryInput.hasFocus())
-                userInput = s.toString()
-            }
-
-            override fun afterTextChanged(s: Editable?) {}
-        }
-
+    private fun queryInputConfig(textWatcher: TextWatcher) {
         queryInput.addTextChangedListener(textWatcher)
         queryInput.setText(userInput)
         queryInput.setOnEditorActionListener { _, actionId, _ ->
@@ -120,10 +116,39 @@ class SearchActivity : AppCompatActivity() {
             false
         }
         queryInput.setOnFocusChangeListener { _, hasFocus ->
-            placeholderSearchHistory.visibility = if (searchHistory.getSearchHistory()
-                    .isNotEmpty() && queryInput.text.isEmpty() && hasFocus
-            ) View.VISIBLE else View.GONE
+            placeholderSearchHistory.visibility =
+                searchHistoryVisibility(queryInput.text, searchHistory, hasFocus)
         }
+    }
+
+    private fun initSearchHistoryRecycler() {
+        rvHistoryList.adapter = historyAdapter
+        rvHistoryList.layoutManager = LinearLayoutManager(
+            this, LinearLayoutManager.VERTICAL, false
+        )
+    }
+
+    private fun initSearchResultRecycler() {
+        rvTrackList.adapter = searchAdapter
+        rvTrackList.layoutManager = LinearLayoutManager(
+            this, LinearLayoutManager.VERTICAL, false
+        )
+    }
+
+    private fun initVariables() {
+        searchHistory = SearchHistory(getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE))
+        placeholderContainer = findViewById(R.id.error_container)
+        placeholderImage = findViewById(R.id.iv_error_message)
+        placeholderMessage = findViewById(R.id.tv_error_pic)
+        placeholderSearchHistory = findViewById(R.id.placeholder_search_history)
+        refreshButton = findViewById(R.id.btn_refresh)
+        clearHistoryButton = findViewById(R.id.btn_clear_history)
+        queryInput = findViewById(R.id.et_search)
+        clearButton = findViewById(R.id.iv_clear)
+        backButton = findViewById(R.id.btn_back)
+        rvTrackList = findViewById(R.id.recycler_view)
+        rvHistoryList = findViewById(R.id.recycler_view_history)
+        historyAdapter = TrackAdapter(searchHistory.getSearchHistory()) { trackClickListener(it) }
     }
 
     override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle) {
@@ -169,22 +194,22 @@ class SearchActivity : AppCompatActivity() {
                             placeholderContainer.visibility = View.GONE
                             searchAdapter.notifyDataSetChanged()
                         } else {
-                            showMessage(EMPTY_RESPONSE)
+                            showErrorMessage(EMPTY_RESPONSE)
                         }
 
                     } else {
-                        showMessage(NETWORK_ERROR)
+                        showErrorMessage(NETWORK_ERROR)
                     }
                 }
 
                 override fun onFailure(call: Call<SearchResponse>, t: Throwable) {
-                    showMessage(NETWORK_ERROR)
+                    showErrorMessage(NETWORK_ERROR)
                 }
             })
         }
     }
 
-    private fun showMessage(status: String) {
+    private fun showErrorMessage(status: String) {
         tracks.clear()
         searchAdapter.notifyDataSetChanged()
         placeholderContainer.visibility = View.VISIBLE
@@ -209,15 +234,16 @@ class SearchActivity : AppCompatActivity() {
         inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
-    private fun trackClick(track: Track) {
-        val searchHistory = SearchHistory(getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE))
+    private fun trackClickListener(track: Track) {
         searchHistory.addTrackToHistory(track)
+        historyAdapter.notifyItemInserted(INSERT_POSITION)
         Toast.makeText(
             applicationContext, track.trackName + " saved!", Toast.LENGTH_SHORT
         ).show()
     }
 
     companion object {
+        private const val INSERT_POSITION = 0
         private const val USER_INPUT = "USER_INPUT"
         private const val NETWORK_ERROR = "NETWORK_ERROR"
         private const val EMPTY_RESPONSE = "EMPTY_RESPONSE"
