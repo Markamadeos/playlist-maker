@@ -148,7 +148,11 @@ class SearchActivity : AppCompatActivity() {
         backButton = findViewById(R.id.btn_back)
         rvTrackList = findViewById(R.id.recycler_view)
         rvHistoryList = findViewById(R.id.recycler_view_history)
-        historyAdapter = TrackAdapter(searchHistory.getSearchHistory()) { trackClickListener(it) }
+        historyAdapter = TrackAdapter(searchHistory.getSearchHistory()) { trackClickHistoryListener(it) }
+    }
+
+    private fun trackClickHistoryListener(track: Track) {
+        // not implemented yet
     }
 
     override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle) {
@@ -236,14 +240,13 @@ class SearchActivity : AppCompatActivity() {
 
     private fun trackClickListener(track: Track) {
         searchHistory.addTrackToHistory(track)
-        historyAdapter.notifyItemInserted(INSERT_POSITION)
+        historyAdapter.notifyDataSetChanged()
         Toast.makeText(
             applicationContext, track.trackName + " saved!", Toast.LENGTH_SHORT
         ).show()
     }
 
     companion object {
-        private const val INSERT_POSITION = 0
         private const val USER_INPUT = "USER_INPUT"
         private const val NETWORK_ERROR = "NETWORK_ERROR"
         private const val EMPTY_RESPONSE = "EMPTY_RESPONSE"
