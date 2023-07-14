@@ -21,6 +21,10 @@
         <TextView
             android:id="@+id/tv_track_name"
             style="@style/TrackNameTextStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/artist_name_text_margin_14dp"
+            android:layout_marginBottom="@dimen/artist_name_text_margin_1dp"
             tools:text="Yesterday (Remastered 2009)" />
 
         <LinearLayout
@@ -32,7 +36,7 @@
             <TextView
                 android:id="@+id/tv_artist_name"
                 style="@style/ArtistTextStyle"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 tools:text="The Beatles" />
@@ -59,6 +63,7 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
+        android:layout_marginStart="4dp"
         android:layout_marginEnd="4dp"
         android:src="@drawable/ic_track_item_arrow"
         app:tint="?attr/arrow_track_item_color" />

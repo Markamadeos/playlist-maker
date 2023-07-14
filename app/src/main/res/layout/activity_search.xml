@@ -58,7 +58,7 @@
             app:drawableTint="?attr/hint_color" />
 
         <ImageView
-            android:id="@+id/img_clear"
+            android:id="@+id/iv_clear"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -76,7 +76,41 @@
         tools:listitem="@layout/track_item_view" />
 
     <LinearLayout
-        android:id="@+id/placeholder_container"
+        android:id="@+id/placeholder_search_history"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_history_title"
+            style="@style/PlaceholderTextStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="20dp"
+            android:text="@string/your_search_history"
+            android:textColor="?attr/placeholder_error_text_color" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view_history"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.5"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/track_item_view" />
+
+        <Button
+            android:id="@+id/btn_clear_history"
+            style="@style/ActionButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="24dp"
+            android:text="@string/clear_history_text" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/error_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="110dp"
@@ -85,12 +119,12 @@
         android:visibility="gone">
 
         <ImageView
-            android:id="@+id/iv_placeholder_message"
+            android:id="@+id/iv_error_message"
             android:layout_width="120dp"
             android:layout_height="120dp" />
 
         <TextView
-            android:id="@+id/tv_placeholder"
+            android:id="@+id/tv_error_pic"
             style="@style/PlaceholderTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -105,7 +139,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:text="@string/refresh_button_text"
-            android:visibility="gone"/>
+            android:visibility="gone" />
 
     </LinearLayout>
 
