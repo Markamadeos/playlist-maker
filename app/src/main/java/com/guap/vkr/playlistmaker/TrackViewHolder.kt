@@ -25,12 +25,12 @@ class TrackViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
 
         trackName.text = model.trackName
         artistName.text = model.artistName
-        trackTime.text =
-            SimpleDateFormat("mm:ss", Locale.getDefault()).format(model.trackTimeMillis)
+        trackTime.text = model.getDuration()
+
 
         Glide.with(itemView)
             .load(model.artworkUrl100)
-            .placeholder(R.drawable.album_placeholder)
+            .placeholder(R.drawable.ic_album_placeholder)
             .centerCrop()
             .transform(RoundedCorners(cornerRadius))
             .into(cover)

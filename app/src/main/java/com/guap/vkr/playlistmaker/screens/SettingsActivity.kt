@@ -30,6 +30,7 @@ class SettingsActivity : AppCompatActivity() {
         darkThemeButton.isChecked = sharedPref.getBoolean(THEME_SWITCH_KEY, false)
         darkThemeButton.setOnCheckedChangeListener { _, checked ->
             (applicationContext as App).switchTheme(checked)
+            // TODO(пофиксить положение свича, при мереходе между экранами сбрасывется его состояние)
         }
 
         shareButton.setOnClickListener {
