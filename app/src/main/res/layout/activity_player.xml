@@ -42,31 +42,8 @@
         app:layout_constraintEnd_toStartOf="@id/right_guideline"
         app:layout_constraintStart_toEndOf="@id/left_guideline"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_max="300dp"
+        app:layout_constraintWidth_max="270dp"
         tools:src="@drawable/iv_track_cover" />
-
-    <!--    <ImageView-->
-    <!--        android:id="@+id/iv_cover"-->
-    <!--        android:layout_width="312dp"-->
-    <!--        android:layout_height="312dp"-->
-    <!--        android:layout_gravity="center_vertical"-->
-    <!--        android:layout_marginTop="46dp"-->
-    <!--        android:src="@drawable/iv_track_cover"-->
-    <!--        app:layout_constraintDimensionRatio="1:1"-->
-    <!--        app:layout_constraintEnd_toStartOf="@id/right_guideline"-->
-    <!--        app:layout_constraintStart_toStartOf="@id/left_guideline"-->
-    <!--        app:layout_constraintTop_toTopOf="@id/btn_back" />-->
-
-    <!--    <ImageView-->
-    <!--        android:id="@+id/iv_cover"-->
-    <!--        android:layout_width="312dp"-->
-    <!--        android:layout_height="312dp"-->
-    <!--        android:layout_marginTop="42dp"-->
-    <!--        android:scaleType="centerCrop"-->
-    <!--        android:src="@drawable/ic_album_placeholder_2x"-->
-    <!--        app:layout_constraintEnd_toStartOf="@+id/right_guideline"-->
-    <!--        app:layout_constraintStart_toStartOf="@+id/left_guideline"-->
-    <!--        app:layout_constraintTop_toBottomOf="@+id/btn_back" />-->
 
     <TextView
         android:id="@+id/tv_track_name"

@@ -34,6 +34,10 @@ class PlayerActivity : AppCompatActivity() {
         val track = getTrack()
         initVariables()
         bind(track)
+
+        backButton.setOnClickListener {
+            finish()
+        }
     }
 
     private fun initVariables() {
