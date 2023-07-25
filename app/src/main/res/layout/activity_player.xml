@@ -119,11 +119,12 @@
     <TextView
         android:id="@+id/tv_duration"
         style="@style/ArtistTextStyle"
+        android:textColor="@color/yp_text_gray"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="30dp"
-        android:text="Длительность"
+        android:text="@string/duration"
         android:textSize="13sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_playtime" />
@@ -131,11 +132,12 @@
     <TextView
         android:id="@+id/tv_album"
         style="@style/ArtistTextStyle"
+        android:textColor="@color/yp_text_gray"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="17dp"
-        android:text="Альбом"
+        android:text="@string/album"
         android:textSize="13sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_duration" />
@@ -143,11 +145,12 @@
     <TextView
         android:id="@+id/tv_year"
         style="@style/ArtistTextStyle"
+        android:textColor="@color/yp_text_gray"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="17dp"
-        android:text="Год"
+        android:text="@string/year"
         android:textSize="13sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_album" />
@@ -155,11 +158,12 @@
     <TextView
         android:id="@+id/tv_genre"
         style="@style/ArtistTextStyle"
+        android:textColor="@color/yp_text_gray"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="17dp"
-        android:text="Жанр"
+        android:text="@string/genre"
         android:textSize="13sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_year" />
@@ -167,11 +171,12 @@
     <TextView
         android:id="@+id/tv_country"
         style="@style/ArtistTextStyle"
+        android:textColor="@color/yp_text_gray"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginTop="17dp"
-        android:text="Страна"
+        android:text="@string/country"
         android:textSize="13sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_genre" />
