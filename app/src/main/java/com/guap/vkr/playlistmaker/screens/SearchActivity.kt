@@ -26,6 +26,7 @@ import com.guap.vkr.playlistmaker.api.ITunesApi
 import com.guap.vkr.playlistmaker.api.SearchResponse
 import com.guap.vkr.playlistmaker.model.Track
 import com.guap.vkr.playlistmaker.utils.SHARED_PREFERENCES
+import com.guap.vkr.playlistmaker.utils.TRACK
 import com.guap.vkr.playlistmaker.utils.iTunesBaseUrl
 import retrofit2.Call
 import retrofit2.Callback
@@ -249,7 +250,6 @@ class SearchActivity : AppCompatActivity() {
     }
 
     companion object {
-        private const val TRACK = "TRACK"
         private const val USER_INPUT = "USER_INPUT"
         private const val NETWORK_ERROR = "NETWORK_ERROR"
         private const val EMPTY_RESPONSE = "EMPTY_RESPONSE"
