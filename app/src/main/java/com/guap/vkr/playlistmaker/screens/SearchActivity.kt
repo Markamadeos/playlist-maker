@@ -2,6 +2,7 @@ package com.guap.vkr.playlistmaker.screens
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.text.Editable
@@ -14,10 +15,10 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.Gson
 import com.guap.vkr.playlistmaker.R
 import com.guap.vkr.playlistmaker.SearchHistory
 import com.guap.vkr.playlistmaker.TrackAdapter
@@ -25,6 +26,7 @@ import com.guap.vkr.playlistmaker.api.ITunesApi
 import com.guap.vkr.playlistmaker.api.SearchResponse
 import com.guap.vkr.playlistmaker.model.Track
 import com.guap.vkr.playlistmaker.utils.SHARED_PREFERENCES
+import com.guap.vkr.playlistmaker.utils.TRACK
 import com.guap.vkr.playlistmaker.utils.iTunesBaseUrl
 import retrofit2.Call
 import retrofit2.Callback
@@ -148,12 +150,9 @@ class SearchActivity : AppCompatActivity() {
         backButton = findViewById(R.id.btn_back)
         rvTrackList = findViewById(R.id.recycler_view)
         rvHistoryList = findViewById(R.id.recycler_view_history)
-        historyAdapter = TrackAdapter(searchHistory.getSearchHistory()) { trackClickHistoryListener(it) }
+        historyAdapter = TrackAdapter(searchHistory.getSearchHistory()) { trackClickListener(it) }
     }
 
-    private fun trackClickHistoryListener(track: Track) {
-        // not implemented yet
-    }
 
     override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle) {
         super.onSaveInstanceState(outState, outPersistentState)
@@ -241,9 +240,13 @@ class SearchActivity : AppCompatActivity() {
     private fun trackClickListener(track: Track) {
         searchHistory.addTrackToHistory(track)
         historyAdapter.notifyDataSetChanged()
-        Toast.makeText(
-            applicationContext, track.trackName + " saved!", Toast.LENGTH_SHORT
-        ).show()
+        playTrack(track)
+    }
+
+    private fun playTrack(track: Track) {
+        val playIntent =
+            Intent(this, PlayerActivity::class.java).putExtra(TRACK, Gson().toJson(track))
+        startActivity(playIntent)
     }
 
     companion object {
