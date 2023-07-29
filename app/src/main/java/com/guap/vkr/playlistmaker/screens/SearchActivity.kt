@@ -16,6 +16,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
@@ -43,7 +44,7 @@ class SearchActivity : AppCompatActivity() {
     private val tracks = ArrayList<Track>()
     private val searchAdapter = TrackAdapter(tracks) { trackClickListener(it) }
     private var userInput = ""
-    private lateinit var placeholderContainer: LinearLayout
+    private lateinit var errorPlaceholder: LinearLayout
     private lateinit var placeholderImage: ImageView
     private lateinit var placeholderMessage: TextView
     private lateinit var refreshButton: Button
@@ -69,7 +70,6 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun initTextWatcher(): TextWatcher {
-
         val textWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
@@ -139,7 +139,7 @@ class SearchActivity : AppCompatActivity() {
 
     private fun initVariables() {
         searchHistory = SearchHistory(getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE))
-        placeholderContainer = findViewById(R.id.error_container)
+        errorPlaceholder = findViewById(R.id.error_container)
         placeholderImage = findViewById(R.id.iv_error_message)
         placeholderMessage = findViewById(R.id.tv_error_pic)
         placeholderSearchHistory = findViewById(R.id.placeholder_search_history)
@@ -178,6 +178,7 @@ class SearchActivity : AppCompatActivity() {
         focus: Boolean
     ): Int {
         return if (s.isNullOrEmpty() && searchHistory.getSearchHistory().isNotEmpty() && focus) {
+            errorPlaceholder.visibility = View.GONE
             View.VISIBLE
         } else {
             View.GONE
@@ -194,7 +195,7 @@ class SearchActivity : AppCompatActivity() {
                         if (response.body()?.results?.isNotEmpty() == true) {
                             tracks.clear()
                             tracks.addAll(response.body()?.results!!)
-                            placeholderContainer.visibility = View.GONE
+                            errorPlaceholder.visibility = View.GONE
                             searchAdapter.notifyDataSetChanged()
                         } else {
                             showErrorMessage(EMPTY_RESPONSE)
@@ -215,7 +216,7 @@ class SearchActivity : AppCompatActivity() {
     private fun showErrorMessage(status: String) {
         tracks.clear()
         searchAdapter.notifyDataSetChanged()
-        placeholderContainer.visibility = View.VISIBLE
+        errorPlaceholder.visibility = View.VISIBLE
         if (status == EMPTY_RESPONSE) {
             placeholderImage.setImageResource(R.drawable.ic_search_err)
             placeholderMessage.setText(R.string.error_nothing_found)
@@ -240,10 +241,6 @@ class SearchActivity : AppCompatActivity() {
     private fun trackClickListener(track: Track) {
         searchHistory.addTrackToHistory(track)
         historyAdapter.notifyDataSetChanged()
-        playTrack(track)
-    }
-
-    private fun playTrack(track: Track) {
         val playIntent =
             Intent(this, PlayerActivity::class.java).putExtra(TRACK, Gson().toJson(track))
         startActivity(playIntent)
