@@ -20,14 +20,14 @@ class PlayerActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val track = getTrack()
-        bind(track, binding)
+        bind(track)
 
         binding.btnBack.setOnClickListener {
             finish()
         }
     }
 
-    private fun bind(track: Track, binding: ActivityPlayerBinding) {
+    private fun bind(track: Track) {
         val cornerRadius = this.resources.getDimensionPixelSize(R.dimen.corner_radius_8dp)
 
         Glide.with(this)

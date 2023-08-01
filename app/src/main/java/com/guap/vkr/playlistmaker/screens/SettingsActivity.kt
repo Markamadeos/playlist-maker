@@ -9,31 +9,37 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
 import com.guap.vkr.playlistmaker.App
 import com.guap.vkr.playlistmaker.R
+import com.guap.vkr.playlistmaker.databinding.ActivitySettingsBinding
 import com.guap.vkr.playlistmaker.utils.SHARED_PREFERENCES
 import com.guap.vkr.playlistmaker.utils.THEME_SWITCH_KEY
+import java.util.zip.Inflater
+
 class SettingsActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivitySettingsBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
+        binding = ActivitySettingsBinding.inflate(layoutInflater).also { setContentView(it.root) }
 
-        val backButton = findViewById<ImageView>(R.id.btn_back)
-        val darkThemeButton = findViewById<SwitchCompat>(R.id.btn_dark_theme)
-        val shareButton = findViewById<TextView>(R.id.btn_share)
-        val feedbackButton = findViewById<TextView>(R.id.btn_feedback)
-        val licenseButton = findViewById<TextView>(R.id.btn_license)
+//        val backButton = findViewById<ImageView>(R.id.btn_back)
+//        val darkThemeButton = findViewById<SwitchCompat>(R.id.btn_dark_theme)
+//        val shareButton = findViewById<TextView>(R.id.btn_share)
+//        val feedbackButton = findViewById<TextView>(R.id.btn_feedback)
+//        val licenseButton = findViewById<TextView>(R.id.btn_license)
         val sharedPref = getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE)
 
-        backButton.setOnClickListener {
+        binding.btnBack.setOnClickListener {
             finish()
         }
 
-        darkThemeButton.isChecked = sharedPref.getBoolean(THEME_SWITCH_KEY, false)
-        darkThemeButton.setOnCheckedChangeListener { _, checked ->
+        binding.btnDarkTheme.isChecked = sharedPref.getBoolean(THEME_SWITCH_KEY, false)
+        binding.btnDarkTheme.setOnCheckedChangeListener { _, checked ->
             (applicationContext as App).switchTheme(checked)
             // TODO(пофиксить положение свича, при мереходе между экранами сбрасывется его состояние)
         }
 
-        shareButton.setOnClickListener {
+        binding.btnShare.setOnClickListener {
             val shareIntent = Intent().apply {
                 action = Intent.ACTION_SEND
                 type = "text/plan"
@@ -42,7 +48,7 @@ class SettingsActivity : AppCompatActivity() {
             startActivity(shareIntent)
         }
 
-        feedbackButton.setOnClickListener {
+        binding.btnFeedback.setOnClickListener {
             val feedbackIntent = Intent().apply {
                 action = Intent.ACTION_SENDTO
                 data = Uri.parse("mailto:")
@@ -59,7 +65,7 @@ class SettingsActivity : AppCompatActivity() {
             startActivity(feedbackIntent)
         }
 
-        licenseButton.setOnClickListener {
+        binding.btnLicense.setOnClickListener {
             val licenseIntent = Intent().apply {
                 action = Intent.ACTION_VIEW
                 data = Uri.parse(getString(R.string.license_url))
