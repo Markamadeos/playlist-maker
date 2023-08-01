@@ -2,12 +2,13 @@ package com.guap.vkr.playlistmaker
 
 import android.app.Application
 import android.content.SharedPreferences
+import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatDelegate
 import com.guap.vkr.playlistmaker.utils.SHARED_PREFERENCES
 import com.guap.vkr.playlistmaker.utils.THEME_SWITCH_KEY
 
 class App : Application() {
-    var darkTheme = false
+    private var darkTheme = false
     private lateinit var sharedPref : SharedPreferences
     override fun onCreate() {
         super.onCreate()

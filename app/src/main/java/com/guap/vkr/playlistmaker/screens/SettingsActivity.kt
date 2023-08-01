@@ -3,23 +3,18 @@ package com.guap.vkr.playlistmaker.screens
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.SwitchCompat
 import com.guap.vkr.playlistmaker.App
 import com.guap.vkr.playlistmaker.R
 import com.guap.vkr.playlistmaker.databinding.ActivitySettingsBinding
 import com.guap.vkr.playlistmaker.utils.SHARED_PREFERENCES
 import com.guap.vkr.playlistmaker.utils.THEME_SWITCH_KEY
-import java.util.zip.Inflater
 
 class SettingsActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySettingsBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_settings)
         binding = ActivitySettingsBinding.inflate(layoutInflater).also { setContentView(it.root) }
 
 //        val backButton = findViewById<ImageView>(R.id.btn_back)
