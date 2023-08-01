@@ -17,11 +17,6 @@ class SettingsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivitySettingsBinding.inflate(layoutInflater).also { setContentView(it.root) }
 
-//        val backButton = findViewById<ImageView>(R.id.btn_back)
-//        val darkThemeButton = findViewById<SwitchCompat>(R.id.btn_dark_theme)
-//        val shareButton = findViewById<TextView>(R.id.btn_share)
-//        val feedbackButton = findViewById<TextView>(R.id.btn_feedback)
-//        val licenseButton = findViewById<TextView>(R.id.btn_license)
         val sharedPref = getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE)
 
         binding.btnBack.setOnClickListener {
