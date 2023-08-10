@@ -4,6 +4,8 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.os.PersistableBundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -16,7 +18,6 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
@@ -43,6 +44,8 @@ class SearchActivity : AppCompatActivity() {
     private val iTunesService = retrofit.create(ITunesApi::class.java)
     private val tracks = ArrayList<Track>()
     private val searchAdapter = TrackAdapter(tracks) { trackClickListener(it) }
+    private val searchRunnable = Runnable { search() }
+    private val handler = Handler(Looper.getMainLooper())
     private var userInput = ""
     private lateinit var errorPlaceholder: LinearLayout
     private lateinit var placeholderImage: ImageView
@@ -62,6 +65,7 @@ class SearchActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
+
         initVariables()
         initSearchResultRecycler()
         initSearchHistoryRecycler()
@@ -78,6 +82,7 @@ class SearchActivity : AppCompatActivity() {
                 placeholderSearchHistory.visibility =
                     searchHistoryVisibility(s, searchHistory, queryInput.hasFocus())
                 userInput = s.toString()
+                searchDebounce()
             }
 
             override fun afterTextChanged(s: Editable?) {}
@@ -185,6 +190,11 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
+    private fun searchDebounce() {
+        handler.removeCallbacks(searchRunnable)
+        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY_MS)
+    }
+
     private fun search() {
         if (userInput.isNotEmpty()) {
             iTunesService.search(userInput).enqueue(object : Callback<SearchResponse> {
@@ -247,6 +257,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     companion object {
+        private const val SEARCH_DEBOUNCE_DELAY_MS = 2000L
         private const val USER_INPUT = "USER_INPUT"
         private const val NETWORK_ERROR = "NETWORK_ERROR"
         private const val EMPTY_RESPONSE = "EMPTY_RESPONSE"
