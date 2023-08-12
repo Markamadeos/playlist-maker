@@ -53,14 +53,16 @@ class PlayerActivity : AppCompatActivity() {
             .transform(RoundedCorners(cornerRadius))
             .into(binding.ivCover)
 
-        binding.tvTrackName.text = track.trackName
-        binding.tvArtistName.text = track.artistName
-        binding.tvPlaytime.text = getString(R.string.default_playtime_value)
-        binding.tvDurationValue.text = track.getDuration()
-        binding.tvAlbumValue.text = track.collectionName
-        binding.tvYearValue.text = track.getReleaseYear()
-        binding.tvGenreValue.text = track.primaryGenreName
-        binding.tvCountryValue.text = track.country
+        binding.apply {
+            tvTrackName.text = track.trackName
+            tvArtistName.text = track.artistName
+            tvPlaytime.text = getString(R.string.default_playtime_value)
+            tvDurationValue.text = track.getDuration()
+            tvAlbumValue.text = track.collectionName
+            tvYearValue.text = track.getReleaseYear()
+            tvGenreValue.text = track.primaryGenreName
+            tvCountryValue.text = track.country
+        }
     }
 
     private fun getTrack() = Gson().fromJson(intent.getStringExtra(TRACK), Track::class.java)
@@ -141,6 +143,7 @@ class PlayerActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        handler.removeCallbacksAndMessages(null)
         mediaPlayer.release()
     }
 
