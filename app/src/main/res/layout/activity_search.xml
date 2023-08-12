@@ -69,11 +69,19 @@
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view"
+        android:id="@+id/search_result_recycler"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:listitem="@layout/track_item_view" />
+
+    <ProgressBar android:id="@+id/progress_bar"
+        android:layout_width="@dimen/_44dp"
+        android:layout_height="@dimen/_44dp"
+        android:layout_marginTop="140dp"
+        android:layout_gravity="center"
+        android:indeterminateTint="@color/yp_primary_color"
+        android:visibility="gone"/>
 
     <LinearLayout
         android:id="@+id/placeholder_search_history"
