@@ -93,7 +93,7 @@ class PlayerActivity : AppCompatActivity() {
     private fun pausePlayer() {
         mediaPlayer.pause()
         playerState = STATE_PAUSED
-        binding.btnPlay.setImageResource(R.drawable.ic_play)
+        updatePlayButton()
     }
 
     private fun playbackControl() {
