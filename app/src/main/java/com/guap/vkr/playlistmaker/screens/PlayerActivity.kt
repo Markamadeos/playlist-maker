@@ -17,33 +17,33 @@ import java.util.Locale
 
 class PlayerActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityPlayerBinding
+    private var binding: ActivityPlayerBinding? = null
     private val mediaPlayer = MediaPlayer()
-    private var playerState = STATE_DEFAULT
+    private var playerState = State.DEFAULT
     private val handler = Handler(Looper.getMainLooper())
-    private var isClickAllowed = true
+    private var clickAllowed = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPlayerBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentView(binding?.root)
 
         val track = getTrack()
-        bind(track, binding)
+        bind(track)
         preparePlayer(track)
 
-        binding.btnPlay.setOnClickListener {
-            if (clickDebounce()) {
+        binding?.btnPlay?.setOnClickListener {
+            if (isClickAllowed()) {
                 playbackControl()
             }
         }
 
-        binding.btnBack.setOnClickListener {
+        binding?.btnBack?.setOnClickListener {
             finish()
         }
     }
 
-    private fun bind(track: Track, binding: ActivityPlayerBinding) {
+    private fun bind(track: Track) {
         val cornerRadius = this.resources.getDimensionPixelSize(R.dimen.corner_radius_8dp)
 
         Glide.with(this)
@@ -51,9 +51,9 @@ class PlayerActivity : AppCompatActivity() {
             .placeholder(R.drawable.iv_track_cover)
             .centerCrop()
             .transform(RoundedCorners(cornerRadius))
-            .into(binding.ivCover)
+            .into(binding!!.ivCover)
 
-        binding.apply {
+        binding?.apply {
             tvTrackName.text = track.trackName
             tvArtistName.text = track.artistName
             tvPlaytime.text = getString(R.string.default_playtime_value)
@@ -72,12 +72,12 @@ class PlayerActivity : AppCompatActivity() {
             setDataSource(track.previewUrl)
             prepareAsync()
             setOnPreparedListener {
-                playerState = STATE_PREPARED
+                playerState = State.PREPARED
             }
             setOnCompletionListener {
-                playerState = STATE_PREPARED
-                handler.removeCallbacksAndMessages(null)
-                binding.tvPlaytime.text = getString(R.string.default_playtime_value)
+                playerState = State.PREPARED
+                handler.removeCallbacksAndMessages(getCurrentPlaybackPosition())
+                binding?.tvPlaytime?.text = getString(R.string.default_playtime_value)
                 updatePlayButton()
             }
         }
@@ -85,29 +85,30 @@ class PlayerActivity : AppCompatActivity() {
 
     private fun startPlayer() {
         mediaPlayer.start()
-        playerState = STATE_PLAYING
+        playerState = State.PLAYING
         handler.post(getCurrentPlaybackPosition())
         updatePlayButton()
     }
 
     private fun pausePlayer() {
         mediaPlayer.pause()
-        playerState = STATE_PAUSED
+        playerState = State.PAUSED
         updatePlayButton()
     }
 
     private fun playbackControl() {
         when (playerState) {
-            STATE_PREPARED, STATE_PAUSED -> startPlayer()
-            STATE_PLAYING -> pausePlayer()
+            State.PAUSED, State.PREPARED -> startPlayer()
+            State.PLAYING -> pausePlayer()
+            else -> {}
         }
     }
 
-    private fun clickDebounce(): Boolean {
-        val current = isClickAllowed
-        if (isClickAllowed) {
-            isClickAllowed = false
-            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY_MS)
+    private fun isClickAllowed(): Boolean {
+        val current = clickAllowed
+        if (clickAllowed) {
+            clickAllowed = false
+            handler.postDelayed({ clickAllowed = true }, CLICK_DEBOUNCE_DELAY_MS)
         }
         return current
     }
@@ -115,25 +116,22 @@ class PlayerActivity : AppCompatActivity() {
     private fun getCurrentPlaybackPosition(): Runnable {
         return object : Runnable {
             override fun run() {
-                if (playerState == STATE_PLAYING) {
-                    binding.tvPlaytime.text = SimpleDateFormat(
-                        "mm:ss",
-                        Locale.getDefault()
+                if (playerState == State.PLAYING) {
+                    binding?.tvPlaytime?.text = SimpleDateFormat(
+                        "mm:ss", Locale.getDefault()
                     ).format(mediaPlayer.currentPosition)
                     handler.postDelayed(this, PLAYBACK_UPDATE_DELAY_MS)
                 }
             }
-
         }
     }
 
     private fun updatePlayButton() {
-        when (playerState) {
-            STATE_PREPARED, STATE_PAUSED, STATE_DEFAULT ->
-                binding.btnPlay.setImageResource(R.drawable.ic_play)
-
-            STATE_PLAYING -> binding.btnPlay.setImageResource(R.drawable.ic_pause)
-        }
+        binding?.btnPlay?.setImageResource(
+            if (playerState == State.PLAYING)
+                R.drawable.ic_pause else
+                R.drawable.ic_play
+        )
     }
 
     override fun onPause() {
@@ -147,12 +145,12 @@ class PlayerActivity : AppCompatActivity() {
         mediaPlayer.release()
     }
 
+    enum class State {
+        DEFAULT, PREPARED, PLAYING, PAUSED
+    }
+
     companion object {
-        private const val CLICK_DEBOUNCE_DELAY_MS = 1000L
+        private const val CLICK_DEBOUNCE_DELAY_MS = 500L
         private const val PLAYBACK_UPDATE_DELAY_MS = 300L
-        private const val STATE_DEFAULT = 0
-        private const val STATE_PREPARED = 1
-        private const val STATE_PLAYING = 2
-        private const val STATE_PAUSED = 3
     }
 }
