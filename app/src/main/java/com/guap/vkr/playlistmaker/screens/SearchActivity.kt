@@ -4,6 +4,8 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.os.PersistableBundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -14,9 +16,9 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
@@ -43,7 +45,10 @@ class SearchActivity : AppCompatActivity() {
     private val iTunesService = retrofit.create(ITunesApi::class.java)
     private val tracks = ArrayList<Track>()
     private val searchAdapter = TrackAdapter(tracks) { trackClickListener(it) }
+    private val searchRunnable = Runnable { search() }
+    private val handler = Handler(Looper.getMainLooper())
     private var userInput = ""
+    private var isClickAllowed = true
     private lateinit var errorPlaceholder: LinearLayout
     private lateinit var placeholderImage: ImageView
     private lateinit var placeholderMessage: TextView
@@ -57,6 +62,7 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var rvTrackList: RecyclerView
     private lateinit var rvHistoryList: RecyclerView
     private lateinit var historyAdapter: TrackAdapter
+    private lateinit var progressBar: ProgressBar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,21 +75,20 @@ class SearchActivity : AppCompatActivity() {
         queryInputConfig(initTextWatcher())
     }
 
-    private fun initTextWatcher(): TextWatcher {
-        val textWatcher = object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+    private fun initTextWatcher() = object : TextWatcher {
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                clearButton.visibility = clearButtonVisibility(s)
-                placeholderSearchHistory.visibility =
-                    searchHistoryVisibility(s, searchHistory, queryInput.hasFocus())
-                userInput = s.toString()
-            }
-
-            override fun afterTextChanged(s: Editable?) {}
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            clearButton.visibility = clearButtonVisibility(s)
+            placeholderSearchHistory.visibility =
+                searchHistoryVisibility(s, searchHistory, queryInput.hasFocus())
+            userInput = s.toString()
+            searchDebounce()
         }
-        return textWatcher
+
+        override fun afterTextChanged(s: Editable?) {}
     }
+
 
     private fun buttonsConfig() {
         backButton.setOnClickListener {
@@ -148,9 +153,10 @@ class SearchActivity : AppCompatActivity() {
         queryInput = findViewById(R.id.et_search)
         clearButton = findViewById(R.id.iv_clear)
         backButton = findViewById(R.id.btn_back)
-        rvTrackList = findViewById(R.id.recycler_view)
+        rvTrackList = findViewById(R.id.search_result_recycler)
         rvHistoryList = findViewById(R.id.recycler_view_history)
         historyAdapter = TrackAdapter(searchHistory.getSearchHistory()) { trackClickListener(it) }
+        progressBar = findViewById(R.id.progress_bar)
     }
 
 
@@ -185,16 +191,27 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
+    private fun searchDebounce() {
+        handler.removeCallbacks(searchRunnable)
+        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY_MS)
+    }
+
     private fun search() {
         if (userInput.isNotEmpty()) {
+            errorPlaceholder.visibility = View.GONE
+            placeholderSearchHistory.visibility = View.GONE
+            rvTrackList.visibility = View.GONE
+            progressBar.visibility = View.VISIBLE
             iTunesService.search(userInput).enqueue(object : Callback<SearchResponse> {
                 override fun onResponse(
                     call: Call<SearchResponse>, response: Response<SearchResponse>
                 ) {
+                    progressBar.visibility = View.GONE
                     if (response.code() == 200) {
                         if (response.body()?.results?.isNotEmpty() == true) {
                             tracks.clear()
                             tracks.addAll(response.body()?.results!!)
+                            rvTrackList.visibility = View.VISIBLE
                             errorPlaceholder.visibility = View.GONE
                             searchAdapter.notifyDataSetChanged()
                         } else {
@@ -239,14 +256,27 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun trackClickListener(track: Track) {
-        searchHistory.addTrackToHistory(track)
-        historyAdapter.notifyDataSetChanged()
-        val playIntent =
-            Intent(this, PlayerActivity::class.java).putExtra(TRACK, Gson().toJson(track))
-        startActivity(playIntent)
+        if (clickDebounce()) {
+            searchHistory.addTrackToHistory(track)
+            historyAdapter.notifyDataSetChanged()
+            val playIntent =
+                Intent(this, PlayerActivity::class.java).putExtra(TRACK, Gson().toJson(track))
+            startActivity(playIntent)
+        }
+    }
+
+    private fun clickDebounce(): Boolean {
+        val current = isClickAllowed
+        if (isClickAllowed) {
+            isClickAllowed = false
+            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY_MS)
+        }
+        return current
     }
 
     companion object {
+        private const val SEARCH_DEBOUNCE_DELAY_MS = 2000L
+        private const val CLICK_DEBOUNCE_DELAY_MS = 1000L
         private const val USER_INPUT = "USER_INPUT"
         private const val NETWORK_ERROR = "NETWORK_ERROR"
         private const val EMPTY_RESPONSE = "EMPTY_RESPONSE"
