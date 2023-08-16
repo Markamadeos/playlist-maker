@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginHorizontal="16dp"
-    android:layout_marginTop="16dp"
+    android:paddingHorizontal="@dimen/_16dp"
+    android:paddingTop="@dimen/_16dp"
     android:orientation="vertical"
     android:theme="@style/Theme.PlaylistMaker"
     tools:context=".screens.SearchActivity">
@@ -27,6 +27,8 @@
 
         <TextView
             style="@style/TitleTextStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:text="@string/search_title_text" />
 
     </LinearLayout>
@@ -58,7 +60,7 @@
             app:drawableTint="?attr/hint_color" />
 
         <ImageView
-            android:id="@+id/iv_clear"
+            android:id="@+id/btn_clear"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -69,7 +71,7 @@
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/search_result_recycler"
+        android:id="@+id/rv_search_result"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
@@ -99,7 +101,7 @@
             android:textColor="?attr/placeholder_error_text_color" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_view_history"
+            android:id="@+id/rv_history"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.5"
@@ -132,7 +134,7 @@
             android:layout_height="120dp" />
 
         <TextView
-            android:id="@+id/tv_error_pic"
+            android:id="@+id/tv_error_message"
             style="@style/PlaceholderTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
