@@ -18,6 +18,7 @@ import com.guap.vkr.playlistmaker.R
 import com.guap.vkr.playlistmaker.data.sharedPref.SearchHistory
 import com.guap.vkr.playlistmaker.data.dto.TracksSearchResponse
 import com.guap.vkr.playlistmaker.databinding.ActivitySearchBinding
+import com.guap.vkr.playlistmaker.domain.api.TracksInteractor
 import com.guap.vkr.playlistmaker.domain.models.Track
 import com.guap.vkr.playlistmaker.ui.player.PlayerActivity
 import com.guap.vkr.playlistmaker.utils.SHARED_PREFERENCES
@@ -150,7 +151,16 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun search() {
-        // TODO: (not impl yet)
+        if (userInput.isNotEmpty()) {
+            screenState = RequestState.LOADING
+            updateScreen()
+            // network request on main thread error
+            tracksInteractor.searchTracks(userInput, object : TracksInteractor.TracksConsumer {
+                override fun consume(foundTracks: List<Track>) {
+                    tracks.addAll(foundTracks)
+                }
+            })
+        }
     }
 
     private fun Activity.hideKeyboard() {

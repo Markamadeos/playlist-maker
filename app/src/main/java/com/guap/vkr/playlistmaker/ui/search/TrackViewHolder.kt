@@ -24,7 +24,7 @@ class TrackViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
 
         trackName.text = model.trackName
         artistName.text = model.artistName
-        trackTime.text = model.getDuration()
+        trackTime.text = model.trackTimeMillis
 
 
         Glide.with(itemView)
