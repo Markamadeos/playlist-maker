@@ -1,4 +1,4 @@
-package com.guap.vkr.playlistmaker
+package com.guap.vkr.playlistmaker.presentation
 
 import android.app.Application
 import android.content.SharedPreferences

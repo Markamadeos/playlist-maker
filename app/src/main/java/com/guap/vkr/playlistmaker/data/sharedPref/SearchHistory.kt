@@ -1,9 +1,9 @@
-package com.guap.vkr.playlistmaker
+package com.guap.vkr.playlistmaker.data.sharedPref
 
 import android.content.SharedPreferences
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.guap.vkr.playlistmaker.model.Track
+import com.guap.vkr.playlistmaker.domain.models.Track
 import com.guap.vkr.playlistmaker.utils.SEARCH_HISTORY_KEY
 import java.lang.reflect.Type
 

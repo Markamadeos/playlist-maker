@@ -1,9 +1,8 @@
-package com.guap.vkr.playlistmaker.screens
+package com.guap.vkr.playlistmaker.ui
 
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.viewbinding.ViewBinding
 import com.guap.vkr.playlistmaker.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {

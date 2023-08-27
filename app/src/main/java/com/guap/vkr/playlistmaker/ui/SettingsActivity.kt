@@ -1,4 +1,4 @@
-package com.guap.vkr.playlistmaker.screens
+package com.guap.vkr.playlistmaker.ui
 
 import android.content.Intent
 import android.net.Uri
@@ -7,7 +7,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
-import com.guap.vkr.playlistmaker.App
+import com.guap.vkr.playlistmaker.presentation.App
 import com.guap.vkr.playlistmaker.R
 import com.guap.vkr.playlistmaker.utils.SHARED_PREFERENCES
 import com.guap.vkr.playlistmaker.utils.THEME_SWITCH_KEY

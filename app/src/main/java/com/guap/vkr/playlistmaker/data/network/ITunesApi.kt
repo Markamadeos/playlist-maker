@@ -1,5 +1,6 @@
-package com.guap.vkr.playlistmaker.api
+package com.guap.vkr.playlistmaker.data.network
 
+import com.guap.vkr.playlistmaker.data.dto.SearchResponse
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query

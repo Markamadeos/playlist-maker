@@ -1,4 +1,4 @@
-package com.guap.vkr.playlistmaker.screens
+package com.guap.vkr.playlistmaker.ui
 
 import android.media.MediaPlayer
 import android.os.Bundle
@@ -10,7 +10,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.gson.Gson
 import com.guap.vkr.playlistmaker.R
 import com.guap.vkr.playlistmaker.databinding.ActivityPlayerBinding
-import com.guap.vkr.playlistmaker.model.Track
+import com.guap.vkr.playlistmaker.domain.models.Track
 import com.guap.vkr.playlistmaker.utils.TRACK
 import java.text.SimpleDateFormat
 import java.util.Locale

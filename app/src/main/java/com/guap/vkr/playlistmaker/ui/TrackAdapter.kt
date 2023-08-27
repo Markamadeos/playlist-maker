@@ -1,8 +1,8 @@
-package com.guap.vkr.playlistmaker
+package com.guap.vkr.playlistmaker.ui
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.guap.vkr.playlistmaker.model.Track
+import com.guap.vkr.playlistmaker.domain.models.Track
 
 class TrackAdapter(private val tracks: ArrayList<Track>, private val clickListener: TrackClickListener) : RecyclerView.Adapter<TrackViewHolder>() {
 
