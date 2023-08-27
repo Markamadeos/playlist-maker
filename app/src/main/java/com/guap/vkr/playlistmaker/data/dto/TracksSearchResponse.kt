@@ -2,7 +2,7 @@ package com.guap.vkr.playlistmaker.data.dto
 
 import com.guap.vkr.playlistmaker.domain.models.Track
 
-class SearchResponse(
+class TracksSearchResponse(
     val resultCount: Int,
-    val results: ArrayList<Track>
-)
+    val results: ArrayList<TrackDto>
+) : Response()

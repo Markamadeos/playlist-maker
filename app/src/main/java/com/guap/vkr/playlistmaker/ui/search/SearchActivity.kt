@@ -15,22 +15,18 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.gson.Gson
 import com.guap.vkr.playlistmaker.R
 import com.guap.vkr.playlistmaker.data.sharedPref.SearchHistory
-import com.guap.vkr.playlistmaker.data.network.ITunesApi
-import com.guap.vkr.playlistmaker.data.dto.SearchResponse
+import com.guap.vkr.playlistmaker.data.dto.TracksSearchResponse
 import com.guap.vkr.playlistmaker.databinding.ActivitySearchBinding
 import com.guap.vkr.playlistmaker.domain.models.Track
 import com.guap.vkr.playlistmaker.ui.player.PlayerActivity
 import com.guap.vkr.playlistmaker.utils.SHARED_PREFERENCES
 import com.guap.vkr.playlistmaker.utils.TRACK
-import com.guap.vkr.playlistmaker.utils.retrofit
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class SearchActivity : AppCompatActivity() {
 
-
-    private val iTunesService = retrofit.create(ITunesApi::class.java)
     private val tracks = ArrayList<Track>()
     private val searchAdapter = TrackAdapter(tracks) { trackClickListener(it) }
     private val searchRunnable = Runnable { search() }
@@ -155,9 +151,9 @@ class SearchActivity : AppCompatActivity() {
         if (userInput.isNotEmpty()) {
             screenState = RequestState.LOADING
             updateScreen()
-            iTunesService.search(userInput).enqueue(object : Callback<SearchResponse> {
+            iTunesService.search(userInput).enqueue(object : Callback<TracksSearchResponse> {
                 override fun onResponse(
-                    call: Call<SearchResponse>, response: Response<SearchResponse>
+                    call: Call<TracksSearchResponse>, response: Response<TracksSearchResponse>
                 ) {
                     tracks.clear()
                     screenState = if (response.code() == RESPONSE_OK) {
@@ -174,7 +170,7 @@ class SearchActivity : AppCompatActivity() {
                     updateScreen()
                 }
 
-                override fun onFailure(call: Call<SearchResponse>, t: Throwable) {
+                override fun onFailure(call: Call<TracksSearchResponse>, t: Throwable) {
                     screenState = RequestState.NETWORK_ERROR
                     updateScreen()
                 }
