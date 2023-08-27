@@ -1,4 +1,20 @@
 package com.guap.vkr.playlistmaker.domain.api
 
-class MediaPlayerRepository {
+interface MediaPlayerRepository {
+
+    fun setDataSource(dataSource: String)
+
+    fun prepareAsync()
+
+    fun setOnPreparedListener(onPreparedListener: () -> Unit)
+
+    fun setOnCompletionListener(onCompletionListener: () -> Unit)
+
+    fun start()
+
+    fun pause()
+
+    fun release()
+
+    fun currentPosition(): Int
 }

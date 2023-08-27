@@ -1,6 +1,5 @@
 package com.guap.vkr.playlistmaker.ui.player
 
-import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -18,8 +17,7 @@ import java.util.Locale
 class PlayerActivity : AppCompatActivity() {
 
     private var binding: ActivityPlayerBinding? = null
-    private val mediaPlayer = MediaPlayer()
-    private var playerState = State.DEFAULT
+    //private val mediaPlayer = MediaPlayer()
     private val handler = Handler(Looper.getMainLooper())
     private var clickAllowed = true
 
@@ -30,11 +28,11 @@ class PlayerActivity : AppCompatActivity() {
 
         val track = getTrack()
         bind(track)
-        preparePlayer(track)
+      // preparePlayer(track)
 
         binding?.btnPlay?.setOnClickListener {
             if (isClickAllowed()) {
-                playbackControl()
+                //playbackControl()
             }
         }
 
@@ -67,42 +65,42 @@ class PlayerActivity : AppCompatActivity() {
 
     private fun getTrack() = Gson().fromJson(intent.getStringExtra(TRACK), Track::class.java)
 
-    private fun preparePlayer(track: Track) {
-        mediaPlayer.apply {
-            setDataSource(track.previewUrl)
-            prepareAsync()
-            setOnPreparedListener {
-                playerState = State.PREPARED
-            }
-            setOnCompletionListener {
-                playerState = State.PREPARED
-                handler.removeCallbacksAndMessages(getCurrentPlaybackPosition())
-                binding?.tvPlaytime?.text = getString(R.string.default_playtime_value)
-                updatePlayButton()
-            }
-        }
-    }
+//    private fun preparePlayer(track: Track) {
+//        mediaPlayer.apply {
+//            setDataSource(track.previewUrl)
+//            prepareAsync()
+//            setOnPreparedListener {
+//                playerState = State.PREPARED
+//            }
+//            setOnCompletionListener {
+//                playerState = State.PREPARED
+//                handler.removeCallbacksAndMessages(getCurrentPlaybackPosition())
+//                binding?.tvPlaytime?.text = getString(R.string.default_playtime_value)
+//                updatePlayButton()
+//            }
+//        }
+//    }
 
-    private fun startPlayer() {
-        mediaPlayer.start()
-        playerState = State.PLAYING
-        handler.post(getCurrentPlaybackPosition())
-        updatePlayButton()
-    }
+//    private fun startPlayer() {
+//        mediaPlayer.start()
+//        playerState = State.PLAYING
+//        handler.post(getCurrentPlaybackPosition())
+//        updatePlayButton()
+//    }
+//
+//    private fun pausePlayer() {
+//        mediaPlayer.pause()
+//        playerState = State.PAUSED
+//        updatePlayButton()
+//    }
 
-    private fun pausePlayer() {
-        mediaPlayer.pause()
-        playerState = State.PAUSED
-        updatePlayButton()
-    }
-
-    private fun playbackControl() {
-        when (playerState) {
-            State.PAUSED, State.PREPARED -> startPlayer()
-            State.PLAYING -> pausePlayer()
-            else -> {}
-        }
-    }
+//    private fun playbackControl() {
+//        when (playerState) {
+//            State.PAUSED, State.PREPARED -> startPlayer()
+//            State.PLAYING -> pausePlayer()
+//            else -> {}
+//        }
+//    }
 
     private fun isClickAllowed(): Boolean {
         val current = clickAllowed
@@ -136,7 +134,7 @@ class PlayerActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-        pausePlayer()
+     //   pausePlayer()
     }
 
     override fun onDestroy() {
@@ -145,9 +143,9 @@ class PlayerActivity : AppCompatActivity() {
         mediaPlayer.release()
     }
 
-    enum class State {
-        DEFAULT, PREPARED, PLAYING, PAUSED
-    }
+//    enum class State {
+//        DEFAULT, PREPARED, PLAYING, PAUSED
+//    }
 
     companion object {
         private const val CLICK_DEBOUNCE_DELAY_MS = 500L
