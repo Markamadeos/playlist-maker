@@ -13,6 +13,7 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import com.google.gson.Gson
+import com.guap.vkr.playlistmaker.Creator
 import com.guap.vkr.playlistmaker.R
 import com.guap.vkr.playlistmaker.data.sharedPref.SearchHistory
 import com.guap.vkr.playlistmaker.data.dto.TracksSearchResponse
@@ -37,6 +38,7 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var historyAdapter: TrackAdapter
     private lateinit var binding: ActivitySearchBinding
     private var screenState = RequestState.DEFAULT_STATE
+    private val tracksInteractor = Creator.provideTracksInteractor()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -148,7 +150,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun search() {
-       // TODO юзнуть из domain слоя
+        // TODO: (not impl yet)
     }
 
     private fun Activity.hideKeyboard() {

@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.gson.Gson
+import com.guap.vkr.playlistmaker.Creator
 import com.guap.vkr.playlistmaker.R
 import com.guap.vkr.playlistmaker.databinding.ActivityPlayerBinding
 import com.guap.vkr.playlistmaker.domain.models.Track
@@ -17,7 +18,7 @@ import java.util.Locale
 class PlayerActivity : AppCompatActivity() {
 
     private var binding: ActivityPlayerBinding? = null
-    //private val mediaPlayer = MediaPlayer()
+    private val mediaPlayerInreactor = Creator.provideMediaPlayerInteractor()
     private val handler = Handler(Looper.getMainLooper())
     private var clickAllowed = true
 
@@ -28,11 +29,19 @@ class PlayerActivity : AppCompatActivity() {
 
         val track = getTrack()
         bind(track)
-      // preparePlayer(track)
+        preparePlayer(track)
 
         binding?.btnPlay?.setOnClickListener {
             if (isClickAllowed()) {
-                //playbackControl()
+                mediaPlayerInreactor.playbackControl(
+                    {
+                        binding?.btnPlay?.setImageResource(R.drawable.ic_pause)
+                        handler.post(getCurrentPlaybackPosition())
+                    },
+                    {
+                        handler.removeCallbacksAndMessages(getCurrentPlaybackPosition())
+                        binding?.btnPlay?.setImageResource(R.drawable.ic_play)
+                    })
             }
         }
 
@@ -45,7 +54,7 @@ class PlayerActivity : AppCompatActivity() {
         val cornerRadius = this.resources.getDimensionPixelSize(R.dimen.corner_radius_8dp)
 
         Glide.with(this)
-            .load(track.getCoverArtwork())
+            .load(track.artworkUrl100)
             .placeholder(R.drawable.iv_track_cover)
             .centerCrop()
             .transform(RoundedCorners(cornerRadius))
@@ -55,9 +64,9 @@ class PlayerActivity : AppCompatActivity() {
             tvTrackName.text = track.trackName
             tvArtistName.text = track.artistName
             tvPlaytime.text = getString(R.string.default_playtime_value)
-            tvDurationValue.text = track.getDuration()
+            tvDurationValue.text = track.trackTimeMillis
             tvAlbumValue.text = track.collectionName
-            tvYearValue.text = track.getReleaseYear()
+            tvYearValue.text = track.releaseDate
             tvGenreValue.text = track.primaryGenreName
             tvCountryValue.text = track.country
         }
@@ -65,42 +74,20 @@ class PlayerActivity : AppCompatActivity() {
 
     private fun getTrack() = Gson().fromJson(intent.getStringExtra(TRACK), Track::class.java)
 
-//    private fun preparePlayer(track: Track) {
-//        mediaPlayer.apply {
-//            setDataSource(track.previewUrl)
-//            prepareAsync()
-//            setOnPreparedListener {
-//                playerState = State.PREPARED
-//            }
-//            setOnCompletionListener {
-//                playerState = State.PREPARED
-//                handler.removeCallbacksAndMessages(getCurrentPlaybackPosition())
-//                binding?.tvPlaytime?.text = getString(R.string.default_playtime_value)
-//                updatePlayButton()
-//            }
-//        }
-//    }
+    private fun preparePlayer(track: Track) {
 
-//    private fun startPlayer() {
-//        mediaPlayer.start()
-//        playerState = State.PLAYING
-//        handler.post(getCurrentPlaybackPosition())
-//        updatePlayButton()
-//    }
-//
-//    private fun pausePlayer() {
-//        mediaPlayer.pause()
-//        playerState = State.PAUSED
-//        updatePlayButton()
-//    }
-
-//    private fun playbackControl() {
-//        when (playerState) {
-//            State.PAUSED, State.PREPARED -> startPlayer()
-//            State.PLAYING -> pausePlayer()
-//            else -> {}
-//        }
-//    }
+        mediaPlayerInreactor.preparePlayer(
+            track.previewUrl,
+            {
+                binding?.btnPlay?.setImageResource(R.drawable.ic_play)
+            },
+            {
+                handler.removeCallbacksAndMessages(getCurrentPlaybackPosition())
+                binding?.tvPlaytime?.text = getString(R.string.default_playtime_value)
+                binding?.btnPlay?.setImageResource(R.drawable.ic_play)
+            }
+        )
+    }
 
     private fun isClickAllowed(): Boolean {
         val current = clickAllowed
@@ -114,38 +101,25 @@ class PlayerActivity : AppCompatActivity() {
     private fun getCurrentPlaybackPosition(): Runnable {
         return object : Runnable {
             override fun run() {
-                if (playerState == State.PLAYING) {
-                    binding?.tvPlaytime?.text = SimpleDateFormat(
-                        "mm:ss", Locale.getDefault()
-                    ).format(mediaPlayer.currentPosition)
-                    handler.postDelayed(this, PLAYBACK_UPDATE_DELAY_MS)
-                }
+                binding?.tvPlaytime?.text = SimpleDateFormat(
+                    "mm:ss", Locale.getDefault()
+                ).format(mediaPlayerInreactor.currentPosition())
+                handler.postDelayed(this, PLAYBACK_UPDATE_DELAY_MS)
             }
         }
     }
 
-    private fun updatePlayButton() {
-        binding?.btnPlay?.setImageResource(
-            if (playerState == State.PLAYING)
-                R.drawable.ic_pause else
-                R.drawable.ic_play
-        )
-    }
-
     override fun onPause() {
         super.onPause()
-     //   pausePlayer()
+        mediaPlayerInreactor.pausePlayer { binding?.btnPlay?.setImageResource(R.drawable.ic_play) }
+        handler.removeCallbacksAndMessages(getCurrentPlaybackPosition())
     }
 
     override fun onDestroy() {
         super.onDestroy()
         handler.removeCallbacksAndMessages(null)
-        mediaPlayer.release()
+        mediaPlayerInreactor.release()
     }
-
-//    enum class State {
-//        DEFAULT, PREPARED, PLAYING, PAUSED
-//    }
 
     companion object {
         private const val CLICK_DEBOUNCE_DELAY_MS = 500L
