@@ -1,4 +1,4 @@
-package com.guap.vkr.playlistmaker.ui
+package com.guap.vkr.playlistmaker.ui.player
 
 import android.media.MediaPlayer
 import android.os.Bundle

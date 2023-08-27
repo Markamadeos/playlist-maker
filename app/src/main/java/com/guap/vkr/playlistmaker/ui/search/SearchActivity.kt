@@ -1,4 +1,4 @@
-package com.guap.vkr.playlistmaker.ui
+package com.guap.vkr.playlistmaker.ui.search
 
 import android.app.Activity
 import android.content.Context
@@ -19,6 +19,7 @@ import com.guap.vkr.playlistmaker.data.network.ITunesApi
 import com.guap.vkr.playlistmaker.data.dto.SearchResponse
 import com.guap.vkr.playlistmaker.databinding.ActivitySearchBinding
 import com.guap.vkr.playlistmaker.domain.models.Track
+import com.guap.vkr.playlistmaker.ui.player.PlayerActivity
 import com.guap.vkr.playlistmaker.utils.SHARED_PREFERENCES
 import com.guap.vkr.playlistmaker.utils.TRACK
 import com.guap.vkr.playlistmaker.utils.retrofit

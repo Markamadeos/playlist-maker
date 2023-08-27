@@ -1,4 +1,4 @@
-package com.guap.vkr.playlistmaker.ui
+package com.guap.vkr.playlistmaker.ui.settings
 
 import android.content.Intent
 import android.net.Uri
