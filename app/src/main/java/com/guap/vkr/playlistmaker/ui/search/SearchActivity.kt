@@ -148,34 +148,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun search() {
-        if (userInput.isNotEmpty()) {
-            screenState = RequestState.LOADING
-            updateScreen()
-            iTunesService.search(userInput).enqueue(object : Callback<TracksSearchResponse> {
-                override fun onResponse(
-                    call: Call<TracksSearchResponse>, response: Response<TracksSearchResponse>
-                ) {
-                    tracks.clear()
-                    screenState = if (response.code() == RESPONSE_OK) {
-                        if (response.body()?.results?.isNotEmpty() == true) {
-                            tracks.addAll(response.body()?.results!!)
-                            RequestState.GOOD_RESPONSE
-                        } else {
-                            RequestState.EMPTY_RESPONSE
-                        }
-
-                    } else {
-                        RequestState.NETWORK_ERROR
-                    }
-                    updateScreen()
-                }
-
-                override fun onFailure(call: Call<TracksSearchResponse>, t: Throwable) {
-                    screenState = RequestState.NETWORK_ERROR
-                    updateScreen()
-                }
-            })
-        }
+       // TODO юзнуть из domain слоя
     }
 
     private fun Activity.hideKeyboard() {
@@ -256,6 +229,5 @@ class SearchActivity : AppCompatActivity() {
         private const val SEARCH_DEBOUNCE_DELAY_MS = 2000L
         private const val CLICK_DEBOUNCE_DELAY_MS = 500L
         private const val USER_INPUT = "USER_INPUT"
-        private const val RESPONSE_OK = 200
     }
 }

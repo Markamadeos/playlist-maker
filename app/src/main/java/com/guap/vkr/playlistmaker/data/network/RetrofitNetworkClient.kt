@@ -27,7 +27,7 @@ class RetrofitNetworkClient : NetworkClient {
         }
     }
 
-    companion object {
+    companion object{
         private const val BAD_REQUEST = 400
     }
 }
