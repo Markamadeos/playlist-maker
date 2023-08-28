@@ -8,7 +8,7 @@
     android:paddingTop="@dimen/_16dp"
     android:orientation="vertical"
     android:theme="@style/Theme.PlaylistMaker"
-    tools:context=".screens.SearchActivity">
+    tools:context=".SearchActivity">
 
     <LinearLayout
         android:layout_width="match_parent"

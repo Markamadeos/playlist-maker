@@ -1,4 +1,4 @@
-package com.guap.vkr.playlistmaker.api
+package com.guap.vkr.playlistmaker
 
 import retrofit2.Call
 import retrofit2.http.GET

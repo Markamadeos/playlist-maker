@@ -1,6 +1,5 @@
-package com.guap.vkr.playlistmaker.screens
+package com.guap.vkr.playlistmaker.ui.player
 
-import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -8,9 +7,10 @@ import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.gson.Gson
+import com.guap.vkr.playlistmaker.Creator
 import com.guap.vkr.playlistmaker.R
+import com.guap.vkr.playlistmaker.Track
 import com.guap.vkr.playlistmaker.databinding.ActivityPlayerBinding
-import com.guap.vkr.playlistmaker.model.Track
 import com.guap.vkr.playlistmaker.utils.TRACK
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -18,8 +18,7 @@ import java.util.Locale
 class PlayerActivity : AppCompatActivity() {
 
     private var binding: ActivityPlayerBinding? = null
-    private val mediaPlayer = MediaPlayer()
-    private var playerState = State.DEFAULT
+    private val mediaPlayerIInteractor = Creator.provideMediaPlayerInteractor()
     private val handler = Handler(Looper.getMainLooper())
     private var clickAllowed = true
 
@@ -34,7 +33,15 @@ class PlayerActivity : AppCompatActivity() {
 
         binding?.btnPlay?.setOnClickListener {
             if (isClickAllowed()) {
-                playbackControl()
+                mediaPlayerIInteractor.playbackControl(
+                    {
+                        binding?.btnPlay?.setImageResource(R.drawable.ic_pause)
+                        handler.post(getCurrentPlaybackPosition())
+                    },
+                    {
+                        handler.removeCallbacksAndMessages(getCurrentPlaybackPosition())
+                        binding?.btnPlay?.setImageResource(R.drawable.ic_play)
+                    })
             }
         }
 
@@ -47,7 +54,7 @@ class PlayerActivity : AppCompatActivity() {
         val cornerRadius = this.resources.getDimensionPixelSize(R.dimen.corner_radius_8dp)
 
         Glide.with(this)
-            .load(track.getCoverArtwork())
+            .load(track.artworkUrl100)
             .placeholder(R.drawable.iv_track_cover)
             .centerCrop()
             .transform(RoundedCorners(cornerRadius))
@@ -68,40 +75,18 @@ class PlayerActivity : AppCompatActivity() {
     private fun getTrack() = Gson().fromJson(intent.getStringExtra(TRACK), Track::class.java)
 
     private fun preparePlayer(track: Track) {
-        mediaPlayer.apply {
-            setDataSource(track.previewUrl)
-            prepareAsync()
-            setOnPreparedListener {
-                playerState = State.PREPARED
-            }
-            setOnCompletionListener {
-                playerState = State.PREPARED
+
+        mediaPlayerIInteractor.preparePlayer(
+            track.previewUrl,
+            {
+                binding?.btnPlay?.setImageResource(R.drawable.ic_play)
+            },
+            {
                 handler.removeCallbacksAndMessages(getCurrentPlaybackPosition())
                 binding?.tvPlaytime?.text = getString(R.string.default_playtime_value)
-                updatePlayButton()
+                binding?.btnPlay?.setImageResource(R.drawable.ic_play)
             }
-        }
-    }
-
-    private fun startPlayer() {
-        mediaPlayer.start()
-        playerState = State.PLAYING
-        handler.post(getCurrentPlaybackPosition())
-        updatePlayButton()
-    }
-
-    private fun pausePlayer() {
-        mediaPlayer.pause()
-        playerState = State.PAUSED
-        updatePlayButton()
-    }
-
-    private fun playbackControl() {
-        when (playerState) {
-            State.PAUSED, State.PREPARED -> startPlayer()
-            State.PLAYING -> pausePlayer()
-            else -> {}
-        }
+        )
     }
 
     private fun isClickAllowed(): Boolean {
@@ -116,37 +101,24 @@ class PlayerActivity : AppCompatActivity() {
     private fun getCurrentPlaybackPosition(): Runnable {
         return object : Runnable {
             override fun run() {
-                if (playerState == State.PLAYING) {
-                    binding?.tvPlaytime?.text = SimpleDateFormat(
-                        "mm:ss", Locale.getDefault()
-                    ).format(mediaPlayer.currentPosition)
-                    handler.postDelayed(this, PLAYBACK_UPDATE_DELAY_MS)
-                }
+                binding?.tvPlaytime?.text = SimpleDateFormat(
+                    "mm:ss", Locale.getDefault()
+                ).format(mediaPlayerIInteractor.currentPosition())
+                handler.postDelayed(this, PLAYBACK_UPDATE_DELAY_MS)
             }
         }
     }
 
-    private fun updatePlayButton() {
-        binding?.btnPlay?.setImageResource(
-            if (playerState == State.PLAYING)
-                R.drawable.ic_pause else
-                R.drawable.ic_play
-        )
-    }
-
     override fun onPause() {
         super.onPause()
-        pausePlayer()
+        mediaPlayerIInteractor.pausePlayer { binding?.btnPlay?.setImageResource(R.drawable.ic_play) }
+        handler.removeCallbacksAndMessages(getCurrentPlaybackPosition())
     }
 
     override fun onDestroy() {
         super.onDestroy()
         handler.removeCallbacksAndMessages(null)
-        mediaPlayer.release()
-    }
-
-    enum class State {
-        DEFAULT, PREPARED, PLAYING, PAUSED
+        mediaPlayerIInteractor.release()
     }
 
     companion object {
