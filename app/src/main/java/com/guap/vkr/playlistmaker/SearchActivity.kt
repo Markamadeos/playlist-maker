@@ -1,4 +1,4 @@
-package com.guap.vkr.playlistmaker.screens
+package com.guap.vkr.playlistmaker
 
 import android.app.Activity
 import android.content.Context
@@ -13,13 +13,8 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import com.google.gson.Gson
-import com.guap.vkr.playlistmaker.R
-import com.guap.vkr.playlistmaker.SearchHistory
-import com.guap.vkr.playlistmaker.TrackAdapter
-import com.guap.vkr.playlistmaker.api.ITunesApi
-import com.guap.vkr.playlistmaker.api.SearchResponse
 import com.guap.vkr.playlistmaker.databinding.ActivitySearchBinding
-import com.guap.vkr.playlistmaker.model.Track
+import com.guap.vkr.playlistmaker.ui.player.PlayerActivity
 import com.guap.vkr.playlistmaker.utils.SHARED_PREFERENCES
 import com.guap.vkr.playlistmaker.utils.TRACK
 import com.guap.vkr.playlistmaker.utils.retrofit

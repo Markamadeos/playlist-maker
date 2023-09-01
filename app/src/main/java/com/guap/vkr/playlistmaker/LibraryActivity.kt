@@ -1,4 +1,4 @@
-package com.guap.vkr.playlistmaker.screens
+package com.guap.vkr.playlistmaker
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
