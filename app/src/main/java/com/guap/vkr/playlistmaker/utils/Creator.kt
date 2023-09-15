@@ -1,12 +1,11 @@
 package com.guap.vkr.playlistmaker
 
 import com.guap.vkr.playlistmaker.data.MediaPlayerRepositoryImpl
-import com.guap.vkr.playlistmaker.domain.api.MediaPlayerInteractor
-import com.guap.vkr.playlistmaker.domain.impl.MediaPlayerInteractorImpl
+import com.guap.vkr.playlistmaker.domain.MediaPlayerInteractor
 
 object Creator {
 
     fun provideMediaPlayerInteractor(): MediaPlayerInteractor {
-        return MediaPlayerInteractorImpl(MediaPlayerRepositoryImpl())
+        return MediaPlayerInteractor(MediaPlayerRepositoryImpl())
     }
 }

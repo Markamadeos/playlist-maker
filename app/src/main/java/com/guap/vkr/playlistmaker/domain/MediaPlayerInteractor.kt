@@ -1,14 +1,12 @@
-package com.guap.vkr.playlistmaker.domain.impl
+package com.guap.vkr.playlistmaker.domain
 
-import com.guap.vkr.playlistmaker.domain.api.MediaPlayerInteractor
 import com.guap.vkr.playlistmaker.domain.api.MediaPlayerRepository
 
-class MediaPlayerInteractorImpl(private val mediaPlayerRepository: MediaPlayerRepository) :
-    MediaPlayerInteractor {
+class MediaPlayerInteractor(private val mediaPlayerRepository: MediaPlayerRepository) {
 
     private var playerState = PlayerState.DEFAULT
 
-    override fun preparePlayer(
+    fun preparePlayer(
         previewUrl: String,
         onPreparedListener: () -> Unit,
         onCompletionListener: () -> Unit
@@ -28,7 +26,7 @@ class MediaPlayerInteractorImpl(private val mediaPlayerRepository: MediaPlayerRe
     }
 
 
-    override fun playbackControl(onStartPlayer: () -> Unit, onPausePlayer: () -> Unit) {
+    fun playbackControl(onStartPlayer: () -> Unit, onPausePlayer: () -> Unit) {
         when (playerState) {
             PlayerState.PLAYING -> {
                 onPausePlayer()
@@ -46,23 +44,23 @@ class MediaPlayerInteractorImpl(private val mediaPlayerRepository: MediaPlayerRe
         }
     }
 
-    override fun startPlayer(startPlayer: () -> Unit) {
+    fun startPlayer(startPlayer: () -> Unit) {
         startPlayer()
         mediaPlayerRepository.start()
         playerState = PlayerState.PLAYING
     }
 
-    override fun pausePlayer(pausePlayer: () -> Unit) {
+    fun pausePlayer(pausePlayer: () -> Unit) {
         pausePlayer()
         mediaPlayerRepository.pause()
         playerState = PlayerState.PAUSED
     }
 
-    override fun release() {
+    fun release() {
         mediaPlayerRepository.release()
     }
 
-    override fun currentPosition(): Int {
+    fun currentPosition(): Int {
         return mediaPlayerRepository.currentPosition()
     }
 
