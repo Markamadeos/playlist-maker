@@ -54,7 +54,7 @@ class PlayerActivity : AppCompatActivity() {
         val cornerRadius = this.resources.getDimensionPixelSize(R.dimen.corner_radius_8dp)
 
         Glide.with(this)
-            .load(track.artworkUrl100)
+            .load(track.getCoverArtwork())
             .placeholder(R.drawable.iv_track_cover)
             .centerCrop()
             .transform(RoundedCorners(cornerRadius))
@@ -75,7 +75,6 @@ class PlayerActivity : AppCompatActivity() {
     private fun getTrack() = Gson().fromJson(intent.getStringExtra(TRACK), Track::class.java)
 
     private fun preparePlayer(track: Track) {
-
         mediaPlayerIInteractor.preparePlayer(
             track.previewUrl,
             {

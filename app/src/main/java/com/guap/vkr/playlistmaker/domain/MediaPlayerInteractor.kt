@@ -25,7 +25,6 @@ class MediaPlayerInteractor(private val mediaPlayerRepository: MediaPlayerReposi
         }
     }
 
-
     fun playbackControl(onStartPlayer: () -> Unit, onPausePlayer: () -> Unit) {
         when (playerState) {
             PlayerState.PLAYING -> {
