@@ -1,4 +1,4 @@
-package com.guap.vkr.playlistmaker.domain.api
+package com.guap.vkr.playlistmaker.domain.player.api
 
 interface MediaPlayerRepository {
 

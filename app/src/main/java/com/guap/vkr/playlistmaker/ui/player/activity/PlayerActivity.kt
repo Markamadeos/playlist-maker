@@ -1,4 +1,4 @@
-package com.guap.vkr.playlistmaker.ui.player
+package com.guap.vkr.playlistmaker.ui.player.activity
 
 import android.os.Bundle
 import android.os.Handler
@@ -7,9 +7,9 @@ import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.gson.Gson
-import com.guap.vkr.playlistmaker.Creator
+import com.guap.vkr.playlistmaker.creator.Creator
 import com.guap.vkr.playlistmaker.R
-import com.guap.vkr.playlistmaker.Track
+import com.guap.vkr.playlistmaker.domain.player.model.Track
 import com.guap.vkr.playlistmaker.databinding.ActivityPlayerBinding
 import com.guap.vkr.playlistmaker.utils.TRACK
 import java.text.SimpleDateFormat

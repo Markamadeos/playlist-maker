@@ -1,6 +1,6 @@
-package com.guap.vkr.playlistmaker.domain
+package com.guap.vkr.playlistmaker.domain.player
 
-import com.guap.vkr.playlistmaker.domain.api.MediaPlayerRepository
+import com.guap.vkr.playlistmaker.domain.player.api.MediaPlayerRepository
 
 class MediaPlayerInteractor(private val mediaPlayerRepository: MediaPlayerRepository) {
 
