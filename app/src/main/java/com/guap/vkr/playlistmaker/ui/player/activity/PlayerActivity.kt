@@ -3,34 +3,43 @@ package com.guap.vkr.playlistmaker.ui.player.activity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import androidx.appcompat.app.AppCompatActivity
+import androidx.activity.ComponentActivity
+import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.gson.Gson
-import com.guap.vkr.playlistmaker.creator.Creator
 import com.guap.vkr.playlistmaker.R
-import com.guap.vkr.playlistmaker.domain.player.model.Track
+import com.guap.vkr.playlistmaker.creator.Creator
 import com.guap.vkr.playlistmaker.databinding.ActivityPlayerBinding
+import com.guap.vkr.playlistmaker.domain.player.model.Track
+import com.guap.vkr.playlistmaker.ui.player.view_model.TrackViewModel
 import com.guap.vkr.playlistmaker.utils.TRACK
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class PlayerActivity : AppCompatActivity() {
+class PlayerActivity : ComponentActivity() {
 
     private var binding: ActivityPlayerBinding? = null
     private val mediaPlayerIInteractor = Creator.provideMediaPlayerInteractor()
     private val handler = Handler(Looper.getMainLooper())
     private var clickAllowed = true
+    private lateinit var viewModel: TrackViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPlayerBinding.inflate(layoutInflater)
         setContentView(binding?.root)
 
+        viewModel = ViewModelProvider(this, TrackViewModel.getViewModelFactory(getTrack().trackId))[TrackViewModel::class.java]
+
+        viewModel.getLoadingLiveData().observe(this) { isLoading ->
+            changeProgressBarVisibility(isLoading)
+        }
+
         val track = getTrack()
         bind(track)
         preparePlayer(track)
-
+        
         binding?.btnPlay?.setOnClickListener {
             if (isClickAllowed()) {
                 mediaPlayerIInteractor.playbackControl(
@@ -48,6 +57,10 @@ class PlayerActivity : AppCompatActivity() {
         binding?.btnBack?.setOnClickListener {
             finish()
         }
+    }
+
+    private fun changeProgressBarVisibility(visible: Boolean) {
+        //empty
     }
 
     private fun bind(track: Track) {
