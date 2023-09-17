@@ -1,4 +1,4 @@
-package com.guap.vkr.playlistmaker
+package com.guap.vkr.playlistmaker.ui.library.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle

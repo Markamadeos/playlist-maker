@@ -1,7 +1,7 @@
 package com.guap.vkr.playlistmaker.data
 
 import android.media.MediaPlayer
-import com.guap.vkr.playlistmaker.domain.api.MediaPlayerRepository
+import com.guap.vkr.playlistmaker.domain.player.api.MediaPlayerRepository
 
 class MediaPlayerRepositoryImpl : MediaPlayerRepository {
 

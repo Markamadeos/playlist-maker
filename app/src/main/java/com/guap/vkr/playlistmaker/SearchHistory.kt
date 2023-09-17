@@ -3,6 +3,7 @@ package com.guap.vkr.playlistmaker
 import android.content.SharedPreferences
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.guap.vkr.playlistmaker.domain.player.model.Track
 import com.guap.vkr.playlistmaker.utils.SEARCH_HISTORY_KEY
 import java.lang.reflect.Type
 

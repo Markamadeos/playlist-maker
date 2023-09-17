@@ -1,4 +1,4 @@
-package com.guap.vkr.playlistmaker.ui.player
+package com.guap.vkr.playlistmaker.ui.player.activity
 
 import android.os.Bundle
 import android.os.Handler
@@ -7,9 +7,9 @@ import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.gson.Gson
-import com.guap.vkr.playlistmaker.Creator
+import com.guap.vkr.playlistmaker.creator.Creator
 import com.guap.vkr.playlistmaker.R
-import com.guap.vkr.playlistmaker.Track
+import com.guap.vkr.playlistmaker.domain.player.model.Track
 import com.guap.vkr.playlistmaker.databinding.ActivityPlayerBinding
 import com.guap.vkr.playlistmaker.utils.TRACK
 import java.text.SimpleDateFormat
@@ -54,7 +54,7 @@ class PlayerActivity : AppCompatActivity() {
         val cornerRadius = this.resources.getDimensionPixelSize(R.dimen.corner_radius_8dp)
 
         Glide.with(this)
-            .load(track.artworkUrl100)
+            .load(track.getCoverArtwork())
             .placeholder(R.drawable.iv_track_cover)
             .centerCrop()
             .transform(RoundedCorners(cornerRadius))
@@ -75,7 +75,6 @@ class PlayerActivity : AppCompatActivity() {
     private fun getTrack() = Gson().fromJson(intent.getStringExtra(TRACK), Track::class.java)
 
     private fun preparePlayer(track: Track) {
-
         mediaPlayerIInteractor.preparePlayer(
             track.previewUrl,
             {
