@@ -4,7 +4,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.guap.vkr.playlistmaker.databinding.TrackItemViewBinding
-import com.guap.vkr.playlistmaker.domain.player.model.Track
+import com.guap.vkr.playlistmaker.player.domain.model.Track
 
 class TrackViewHolder(private val binding: TrackItemViewBinding) :
     RecyclerView.ViewHolder(binding.root) {

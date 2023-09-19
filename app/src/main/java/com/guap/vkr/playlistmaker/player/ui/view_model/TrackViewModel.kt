@@ -1,4 +1,4 @@
-package com.guap.vkr.playlistmaker.ui.player.view_model
+package com.guap.vkr.playlistmaker.player.ui.view_model
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.guap.vkr.playlistmaker.creator.Creator
-import com.guap.vkr.playlistmaker.domain.player.MediaPlayerInteractor
+import com.guap.vkr.playlistmaker.player.domain.api.MediaPlayerInteractor
 
 class TrackViewModel(
     private val trackId: Long,

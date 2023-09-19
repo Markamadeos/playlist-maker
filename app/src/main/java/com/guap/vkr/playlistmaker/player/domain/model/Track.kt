@@ -1,4 +1,4 @@
-package com.guap.vkr.playlistmaker.domain.player.model
+package com.guap.vkr.playlistmaker.player.domain.model
 
 import java.text.SimpleDateFormat
 import java.util.Locale

@@ -1,6 +1,6 @@
 package com.guap.vkr.playlistmaker
 
-import com.guap.vkr.playlistmaker.domain.player.model.Track
+import com.guap.vkr.playlistmaker.player.domain.model.Track
 
 class SearchResponse(
     val resultCount: Int,

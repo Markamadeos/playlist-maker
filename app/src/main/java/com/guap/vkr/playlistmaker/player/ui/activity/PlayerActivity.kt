@@ -1,4 +1,4 @@
-package com.guap.vkr.playlistmaker.ui.player.activity
+package com.guap.vkr.playlistmaker.player.ui.activity
 
 import android.os.Bundle
 import android.os.Handler
@@ -11,8 +11,8 @@ import com.google.gson.Gson
 import com.guap.vkr.playlistmaker.R
 import com.guap.vkr.playlistmaker.creator.Creator
 import com.guap.vkr.playlistmaker.databinding.ActivityPlayerBinding
-import com.guap.vkr.playlistmaker.domain.player.model.Track
-import com.guap.vkr.playlistmaker.ui.player.view_model.TrackViewModel
+import com.guap.vkr.playlistmaker.player.domain.model.Track
+import com.guap.vkr.playlistmaker.player.ui.view_model.TrackViewModel
 import com.guap.vkr.playlistmaker.utils.TRACK
 import java.text.SimpleDateFormat
 import java.util.Locale

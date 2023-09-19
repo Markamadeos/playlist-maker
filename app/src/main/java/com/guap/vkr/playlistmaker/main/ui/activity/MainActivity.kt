@@ -1,12 +1,12 @@
-package com.guap.vkr.playlistmaker.ui.main.activity
+package com.guap.vkr.playlistmaker.main.ui.activity
 
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.guap.vkr.playlistmaker.ui.search.activity.SearchActivity
-import com.guap.vkr.playlistmaker.ui.settings.activity.SettingsActivity
+import com.guap.vkr.playlistmaker.search.ui.activity.SearchActivity
+import com.guap.vkr.playlistmaker.settings.ui.activity.SettingsActivity
 import com.guap.vkr.playlistmaker.databinding.ActivityMainBinding
-import com.guap.vkr.playlistmaker.ui.library.activity.LibraryActivity
+import com.guap.vkr.playlistmaker.library.ui.activity.LibraryActivity
 
 class MainActivity : AppCompatActivity() {
 
