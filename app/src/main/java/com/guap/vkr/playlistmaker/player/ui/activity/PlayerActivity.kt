@@ -12,7 +12,7 @@ import com.guap.vkr.playlistmaker.R
 import com.guap.vkr.playlistmaker.creator.Creator
 import com.guap.vkr.playlistmaker.databinding.ActivityPlayerBinding
 import com.guap.vkr.playlistmaker.player.domain.model.Track
-import com.guap.vkr.playlistmaker.player.ui.view_model.TrackViewModel
+import com.guap.vkr.playlistmaker.player.ui.view_model.PlayerViewModel
 import com.guap.vkr.playlistmaker.utils.TRACK
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -23,23 +23,22 @@ class PlayerActivity : ComponentActivity() {
     private val mediaPlayerIInteractor = Creator.provideMediaPlayerInteractor()
     private val handler = Handler(Looper.getMainLooper())
     private var clickAllowed = true
-    private lateinit var viewModel: TrackViewModel
+    private lateinit var viewModel: PlayerViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPlayerBinding.inflate(layoutInflater)
         setContentView(binding?.root)
 
-        viewModel = ViewModelProvider(this, TrackViewModel.getViewModelFactory(getTrack().trackId))[TrackViewModel::class.java]
-
-        viewModel.getLoadingLiveData().observe(this) { isLoading ->
-            changeProgressBarVisibility(isLoading)
-        }
+        viewModel = ViewModelProvider(
+            this, PlayerViewModel
+                .getViewModelFactory()
+        )[PlayerViewModel::class.java]
 
         val track = getTrack()
         bind(track)
         preparePlayer(track)
-        
+
         binding?.btnPlay?.setOnClickListener {
             if (isClickAllowed()) {
                 mediaPlayerIInteractor.playbackControl(

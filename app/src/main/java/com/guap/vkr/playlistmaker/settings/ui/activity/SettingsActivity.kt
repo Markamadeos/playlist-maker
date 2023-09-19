@@ -1,17 +1,18 @@
 package com.guap.vkr.playlistmaker.settings.ui.activity
 
-import android.content.Intent
-import android.net.Uri
+import android.app.Application
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
-import com.guap.vkr.playlistmaker.App
+import androidx.lifecycle.ViewModelProvider
 import com.guap.vkr.playlistmaker.R
-import com.guap.vkr.playlistmaker.utils.SHARED_PREFERENCES
-import com.guap.vkr.playlistmaker.utils.THEME_SWITCH_KEY
+import com.guap.vkr.playlistmaker.settings.ui.view_model.SettingsViewModel
+
 class SettingsActivity : AppCompatActivity() {
+
+    private lateinit var viewModel: SettingsViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
@@ -21,50 +22,34 @@ class SettingsActivity : AppCompatActivity() {
         val shareButton = findViewById<TextView>(R.id.btn_share)
         val feedbackButton = findViewById<TextView>(R.id.btn_feedback)
         val licenseButton = findViewById<TextView>(R.id.btn_license)
-        val sharedPref = getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE)
+
+        viewModel = ViewModelProvider(
+            this,
+            SettingsViewModel.getViewModelFactory(applicationContext)
+        )[SettingsViewModel::class.java]
+
+        viewModel.themeLiveData.observe(this) {
+            darkThemeButton.isChecked = it
+        }
 
         backButton.setOnClickListener {
             finish()
         }
 
-        darkThemeButton.isChecked = sharedPref.getBoolean(THEME_SWITCH_KEY, false)
         darkThemeButton.setOnCheckedChangeListener { _, checked ->
-            (applicationContext as App).switchTheme(checked)
-            // TODO(пофиксить положение свича, при мереходе между экранами сбрасывется его состояние)
+            viewModel.setupSwitch(checked)
         }
 
         shareButton.setOnClickListener {
-            val shareIntent = Intent().apply {
-                action = Intent.ACTION_SEND
-                type = "text/plan"
-                putExtra(Intent.EXTRA_TEXT, getString(R.string.android_developer_url))
-            }
-            startActivity(shareIntent)
+            viewModel.shareApp()
         }
 
         feedbackButton.setOnClickListener {
-            val feedbackIntent = Intent().apply {
-                action = Intent.ACTION_SENDTO
-                data = Uri.parse("mailto:")
-                putExtra(Intent.EXTRA_EMAIL, arrayOf(getString(R.string.developer_email)))
-                putExtra(
-                    Intent.EXTRA_SUBJECT,
-                    getString(R.string.letter_topic)
-                )
-                putExtra(
-                    Intent.EXTRA_TEXT,
-                    getString(R.string.letter_body)
-                )
-            }
-            startActivity(feedbackIntent)
+            viewModel.openSupport()
         }
 
         licenseButton.setOnClickListener {
-            val licenseIntent = Intent().apply {
-                action = Intent.ACTION_VIEW
-                data = Uri.parse(getString(R.string.license_url))
-            }
-            startActivity(licenseIntent)
+            viewModel.openTerms()
         }
     }
 }
