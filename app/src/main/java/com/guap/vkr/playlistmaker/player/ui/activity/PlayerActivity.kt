@@ -3,7 +3,7 @@ package com.guap.vkr.playlistmaker.player.ui.activity
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import androidx.activity.ComponentActivity
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -17,7 +17,7 @@ import com.guap.vkr.playlistmaker.utils.TRACK
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class PlayerActivity : ComponentActivity() {
+class PlayerActivity : AppCompatActivity() {
 
     private var binding: ActivityPlayerBinding? = null
     private val mediaPlayerIInteractor = Creator.provideMediaPlayerInteractor()

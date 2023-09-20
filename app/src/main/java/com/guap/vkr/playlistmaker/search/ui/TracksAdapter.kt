@@ -1,4 +1,4 @@
-package com.guap.vkr.playlistmaker
+package com.guap.vkr.playlistmaker.search.ui
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -6,13 +6,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.guap.vkr.playlistmaker.databinding.TrackItemViewBinding
 import com.guap.vkr.playlistmaker.player.domain.model.Track
 
-class TrackAdapter(
+class TracksAdapter(
     private val tracks: ArrayList<Track>,
     private val clickListener: TrackClickListener
-) : RecyclerView.Adapter<TrackViewHolder>() {
+) : RecyclerView.Adapter<TracksViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TrackViewHolder {
-        return TrackViewHolder(
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TracksViewHolder {
+        return TracksViewHolder(
             TrackItemViewBinding
                 .inflate(
                     LayoutInflater
@@ -23,7 +23,7 @@ class TrackAdapter(
 
     override fun getItemCount() = tracks.size
 
-    override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: TracksViewHolder, position: Int) {
         holder.bind(tracks[position])
         holder.itemView.setOnClickListener { clickListener.onTrackClick(tracks.get(position)) }
     }

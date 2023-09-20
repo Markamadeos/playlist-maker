@@ -1,6 +1,5 @@
 package com.guap.vkr.playlistmaker.settings.ui.activity
 
-import android.app.Application
 import android.os.Bundle
 import android.widget.ImageView
 import android.widget.TextView
@@ -37,7 +36,7 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         darkThemeButton.setOnCheckedChangeListener { _, checked ->
-            viewModel.setupSwitch(checked)
+            viewModel.setupTheme(checked)
         }
 
         shareButton.setOnClickListener {

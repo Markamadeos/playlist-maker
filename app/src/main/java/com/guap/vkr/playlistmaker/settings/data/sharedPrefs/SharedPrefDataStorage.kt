@@ -1,6 +1,5 @@
-package com.guap.vkr.playlistmaker.settings.data.impl
+package com.guap.vkr.playlistmaker.settings.data.sharedPrefs
 
-import android.app.Application
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import com.guap.vkr.playlistmaker.settings.data.DataStorage
@@ -15,12 +14,13 @@ class SharedPrefDataStorage(context: Context) : DataStorage {
         MODE_PRIVATE
     )
 
+    private val darkThemeEnabled = sharedPrefs.getBoolean(THEME_SWITCH_KEY, false)
+
     override fun saveTheme(themeSettings: ThemeSettings) {
         sharedPrefs.edit().putBoolean(THEME_SWITCH_KEY, themeSettings.isDark).apply()
     }
 
     override fun getTheme(): ThemeSettings {
-        return ThemeSettings(isDark = sharedPrefs.getBoolean(THEME_SWITCH_KEY, false))
+        return ThemeSettings(darkThemeEnabled)
     }
-
 }

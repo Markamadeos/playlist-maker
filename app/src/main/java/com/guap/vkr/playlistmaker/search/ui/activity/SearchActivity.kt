@@ -17,7 +17,7 @@ import com.guap.vkr.playlistmaker.ITunesApi
 import com.guap.vkr.playlistmaker.R
 import com.guap.vkr.playlistmaker.SearchHistory
 import com.guap.vkr.playlistmaker.SearchResponse
-import com.guap.vkr.playlistmaker.TrackAdapter
+import com.guap.vkr.playlistmaker.search.ui.TracksAdapter
 import com.guap.vkr.playlistmaker.databinding.ActivitySearchBinding
 import com.guap.vkr.playlistmaker.player.domain.model.Track
 import com.guap.vkr.playlistmaker.player.ui.activity.PlayerActivity
@@ -33,13 +33,13 @@ class SearchActivity : AppCompatActivity() {
 
     private val iTunesService = retrofit.create(ITunesApi::class.java)
     private val tracks = ArrayList<Track>()
-    private val searchAdapter = TrackAdapter(tracks) { trackClickListener(it) }
+    private val searchAdapter = TracksAdapter(tracks) { trackClickListener(it) }
     private val searchRunnable = Runnable { search() }
     private val handler = Handler(Looper.getMainLooper())
     private var userInput = ""
     private var clickAllowed = true
     private lateinit var searchHistory: SearchHistory
-    private lateinit var historyAdapter: TrackAdapter
+    private lateinit var historyAdapter: TracksAdapter
     private lateinit var binding: ActivitySearchBinding
     private var screenState = RequestState.DEFAULT_STATE
 
@@ -50,7 +50,7 @@ class SearchActivity : AppCompatActivity() {
         }
 
         searchHistory = SearchHistory(getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE))
-        historyAdapter = TrackAdapter(searchHistory.getSearchHistory()) { trackClickListener(it) }
+        historyAdapter = TracksAdapter(searchHistory.getSearchHistory()) { trackClickListener(it) }
 
         binding.apply {
             rvSearchResult.adapter = searchAdapter

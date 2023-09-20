@@ -1,14 +1,12 @@
 package com.guap.vkr.playlistmaker.creator
 
 import android.content.Context
-import android.content.SharedPreferences
 import com.guap.vkr.playlistmaker.player.data.MediaPlayerRepositoryImpl
 import com.guap.vkr.playlistmaker.player.domain.MediaPlayerInteractor
 import com.guap.vkr.playlistmaker.settings.data.DataStorage
 import com.guap.vkr.playlistmaker.settings.data.SettingsRepositoryImpl
-import com.guap.vkr.playlistmaker.settings.data.impl.SharedPrefDataStorage
+import com.guap.vkr.playlistmaker.settings.data.sharedPrefs.SharedPrefDataStorage
 import com.guap.vkr.playlistmaker.settings.domain.SettingsInteractor
-import com.guap.vkr.playlistmaker.settings.domain.SettingsRepository
 import com.guap.vkr.playlistmaker.settings.domain.impl.SettingsInteractorImpl
 import com.guap.vkr.playlistmaker.sharing.data.ExternalNavigatorImpl
 import com.guap.vkr.playlistmaker.sharing.domain.SharingInteractor
