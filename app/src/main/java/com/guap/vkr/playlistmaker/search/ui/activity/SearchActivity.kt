@@ -12,8 +12,9 @@ import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import com.google.gson.Gson
-import com.guap.vkr.playlistmaker.ITunesApi
+import com.guap.vkr.playlistmaker.search.data.network.ITunesApi
 import com.guap.vkr.playlistmaker.R
 import com.guap.vkr.playlistmaker.SearchHistory
 import com.guap.vkr.playlistmaker.SearchResponse
@@ -21,6 +22,8 @@ import com.guap.vkr.playlistmaker.search.ui.TracksAdapter
 import com.guap.vkr.playlistmaker.databinding.ActivitySearchBinding
 import com.guap.vkr.playlistmaker.player.domain.model.Track
 import com.guap.vkr.playlistmaker.player.ui.activity.PlayerActivity
+import com.guap.vkr.playlistmaker.search.ui.ScreenState
+import com.guap.vkr.playlistmaker.search.ui.view_model.SearchViewModel
 import com.guap.vkr.playlistmaker.utils.SHARED_PREFERENCES
 import com.guap.vkr.playlistmaker.utils.TRACK
 import com.guap.vkr.playlistmaker.utils.retrofit
@@ -30,18 +33,16 @@ import retrofit2.Response
 
 class SearchActivity : AppCompatActivity() {
 
-
     private val iTunesService = retrofit.create(ITunesApi::class.java)
     private val tracks = ArrayList<Track>()
     private val searchAdapter = TracksAdapter(tracks) { trackClickListener(it) }
-    private val searchRunnable = Runnable { search() }
     private val handler = Handler(Looper.getMainLooper())
     private var userInput = ""
     private var clickAllowed = true
-    private lateinit var searchHistory: SearchHistory
+   // private lateinit var searchHistory: SearchHistory
     private lateinit var historyAdapter: TracksAdapter
     private lateinit var binding: ActivitySearchBinding
-    private var screenState = RequestState.DEFAULT_STATE
+    private lateinit var viewModel: SearchViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,8 +50,19 @@ class SearchActivity : AppCompatActivity() {
             setContentView(it.root)
         }
 
+        viewModel = ViewModelProvider(
+            this,
+            SearchViewModel.getViewModelFactory(this)
+        )[SearchViewModel::class.java]
+
+        viewModel.stateLiveData().observe(this) {
+            updateScreen(it)
+        }
+
         searchHistory = SearchHistory(getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE))
         historyAdapter = TracksAdapter(searchHistory.getSearchHistory()) { trackClickListener(it) }
+
+
 
         binding.apply {
             rvSearchResult.adapter = searchAdapter
@@ -71,7 +83,8 @@ class SearchActivity : AppCompatActivity() {
                     searchHistoryVisibility(s, searchHistory, binding.etSearch.hasFocus())
             }
             userInput = s.toString()
-            searchDebounce()
+            viewModel.searchDebounce(userInput, false)
+            //searchDebounce()
         }
 
         override fun afterTextChanged(s: Editable?) {}
@@ -98,7 +111,7 @@ class SearchActivity : AppCompatActivity() {
             }
 
             btnRefresh.setOnClickListener {
-                search()
+                //search()
             }
         }
     }
@@ -145,43 +158,42 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    private fun searchDebounce() {
-        handler.apply {
-            removeCallbacks(searchRunnable)
-            postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY_MS)
-        }
-    }
-
-    private fun search() {
-        if (userInput.isNotEmpty()) {
-            screenState = RequestState.LOADING
-            updateScreen()
-            iTunesService.search(userInput).enqueue(object : Callback<SearchResponse> {
-                override fun onResponse(
-                    call: Call<SearchResponse>, response: Response<SearchResponse>
-                ) {
-                    tracks.clear()
-                    screenState = if (response.code() == RESPONSE_OK) {
-                        if (response.body()?.results?.isNotEmpty() == true) {
-                            tracks.addAll(response.body()?.results!!)
-                            RequestState.GOOD_RESPONSE
-                        } else {
-                            RequestState.EMPTY_RESPONSE
-                        }
-
-                    } else {
-                        RequestState.NETWORK_ERROR
-                    }
-                    updateScreen()
-                }
-
-                override fun onFailure(call: Call<SearchResponse>, t: Throwable) {
-                    screenState = RequestState.NETWORK_ERROR
-                    updateScreen()
-                }
-            })
-        }
-    }
+//    private fun searchDebounce() {
+//        handler.apply {
+//            removeCallbacks(searchRunnable)
+//            postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY_MS)
+//        }
+//    }
+//    private fun search() {
+//        if (userInput.isNotEmpty()) {
+//            screenState = RequestState.LOADING
+//            updateScreen()
+//            iTunesService.search(userInput).enqueue(object : Callback<SearchResponse> {
+//                override fun onResponse(
+//                    call: Call<SearchResponse>, response: Response<SearchResponse>
+//                ) {
+//                    tracks.clear()
+//                    screenState = if (response.code() == RESPONSE_OK) {
+//                        if (response.body()?.results?.isNotEmpty() == true) {
+//                            tracks.addAll(response.body()?.results!!)
+//                            RequestState.GOOD_RESPONSE
+//                        } else {
+//                            RequestState.EMPTY_RESPONSE
+//                        }
+//
+//                    } else {
+//                        RequestState.NETWORK_ERROR
+//                    }
+//                    updateScreen()
+//                }
+//
+//                override fun onFailure(call: Call<SearchResponse>, t: Throwable) {
+//                    screenState = RequestState.NETWORK_ERROR
+//                    updateScreen()
+//                }
+//            })
+//        }
+//    }
 
     private fun Activity.hideKeyboard() {
         hideKeyboard(currentFocus ?: View(this))
@@ -211,16 +223,18 @@ class SearchActivity : AppCompatActivity() {
         return current
     }
 
-    private fun updateScreen() {
+    private fun updateScreen(state: ScreenState) {
         binding.apply {
-            when (screenState) {
-                RequestState.GOOD_RESPONSE -> {
+            when (state) {
+                is ScreenState.Content -> {
+                    tracks.clear()
+                    tracks.addAll(state.tracks as ArrayList<Track>)
                     progressBar.visibility = View.GONE
                     rvSearchResult.visibility = View.VISIBLE
                     errorContainer.visibility = View.GONE
                 }
 
-                RequestState.NETWORK_ERROR -> {
+                is ScreenState.Error -> {
                     progressBar.visibility = View.GONE
                     errorContainer.visibility = View.VISIBLE
                     ivErrorMessage.setImageResource(R.drawable.ic_internet_err)
@@ -228,7 +242,7 @@ class SearchActivity : AppCompatActivity() {
                     btnRefresh.visibility = View.VISIBLE
                 }
 
-                RequestState.EMPTY_RESPONSE -> {
+                is ScreenState.Empty -> {
                     progressBar.visibility = View.GONE
                     errorContainer.visibility = View.VISIBLE
                     ivErrorMessage.setImageResource(R.drawable.ic_search_err)
@@ -236,25 +250,23 @@ class SearchActivity : AppCompatActivity() {
                     btnRefresh.visibility = View.GONE
                 }
 
-                RequestState.LOADING -> {
+                is ScreenState.Loading -> {
                     errorContainer.visibility = View.GONE
                     placeholderSearchHistory.visibility = View.GONE
                     rvSearchResult.visibility = View.GONE
                     progressBar.visibility = View.VISIBLE
                 }
 
-                RequestState.DEFAULT_STATE -> {}
+                is ScreenState.ContentHistoryList -> {
+
+                }
+
+                is ScreenState.EmptyHistoryList -> {
+
+                }
             }
         }
         searchAdapter.notifyDataSetChanged()
-    }
-
-    enum class RequestState {
-        DEFAULT_STATE,
-        GOOD_RESPONSE,
-        NETWORK_ERROR,
-        EMPTY_RESPONSE,
-        LOADING
     }
 
     companion object {
