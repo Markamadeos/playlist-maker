@@ -10,7 +10,6 @@ class SearchInteractorImpl(private val repository: SearchRepository) : SearchInt
 
     private val executor = Executors.newCachedThreadPool()
 
-
     override fun searchTracks(expression: String, consumer: SearchInteractor.SearchConsumer) {
         executor.execute {
             when(val resource = repository.searchTrack(expression)) {

@@ -14,33 +14,24 @@ import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.google.gson.Gson
-import com.guap.vkr.playlistmaker.search.data.network.ITunesApi
 import com.guap.vkr.playlistmaker.R
-import com.guap.vkr.playlistmaker.SearchHistory
-import com.guap.vkr.playlistmaker.SearchResponse
-import com.guap.vkr.playlistmaker.search.ui.TracksAdapter
 import com.guap.vkr.playlistmaker.databinding.ActivitySearchBinding
-import com.guap.vkr.playlistmaker.player.domain.model.Track
 import com.guap.vkr.playlistmaker.player.ui.activity.PlayerActivity
+import com.guap.vkr.playlistmaker.search.domain.model.Track
 import com.guap.vkr.playlistmaker.search.ui.ScreenState
+import com.guap.vkr.playlistmaker.search.ui.TracksAdapter
 import com.guap.vkr.playlistmaker.search.ui.view_model.SearchViewModel
-import com.guap.vkr.playlistmaker.utils.SHARED_PREFERENCES
 import com.guap.vkr.playlistmaker.utils.TRACK
-import com.guap.vkr.playlistmaker.utils.retrofit
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class SearchActivity : AppCompatActivity() {
 
-    private val iTunesService = retrofit.create(ITunesApi::class.java)
     private val tracks = ArrayList<Track>()
+    private val tracksHistory = ArrayList<Track>()
     private val searchAdapter = TracksAdapter(tracks) { trackClickListener(it) }
+    private val historyAdapter = TracksAdapter(tracksHistory) { trackClickListener(it) }
     private val handler = Handler(Looper.getMainLooper())
     private var userInput = ""
     private var clickAllowed = true
-   // private lateinit var searchHistory: SearchHistory
-    private lateinit var historyAdapter: TracksAdapter
     private lateinit var binding: ActivitySearchBinding
     private lateinit var viewModel: SearchViewModel
 
@@ -59,11 +50,6 @@ class SearchActivity : AppCompatActivity() {
             updateScreen(it)
         }
 
-        searchHistory = SearchHistory(getSharedPreferences(SHARED_PREFERENCES, MODE_PRIVATE))
-        historyAdapter = TracksAdapter(searchHistory.getSearchHistory()) { trackClickListener(it) }
-
-
-
         binding.apply {
             rvSearchResult.adapter = searchAdapter
             rvHistory.adapter = historyAdapter
@@ -80,11 +66,11 @@ class SearchActivity : AppCompatActivity() {
             binding.apply {
                 btnClear.visibility = clearButtonVisibility(s)
                 placeholderSearchHistory.visibility =
-                    searchHistoryVisibility(s, searchHistory, binding.etSearch.hasFocus())
+                    searchHistoryVisibility(s, tracksHistory, binding.etSearch.hasFocus())
             }
+
             userInput = s.toString()
             viewModel.searchDebounce(userInput, false)
-            //searchDebounce()
         }
 
         override fun afterTextChanged(s: Editable?) {}
@@ -105,7 +91,7 @@ class SearchActivity : AppCompatActivity() {
             }
 
             btnClearHistory.setOnClickListener {
-                searchHistory.clearHistory()
+                viewModel.clearHistory()
                 historyAdapter.notifyDataSetChanged()
                 placeholderSearchHistory.visibility = View.GONE
             }
@@ -122,7 +108,7 @@ class SearchActivity : AppCompatActivity() {
             setText(userInput)
             setOnFocusChangeListener { _, hasFocus ->
                 binding.placeholderSearchHistory.visibility =
-                    searchHistoryVisibility(text, searchHistory, hasFocus)
+                    searchHistoryVisibility(text, tracksHistory, hasFocus)
             }
         }
     }
@@ -147,10 +133,10 @@ class SearchActivity : AppCompatActivity() {
 
     private fun searchHistoryVisibility(
         s: CharSequence?,
-        searchHistory: SearchHistory,
+        tracksHistory: ArrayList<Track>,
         focus: Boolean
     ): Int {
-        return if (s.isNullOrEmpty() && searchHistory.getSearchHistory().isNotEmpty() && focus) {
+        return if (s.isNullOrEmpty() && tracksHistory.isNotEmpty() && focus) {
             binding.errorContainer.visibility = View.GONE
             View.VISIBLE
         } else {
@@ -207,7 +193,7 @@ class SearchActivity : AppCompatActivity() {
 
     private fun trackClickListener(track: Track) {
         if (isClickAllowed()) {
-            searchHistory.addTrackToHistory(track)
+            viewModel.addTrackToHistory(track)
             val playIntent =
                 Intent(this, PlayerActivity::class.java).putExtra(TRACK, Gson().toJson(track))
             startActivity(playIntent)
@@ -270,9 +256,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     companion object {
-        private const val SEARCH_DEBOUNCE_DELAY_MS = 2000L
         private const val CLICK_DEBOUNCE_DELAY_MS = 500L
         private const val USER_INPUT = "USER_INPUT"
-        private const val RESPONSE_OK = 200
     }
 }

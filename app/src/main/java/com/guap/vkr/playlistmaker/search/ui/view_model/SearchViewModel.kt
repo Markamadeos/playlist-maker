@@ -3,7 +3,6 @@ package com.guap.vkr.playlistmaker.search.ui.view_model
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
-import android.os.SystemClock
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -24,10 +23,6 @@ class SearchViewModel(private val searchInteractor: SearchInteractor) : ViewMode
 
     private var latestSearchText: String? = null
 
-    override fun onCleared() {
-        handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
-    }
-
     fun searchDebounce(changedText: String, hasError: Boolean) {
         if (latestSearchText == changedText && !hasError) {
             return
@@ -35,15 +30,8 @@ class SearchViewModel(private val searchInteractor: SearchInteractor) : ViewMode
 
         this.latestSearchText = changedText
         handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
-
         val searchRunnable = Runnable { search(changedText) }
-
-        val postTime = SystemClock.uptimeMillis() + SEARCH_DEBOUNCE_DELAY_MS
-        handler.postAtTime(
-            searchRunnable,
-            SEARCH_REQUEST_TOKEN,
-            postTime,
-        )
+        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY_MS)
     }
 
     private fun search(expression: String) {
@@ -94,9 +82,12 @@ class SearchViewModel(private val searchInteractor: SearchInteractor) : ViewMode
         searchInteractor.clearHistory()
     }
 
-
     private fun renderState(state: ScreenState) {
         _stateLiveData.postValue(state)
+    }
+
+    override fun onCleared() {
+        handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
     }
 
     companion object {
@@ -109,7 +100,7 @@ class SearchViewModel(private val searchInteractor: SearchInteractor) : ViewMode
             }
         }
 
-        private const val SEARCH_DEBOUNCE_DELAY_MS = 2_000L
+        private const val SEARCH_DEBOUNCE_DELAY_MS = 2000L
         private val SEARCH_REQUEST_TOKEN = Any()
     }
 }

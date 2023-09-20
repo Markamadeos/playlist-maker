@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.guap.vkr.playlistmaker.databinding.TrackItemViewBinding
-import com.guap.vkr.playlistmaker.player.domain.model.Track
+import com.guap.vkr.playlistmaker.search.domain.model.Track
 
 class TracksAdapter(
     private val tracks: ArrayList<Track>,
