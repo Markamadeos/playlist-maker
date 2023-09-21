@@ -42,8 +42,7 @@ class SearchActivity : AppCompatActivity() {
         }
 
         viewModel = ViewModelProvider(
-            this,
-            SearchViewModel.getViewModelFactory(this)
+            this, SearchViewModel.getViewModelFactory(this)
         )[SearchViewModel::class.java]
 
         viewModel.stateLiveData().observe(this) {
@@ -65,8 +64,7 @@ class SearchActivity : AppCompatActivity() {
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             binding.apply {
                 btnClear.visibility = clearButtonVisibility(s)
-                placeholderSearchHistory.visibility =
-                    searchHistoryVisibility(s, tracksHistory, binding.etSearch.hasFocus())
+                placeholderSearchHistory.visibility = View.GONE
             }
 
             userInput = s.toString()
@@ -97,7 +95,7 @@ class SearchActivity : AppCompatActivity() {
             }
 
             btnRefresh.setOnClickListener {
-                //search()
+                viewModel.searchDebounce(userInput, true)
             }
         }
     }
@@ -107,8 +105,10 @@ class SearchActivity : AppCompatActivity() {
             addTextChangedListener(textWatcher)
             setText(userInput)
             setOnFocusChangeListener { _, hasFocus ->
-                binding.placeholderSearchHistory.visibility =
-                    searchHistoryVisibility(text, tracksHistory, hasFocus)
+                if (hasFocus && this.text.isEmpty())
+                    viewModel.getTracksHistory()
+                else
+                    binding.placeholderSearchHistory.visibility = View.GONE
             }
         }
     }
@@ -130,56 +130,6 @@ class SearchActivity : AppCompatActivity() {
             View.VISIBLE
         }
     }
-
-    private fun searchHistoryVisibility(
-        s: CharSequence?,
-        tracksHistory: ArrayList<Track>,
-        focus: Boolean
-    ): Int {
-        return if (s.isNullOrEmpty() && tracksHistory.isNotEmpty() && focus) {
-            binding.errorContainer.visibility = View.GONE
-            View.VISIBLE
-        } else {
-            View.GONE
-        }
-    }
-
-//    private fun searchDebounce() {
-//        handler.apply {
-//            removeCallbacks(searchRunnable)
-//            postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY_MS)
-//        }
-//    }
-//    private fun search() {
-//        if (userInput.isNotEmpty()) {
-//            screenState = RequestState.LOADING
-//            updateScreen()
-//            iTunesService.search(userInput).enqueue(object : Callback<SearchResponse> {
-//                override fun onResponse(
-//                    call: Call<SearchResponse>, response: Response<SearchResponse>
-//                ) {
-//                    tracks.clear()
-//                    screenState = if (response.code() == RESPONSE_OK) {
-//                        if (response.body()?.results?.isNotEmpty() == true) {
-//                            tracks.addAll(response.body()?.results!!)
-//                            RequestState.GOOD_RESPONSE
-//                        } else {
-//                            RequestState.EMPTY_RESPONSE
-//                        }
-//
-//                    } else {
-//                        RequestState.NETWORK_ERROR
-//                    }
-//                    updateScreen()
-//                }
-//
-//                override fun onFailure(call: Call<SearchResponse>, t: Throwable) {
-//                    screenState = RequestState.NETWORK_ERROR
-//                    updateScreen()
-//                }
-//            })
-//        }
-//    }
 
     private fun Activity.hideKeyboard() {
         hideKeyboard(currentFocus ?: View(this))
@@ -244,14 +194,17 @@ class SearchActivity : AppCompatActivity() {
                 }
 
                 is ScreenState.ContentHistoryList -> {
-
+                    placeholderSearchHistory.visibility = View.VISIBLE
+                    tracksHistory.clear()
+                    tracksHistory.addAll(state.historyList)
                 }
 
                 is ScreenState.EmptyHistoryList -> {
-
+                    placeholderSearchHistory.visibility = View.GONE
                 }
             }
         }
+        historyAdapter.notifyDataSetChanged()
         searchAdapter.notifyDataSetChanged()
     }
 

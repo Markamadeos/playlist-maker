@@ -71,10 +71,10 @@ class SearchViewModel(private val searchInteractor: SearchInteractor) : ViewMode
     fun getTracksHistory() {
         searchInteractor.getTracksHistory(object : SearchInteractor.HistoryConsumer {
             override fun consume(tracks: List<Track>?) {
-                if (tracks != null) {
-                    renderState(ScreenState.ContentHistoryList(tracks))
-                } else {
+                if (tracks.isNullOrEmpty()) {
                     renderState(ScreenState.EmptyHistoryList())
+                } else {
+                    renderState(ScreenState.ContentHistoryList(tracks))
                 }
             }
         })

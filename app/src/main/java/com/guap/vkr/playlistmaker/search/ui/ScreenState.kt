@@ -8,9 +8,9 @@ sealed interface ScreenState {
 
     data class Content(val tracks: List<Track>) : ScreenState
 
-    class Error() : ScreenState
+    class Error : ScreenState
 
-    class Empty() : ScreenState
+    class Empty : ScreenState
 
     data class ContentHistoryList(val historyList: List<Track>) : ScreenState
 
