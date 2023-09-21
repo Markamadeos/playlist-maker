@@ -3,6 +3,7 @@ package com.guap.vkr.playlistmaker.search.ui.view_model
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
+import android.os.SystemClock
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -31,7 +32,12 @@ class SearchViewModel(private val searchInteractor: SearchInteractor) : ViewMode
         this.latestSearchText = changedText
         handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
         val searchRunnable = Runnable { search(changedText) }
-        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY_MS)
+        val postTime = SystemClock.uptimeMillis() + SEARCH_DEBOUNCE_DELAY_MS
+        handler.postAtTime(
+            searchRunnable,
+            SEARCH_REQUEST_TOKEN,
+            postTime,
+        )
     }
 
     private fun search(expression: String) {
