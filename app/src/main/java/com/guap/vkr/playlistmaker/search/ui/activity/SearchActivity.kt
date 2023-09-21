@@ -42,7 +42,7 @@ class SearchActivity : AppCompatActivity() {
         }
 
         viewModel = ViewModelProvider(
-            this, SearchViewModel.getViewModelFactory(this)
+            this, SearchViewModel.getViewModelFactory(applicationContext)
         )[SearchViewModel::class.java]
 
         viewModel.stateLiveData().observe(this) {
@@ -168,6 +168,7 @@ class SearchActivity : AppCompatActivity() {
                     progressBar.visibility = View.GONE
                     rvSearchResult.visibility = View.VISIBLE
                     errorContainer.visibility = View.GONE
+                    searchAdapter.notifyDataSetChanged()
                 }
 
                 is ScreenState.Error -> {
@@ -197,6 +198,7 @@ class SearchActivity : AppCompatActivity() {
                     placeholderSearchHistory.visibility = View.VISIBLE
                     tracksHistory.clear()
                     tracksHistory.addAll(state.historyList)
+                    historyAdapter.notifyDataSetChanged()
                 }
 
                 is ScreenState.EmptyHistoryList -> {
@@ -204,8 +206,6 @@ class SearchActivity : AppCompatActivity() {
                 }
             }
         }
-        historyAdapter.notifyDataSetChanged()
-        searchAdapter.notifyDataSetChanged()
     }
 
     companion object {

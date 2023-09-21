@@ -20,6 +20,7 @@ import java.util.Locale
 class PlayerActivity : AppCompatActivity() {
 
     private var binding: ActivityPlayerBinding? = null
+
     private val mediaPlayerIInteractor = Creator.provideMediaPlayerInteractor()
     private val handler = Handler(Looper.getMainLooper())
     private var clickAllowed = true
@@ -34,6 +35,7 @@ class PlayerActivity : AppCompatActivity() {
             this, PlayerViewModel
                 .getViewModelFactory()
         )[PlayerViewModel::class.java]
+
 
         val track = getTrack()
         bind(track)
