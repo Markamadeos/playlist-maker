@@ -18,7 +18,7 @@ import com.guap.vkr.playlistmaker.R
 import com.guap.vkr.playlistmaker.databinding.ActivitySearchBinding
 import com.guap.vkr.playlistmaker.player.ui.activity.PlayerActivity
 import com.guap.vkr.playlistmaker.search.domain.model.Track
-import com.guap.vkr.playlistmaker.search.ui.ScreenState
+import com.guap.vkr.playlistmaker.search.ui.model.ScreenState
 import com.guap.vkr.playlistmaker.search.ui.TracksAdapter
 import com.guap.vkr.playlistmaker.search.ui.view_model.SearchViewModel
 import com.guap.vkr.playlistmaker.utils.TRACK

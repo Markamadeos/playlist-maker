@@ -13,7 +13,7 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.guap.vkr.playlistmaker.creator.Creator
 import com.guap.vkr.playlistmaker.search.domain.SearchInteractor
 import com.guap.vkr.playlistmaker.search.domain.model.Track
-import com.guap.vkr.playlistmaker.search.ui.ScreenState
+import com.guap.vkr.playlistmaker.search.ui.model.ScreenState
 
 class SearchViewModel(private val searchInteractor: SearchInteractor) : ViewModel() {
 

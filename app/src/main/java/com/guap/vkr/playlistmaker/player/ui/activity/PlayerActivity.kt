@@ -9,9 +9,9 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.gson.Gson
 import com.guap.vkr.playlistmaker.R
-import com.guap.vkr.playlistmaker.creator.Creator
 import com.guap.vkr.playlistmaker.databinding.ActivityPlayerBinding
 import com.guap.vkr.playlistmaker.player.domain.model.Track
+import com.guap.vkr.playlistmaker.player.ui.model.MediaPlayerState
 import com.guap.vkr.playlistmaker.player.ui.view_model.PlayerViewModel
 import com.guap.vkr.playlistmaker.utils.TRACK
 import java.text.SimpleDateFormat
@@ -21,7 +21,6 @@ class PlayerActivity : AppCompatActivity() {
 
     private var binding: ActivityPlayerBinding? = null
 
-    private val mediaPlayerIInteractor = Creator.provideMediaPlayerInteractor()
     private val handler = Handler(Looper.getMainLooper())
     private var clickAllowed = true
     private lateinit var viewModel: PlayerViewModel
@@ -31,37 +30,27 @@ class PlayerActivity : AppCompatActivity() {
         binding = ActivityPlayerBinding.inflate(layoutInflater)
         setContentView(binding?.root)
 
-        viewModel = ViewModelProvider(
-            this, PlayerViewModel
-                .getViewModelFactory()
-        )[PlayerViewModel::class.java]
-
-
         val track = getTrack()
         bind(track)
-        preparePlayer(track)
+
+        viewModel = ViewModelProvider(
+            this, PlayerViewModel
+                .getViewModelFactory(track.previewUrl)
+        )[PlayerViewModel::class.java]
+
+        viewModel.observeState().observe(this) {
+            updateScreen(it)
+        }
 
         binding?.btnPlay?.setOnClickListener {
-            if (isClickAllowed()) {
-                mediaPlayerIInteractor.playbackControl(
-                    {
-                        binding?.btnPlay?.setImageResource(R.drawable.ic_pause)
-                        handler.post(getCurrentPlaybackPosition())
-                    },
-                    {
-                        handler.removeCallbacksAndMessages(getCurrentPlaybackPosition())
-                        binding?.btnPlay?.setImageResource(R.drawable.ic_play)
-                    })
-            }
+            // if (isClickAllowed()) {
+            viewModel.playbackControl()
+            // }
         }
 
         binding?.btnBack?.setOnClickListener {
             finish()
         }
-    }
-
-    private fun changeProgressBarVisibility(visible: Boolean) {
-        //empty
     }
 
     private fun bind(track: Track) {
@@ -88,20 +77,6 @@ class PlayerActivity : AppCompatActivity() {
 
     private fun getTrack() = Gson().fromJson(intent.getStringExtra(TRACK), Track::class.java)
 
-    private fun preparePlayer(track: Track) {
-        mediaPlayerIInteractor.preparePlayer(
-            track.previewUrl,
-            {
-                binding?.btnPlay?.setImageResource(R.drawable.ic_play)
-            },
-            {
-                handler.removeCallbacksAndMessages(getCurrentPlaybackPosition())
-                binding?.tvPlaytime?.text = getString(R.string.default_playtime_value)
-                binding?.btnPlay?.setImageResource(R.drawable.ic_play)
-            }
-        )
-    }
-
     private fun isClickAllowed(): Boolean {
         val current = clickAllowed
         if (clickAllowed) {
@@ -111,12 +86,35 @@ class PlayerActivity : AppCompatActivity() {
         return current
     }
 
-    private fun getCurrentPlaybackPosition(): Runnable {
+    private fun updateScreen(state: MediaPlayerState) {
+        when (state) {
+            is MediaPlayerState.PLAYING -> {
+                binding?.btnPlay?.setImageResource(R.drawable.ic_pause)
+                handler.post(updateTime())
+            }
+
+            is MediaPlayerState.PAUSED -> {
+                handler.removeCallbacksAndMessages(null)
+                binding?.btnPlay?.setImageResource(R.drawable.ic_play)
+            }
+
+            is MediaPlayerState.PREPARED -> {
+                handler.removeCallbacksAndMessages(null)
+                binding?.btnPlay?.setImageResource(R.drawable.ic_play)
+                binding?.tvPlaytime?.setText(R.string.default_playtime_value)
+            }
+
+            else -> {}
+        }
+    }
+
+    private fun updateTime(): Runnable {
         return object : Runnable {
             override fun run() {
                 binding?.tvPlaytime?.text = SimpleDateFormat(
                     "mm:ss", Locale.getDefault()
-                ).format(mediaPlayerIInteractor.currentPosition())
+                ).format(viewModel.getCurrentPosition())
+
                 handler.postDelayed(this, PLAYBACK_UPDATE_DELAY_MS)
             }
         }
@@ -124,18 +122,16 @@ class PlayerActivity : AppCompatActivity() {
 
     override fun onPause() {
         super.onPause()
-        mediaPlayerIInteractor.pausePlayer { binding?.btnPlay?.setImageResource(R.drawable.ic_play) }
-        handler.removeCallbacksAndMessages(getCurrentPlaybackPosition())
+        handler.removeCallbacksAndMessages(updateTime())
     }
 
     override fun onDestroy() {
         super.onDestroy()
         handler.removeCallbacksAndMessages(null)
-        mediaPlayerIInteractor.release()
     }
 
     companion object {
-        private const val CLICK_DEBOUNCE_DELAY_MS = 500L
-        private const val PLAYBACK_UPDATE_DELAY_MS = 300L
+        private const val CLICK_DEBOUNCE_DELAY_MS = 1000L
+        private const val PLAYBACK_UPDATE_DELAY_MS = 1000L
     }
 }

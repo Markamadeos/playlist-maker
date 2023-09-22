@@ -1,4 +1,4 @@
-package com.guap.vkr.playlistmaker.search.ui
+package com.guap.vkr.playlistmaker.search.ui.model
 
 import com.guap.vkr.playlistmaker.search.domain.model.Track
 

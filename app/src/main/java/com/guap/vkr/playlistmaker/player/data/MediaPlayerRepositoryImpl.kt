@@ -1,46 +1,40 @@
 package com.guap.vkr.playlistmaker.player.data
 
 import android.media.MediaPlayer
+import android.util.Log
 import com.guap.vkr.playlistmaker.player.domain.api.MediaPlayerRepository
 
 class MediaPlayerRepositoryImpl : MediaPlayerRepository {
 
-    private val mediaPlayer = MediaPlayer()
+    private val audioPlayer = MediaPlayer()
 
-    override fun setDataSource(dataSource: String) {
-        mediaPlayer.setDataSource(dataSource)
-    }
-
-    override fun prepareAsync() {
-        mediaPlayer.prepareAsync()
-    }
-
-    override fun setOnPreparedListener(onPreparedListener: () -> Unit) {
-        mediaPlayer.setOnPreparedListener {
+    override fun preparePlayer(url: String, onPreparedListener: () -> Unit) {
+        audioPlayer.setDataSource(url)
+        audioPlayer.prepareAsync()
+        audioPlayer.setOnPreparedListener {
             onPreparedListener()
         }
     }
 
     override fun setOnCompletionListener(onCompletionListener: () -> Unit) {
-        mediaPlayer.setOnCompletionListener {
-            onCompletionListener()
-        }
+        audioPlayer.setOnCompletionListener { onCompletionListener() }
     }
 
-    override fun start() {
-        mediaPlayer.start()
+    override fun getCurrentPosition(): Int {
+        Log.e("WTF", "current pos is ${audioPlayer.currentPosition}")
+        return audioPlayer.currentPosition
     }
 
-    override fun pause() {
-        mediaPlayer.pause()
+    override fun startPlayer() {
+        audioPlayer.start()
     }
 
-    override fun release() {
-        mediaPlayer.release()
+    override fun pausePlayer() {
+        audioPlayer.pause()
     }
 
-    override fun currentPosition(): Int {
-        return mediaPlayer.currentPosition
+    override fun destroyPlayer() {
+        audioPlayer.release()
     }
 
 }

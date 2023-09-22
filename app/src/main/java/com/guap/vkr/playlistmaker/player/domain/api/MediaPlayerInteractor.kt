@@ -1,6 +1,6 @@
 package com.guap.vkr.playlistmaker.player.domain.api
 
-interface MediaPlayerRepository {
+interface MediaPlayerInteractor {
 
     fun preparePlayer(url: String, onPreparedListener: () -> Unit)
 
