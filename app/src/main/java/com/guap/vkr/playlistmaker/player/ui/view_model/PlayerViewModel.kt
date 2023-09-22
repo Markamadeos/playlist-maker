@@ -15,9 +15,14 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 
-class PlayerViewModel(private val mediaPlayerInteractor: MediaPlayerInteractor, private val trackUrl: String) : ViewModel() {
+class PlayerViewModel(
+    private val mediaPlayerInteractor: MediaPlayerInteractor,
+    private val trackUrl: String
+) : ViewModel() {
 
     private val handler = Handler(Looper.getMainLooper())
+
+    private var clickAllowed = true
 
     private val stateLiveData = MutableLiveData<MediaPlayerState>()
     private val timerLiveData = MutableLiveData<String>()
@@ -30,6 +35,7 @@ class PlayerViewModel(private val mediaPlayerInteractor: MediaPlayerInteractor, 
         renderState(MediaPlayerState.DEFAULT)
         prepareAudioPlayer()
         setOnCompleteListener()
+        isClickAllowed()
     }
 
     private fun prepareAudioPlayer() {
@@ -92,15 +98,26 @@ class PlayerViewModel(private val mediaPlayerInteractor: MediaPlayerInteractor, 
     private fun updateTime(): Runnable {
         return object : Runnable {
             override fun run() {
-                timerLiveData.postValue(SimpleDateFormat("mm:ss", Locale.getDefault())
-                        .format(getCurrentPosition()))
+                timerLiveData.postValue(
+                    SimpleDateFormat("mm:ss", Locale.getDefault())
+                        .format(getCurrentPosition())
+                )
                 handler.postDelayed(this, PLAYBACK_UPDATE_DELAY_MS)
             }
         }
     }
 
-    companion object {
+    fun isClickAllowed(): Boolean {
+        val current = clickAllowed
+        if (clickAllowed) {
+            clickAllowed = false
+            handler.postDelayed({ clickAllowed = true }, CLICK_DEBOUNCE_DELAY_MS)
+        }
+        return current
+    }
 
+    companion object {
+        private const val CLICK_DEBOUNCE_DELAY_MS = 1000L
         private const val PLAYBACK_UPDATE_DELAY_MS = 300L
 
         fun getViewModelFactory(url: String): ViewModelProvider.Factory = viewModelFactory() {

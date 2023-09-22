@@ -1,8 +1,6 @@
 package com.guap.vkr.playlistmaker.player.ui.activity
 
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
@@ -19,10 +17,7 @@ class PlayerActivity : AppCompatActivity() {
 
     private var binding: ActivityPlayerBinding? = null
 
-    private val handler = Handler(Looper.getMainLooper())
-    private var clickAllowed = true
     private lateinit var viewModel: PlayerViewModel
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,7 +28,7 @@ class PlayerActivity : AppCompatActivity() {
         bind(track)
 
         viewModel = ViewModelProvider(
-                this, PlayerViewModel
+            this, PlayerViewModel
                 .getViewModelFactory(track.previewUrl)
         )[PlayerViewModel::class.java]
 
@@ -46,7 +41,7 @@ class PlayerActivity : AppCompatActivity() {
         }
 
         binding?.btnPlay?.setOnClickListener {
-            if (isClickAllowed()) {
+            if (viewModel.isClickAllowed()) {
                 viewModel.playbackControl()
             }
         }
@@ -60,11 +55,11 @@ class PlayerActivity : AppCompatActivity() {
         val cornerRadius = this.resources.getDimensionPixelSize(R.dimen.corner_radius_8dp)
 
         Glide.with(this)
-                .load(track.getCoverArtwork())
-                .placeholder(R.drawable.iv_track_cover)
-                .centerCrop()
-                .transform(RoundedCorners(cornerRadius))
-                .into(binding!!.ivCover)
+            .load(track.getCoverArtwork())
+            .placeholder(R.drawable.iv_track_cover)
+            .centerCrop()
+            .transform(RoundedCorners(cornerRadius))
+            .into(binding!!.ivCover)
 
         binding?.apply {
             tvTrackName.text = track.trackName
@@ -79,15 +74,6 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     private fun getTrack() = Gson().fromJson(intent.getStringExtra(TRACK), Track::class.java)
-
-    private fun isClickAllowed(): Boolean {
-        val current = clickAllowed
-        if (clickAllowed) {
-            clickAllowed = false
-            handler.postDelayed({ clickAllowed = true }, CLICK_DEBOUNCE_DELAY_MS)
-        }
-        return current
-    }
 
     private fun updateTimer(time: String) {
         binding?.tvPlaytime?.text = time
@@ -115,14 +101,5 @@ class PlayerActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         viewModel.onPause()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        handler.removeCallbacksAndMessages(null)
-    }
-
-    companion object {
-        private const val CLICK_DEBOUNCE_DELAY_MS = 1000L
     }
 }

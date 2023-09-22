@@ -24,7 +24,7 @@ class SettingsActivity : AppCompatActivity() {
 
         viewModel = ViewModelProvider(
             this,
-            SettingsViewModel.getViewModelFactory(applicationContext)
+            SettingsViewModel.getViewModelFactory(this)
         )[SettingsViewModel::class.java]
 
         viewModel.themeLiveData.observe(this) {
