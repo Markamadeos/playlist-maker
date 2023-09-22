@@ -42,7 +42,7 @@ object Creator {
 
     private fun provideSearchRepository(context: Context): SearchRepository {
         return SearchRepositoryImpl(
-            RetrofitNetworkClient(),
+            RetrofitNetworkClient(context),
             com.guap.vkr.playlistmaker.search.data.sharedPrefs.SharedPrefsDataStorage(context),
         )
     }
