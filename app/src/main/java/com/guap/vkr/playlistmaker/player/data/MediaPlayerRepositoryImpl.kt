@@ -1,7 +1,6 @@
 package com.guap.vkr.playlistmaker.player.data
 
 import android.media.MediaPlayer
-import android.util.Log
 import com.guap.vkr.playlistmaker.player.domain.api.MediaPlayerRepository
 
 class MediaPlayerRepositoryImpl : MediaPlayerRepository {
@@ -21,7 +20,6 @@ class MediaPlayerRepositoryImpl : MediaPlayerRepository {
     }
 
     override fun getCurrentPosition(): Int {
-        Log.e("WTF", "current pos is ${audioPlayer.currentPosition}")
         return audioPlayer.currentPosition
     }
 

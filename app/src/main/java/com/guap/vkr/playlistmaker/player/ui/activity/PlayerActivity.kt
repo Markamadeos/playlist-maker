@@ -14,8 +14,6 @@ import com.guap.vkr.playlistmaker.player.domain.model.Track
 import com.guap.vkr.playlistmaker.player.ui.model.MediaPlayerState
 import com.guap.vkr.playlistmaker.player.ui.view_model.PlayerViewModel
 import com.guap.vkr.playlistmaker.utils.TRACK
-import java.text.SimpleDateFormat
-import java.util.Locale
 
 class PlayerActivity : AppCompatActivity() {
 
@@ -24,6 +22,7 @@ class PlayerActivity : AppCompatActivity() {
     private val handler = Handler(Looper.getMainLooper())
     private var clickAllowed = true
     private lateinit var viewModel: PlayerViewModel
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,7 +33,7 @@ class PlayerActivity : AppCompatActivity() {
         bind(track)
 
         viewModel = ViewModelProvider(
-            this, PlayerViewModel
+                this, PlayerViewModel
                 .getViewModelFactory(track.previewUrl)
         )[PlayerViewModel::class.java]
 
@@ -42,10 +41,14 @@ class PlayerActivity : AppCompatActivity() {
             updateScreen(it)
         }
 
+        viewModel.observeTimer().observe(this) {
+            updateTimer(it)
+        }
+
         binding?.btnPlay?.setOnClickListener {
-            // if (isClickAllowed()) {
-            viewModel.playbackControl()
-            // }
+            if (isClickAllowed()) {
+                viewModel.playbackControl()
+            }
         }
 
         binding?.btnBack?.setOnClickListener {
@@ -57,11 +60,11 @@ class PlayerActivity : AppCompatActivity() {
         val cornerRadius = this.resources.getDimensionPixelSize(R.dimen.corner_radius_8dp)
 
         Glide.with(this)
-            .load(track.getCoverArtwork())
-            .placeholder(R.drawable.iv_track_cover)
-            .centerCrop()
-            .transform(RoundedCorners(cornerRadius))
-            .into(binding!!.ivCover)
+                .load(track.getCoverArtwork())
+                .placeholder(R.drawable.iv_track_cover)
+                .centerCrop()
+                .transform(RoundedCorners(cornerRadius))
+                .into(binding!!.ivCover)
 
         binding?.apply {
             tvTrackName.text = track.trackName
@@ -86,20 +89,21 @@ class PlayerActivity : AppCompatActivity() {
         return current
     }
 
+    private fun updateTimer(time: String) {
+        binding?.tvPlaytime?.text = time
+    }
+
     private fun updateScreen(state: MediaPlayerState) {
         when (state) {
             is MediaPlayerState.PLAYING -> {
                 binding?.btnPlay?.setImageResource(R.drawable.ic_pause)
-                handler.post(updateTime())
             }
 
             is MediaPlayerState.PAUSED -> {
-                handler.removeCallbacksAndMessages(null)
                 binding?.btnPlay?.setImageResource(R.drawable.ic_play)
             }
 
             is MediaPlayerState.PREPARED -> {
-                handler.removeCallbacksAndMessages(null)
                 binding?.btnPlay?.setImageResource(R.drawable.ic_play)
                 binding?.tvPlaytime?.setText(R.string.default_playtime_value)
             }
@@ -108,21 +112,9 @@ class PlayerActivity : AppCompatActivity() {
         }
     }
 
-    private fun updateTime(): Runnable {
-        return object : Runnable {
-            override fun run() {
-                binding?.tvPlaytime?.text = SimpleDateFormat(
-                    "mm:ss", Locale.getDefault()
-                ).format(viewModel.getCurrentPosition())
-
-                handler.postDelayed(this, PLAYBACK_UPDATE_DELAY_MS)
-            }
-        }
-    }
-
     override fun onPause() {
         super.onPause()
-        handler.removeCallbacksAndMessages(updateTime())
+        viewModel.onPause()
     }
 
     override fun onDestroy() {
@@ -132,6 +124,5 @@ class PlayerActivity : AppCompatActivity() {
 
     companion object {
         private const val CLICK_DEBOUNCE_DELAY_MS = 1000L
-        private const val PLAYBACK_UPDATE_DELAY_MS = 1000L
     }
 }
