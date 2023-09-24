@@ -42,7 +42,7 @@ class SearchActivity : AppCompatActivity() {
         }
 
         viewModel = ViewModelProvider(
-            this, SearchViewModel.getViewModelFactory(applicationContext)
+                this, SearchViewModel.getViewModelFactory(applicationContext)
         )[SearchViewModel::class.java]
 
         viewModel.stateLiveData().observe(this) {
@@ -85,6 +85,9 @@ class SearchActivity : AppCompatActivity() {
                 etSearch.setText("")
                 hideKeyboard()
                 tracks.clear()
+                if (tracksHistory.isNotEmpty()) {
+                    placeholderSearchHistory.visibility = View.VISIBLE
+                }
                 searchAdapter.notifyDataSetChanged()
             }
 
@@ -137,7 +140,7 @@ class SearchActivity : AppCompatActivity() {
 
     private fun Context.hideKeyboard(view: View) {
         val inputMethodManager =
-            getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+                getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
@@ -145,7 +148,7 @@ class SearchActivity : AppCompatActivity() {
         if (isClickAllowed()) {
             viewModel.addTrackToHistory(track)
             val playIntent =
-                Intent(this, PlayerActivity::class.java).putExtra(TRACK, Gson().toJson(track))
+                    Intent(this, PlayerActivity::class.java).putExtra(TRACK, Gson().toJson(track))
             startActivity(playIntent)
         }
     }
