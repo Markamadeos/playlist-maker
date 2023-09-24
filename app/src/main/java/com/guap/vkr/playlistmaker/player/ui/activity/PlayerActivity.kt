@@ -57,8 +57,7 @@ class PlayerActivity : AppCompatActivity() {
         Glide.with(this)
             .load(track.getCoverArtwork())
             .placeholder(R.drawable.iv_track_cover)
-            .centerCrop()
-            .transform(RoundedCorners(cornerRadius))
+            .transform(CenterCrop(), RoundedCorners(cornerRadius))
             .into(binding!!.ivCover)
 
         binding?.apply {
