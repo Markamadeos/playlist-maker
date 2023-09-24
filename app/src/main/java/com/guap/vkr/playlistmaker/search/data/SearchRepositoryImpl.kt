@@ -18,7 +18,7 @@ class SearchRepositoryImpl(
 
         return when (response.resultCode) {
             -1 -> {
-                ResponseStatus.Error(true)
+                ResponseStatus.Error()
             }
 
             HttpsURLConnection.HTTP_OK -> {
@@ -39,7 +39,7 @@ class SearchRepositoryImpl(
             }
 
             else -> {
-                ResponseStatus.Error(true)
+                ResponseStatus.Error()
             }
         }
     }
