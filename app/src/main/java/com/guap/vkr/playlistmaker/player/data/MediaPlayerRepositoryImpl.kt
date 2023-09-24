@@ -3,9 +3,7 @@ package com.guap.vkr.playlistmaker.player.data
 import android.media.MediaPlayer
 import com.guap.vkr.playlistmaker.player.domain.api.MediaPlayerRepository
 
-class MediaPlayerRepositoryImpl : MediaPlayerRepository {
-
-    private val audioPlayer = MediaPlayer()
+class MediaPlayerRepositoryImpl(private val audioPlayer: MediaPlayer) : MediaPlayerRepository {
 
     override fun preparePlayer(url: String, onPreparedListener: () -> Unit) {
         audioPlayer.setDataSource(url)
