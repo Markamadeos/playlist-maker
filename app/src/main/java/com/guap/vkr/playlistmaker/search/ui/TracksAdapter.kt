@@ -4,11 +4,11 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.guap.vkr.playlistmaker.databinding.TrackItemViewBinding
-import com.guap.vkr.playlistmaker.search.domain.model.Track
+import com.guap.vkr.playlistmaker.search.domain.model.TrackSearchModel
 
 class TracksAdapter(
-    private val tracks: ArrayList<Track>,
-    private val clickListener: TrackClickListener
+        private val tracks: ArrayList<TrackSearchModel>,
+        private val clickListener: TrackClickListener
 ) : RecyclerView.Adapter<TracksViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TracksViewHolder {
@@ -29,6 +29,6 @@ class TracksAdapter(
     }
 
     fun interface TrackClickListener {
-        fun onTrackClick(track: Track)
+        fun onTrackClick(track: TrackSearchModel)
     }
 }

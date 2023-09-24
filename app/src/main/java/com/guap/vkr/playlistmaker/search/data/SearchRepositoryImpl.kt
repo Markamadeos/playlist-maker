@@ -5,15 +5,15 @@ import com.guap.vkr.playlistmaker.search.data.dto.TrackDto
 import com.guap.vkr.playlistmaker.search.data.dto.TracksSearchRequest
 import com.guap.vkr.playlistmaker.search.data.dto.TracksSearchResponse
 import com.guap.vkr.playlistmaker.search.domain.SearchRepository
-import com.guap.vkr.playlistmaker.search.domain.model.Track
+import com.guap.vkr.playlistmaker.search.domain.model.TrackSearchModel
 import javax.net.ssl.HttpsURLConnection
 
 class SearchRepositoryImpl(
     private val networkClient: NetworkClient,
-    private val dataStorage: DataStorage
+    private val dataStorageSearchFeature: DataStorageSearchFeature
 ) : SearchRepository {
 
-    override fun searchTrack(expression: String): ResponseStatus<List<Track>> {
+    override fun searchTrack(expression: String): ResponseStatus<List<TrackSearchModel>> {
         val response = networkClient.doRequest(TracksSearchRequest(expression))
 
         return when (response.resultCode) {
@@ -23,7 +23,7 @@ class SearchRepositoryImpl(
 
             HttpsURLConnection.HTTP_OK -> {
                 ResponseStatus.Success((response as TracksSearchResponse).results.map {
-                    Track(
+                    TrackSearchModel(
                         it.trackId,
                         it.trackName,
                         it.artistName,
@@ -44,9 +44,9 @@ class SearchRepositoryImpl(
         }
     }
 
-    override fun getTrackHistoryList(): List<Track> {
-        return dataStorage.getSearchHistory().map {
-            Track(
+    override fun getTrackHistoryList(): List<TrackSearchModel> {
+        return dataStorageSearchFeature.getSearchHistory().map {
+            TrackSearchModel(
                 it.trackId,
                 it.trackName,
                 it.artistName,
@@ -61,8 +61,8 @@ class SearchRepositoryImpl(
         }
     }
 
-    override fun addTrackInHistory(track: Track) {
-        dataStorage.addTrackToHistory(
+    override fun addTrackInHistory(track: TrackSearchModel) {
+        dataStorageSearchFeature.addTrackToHistory(
             TrackDto(
                 track.trackId,
                 track.trackName,
@@ -79,6 +79,6 @@ class SearchRepositoryImpl(
     }
 
     override fun clearHistory() {
-        dataStorage.clearHistory()
+        dataStorageSearchFeature.clearHistory()
     }
 }

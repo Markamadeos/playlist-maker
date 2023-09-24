@@ -4,13 +4,13 @@ import android.app.Application.MODE_PRIVATE
 import android.content.Context
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.guap.vkr.playlistmaker.search.data.DataStorage
+import com.guap.vkr.playlistmaker.search.data.DataStorageSearchFeature
 import com.guap.vkr.playlistmaker.search.data.dto.TrackDto
 import com.guap.vkr.playlistmaker.utils.SEARCH_HISTORY_KEY
 import com.guap.vkr.playlistmaker.utils.SHARED_PREFERENCES
 import java.lang.reflect.Type
 
-class SharedPrefsDataStorage(context: Context) : DataStorage {
+class SharedPrefsDataStorageSearchFeature(context: Context) : DataStorageSearchFeature {
 
     private val sharedPref = context.getSharedPreferences(
         SHARED_PREFERENCES,

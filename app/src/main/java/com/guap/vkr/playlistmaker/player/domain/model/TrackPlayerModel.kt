@@ -1,9 +1,9 @@
-package com.guap.vkr.playlistmaker.search.domain.model
+package com.guap.vkr.playlistmaker.player.domain.model
 
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-data class Track(
+data class TrackPlayerModel(
     val trackId: Long,
     val trackName: String,
     val artistName: String,
@@ -15,5 +15,13 @@ data class Track(
     val country: String,
     val previewUrl: String
 ) {
+    fun getCoverArtwork() = artworkUrl100.replaceAfterLast('/', "512x512bb.jpg")
+
     fun getDuration() = SimpleDateFormat("mm:ss", Locale.getDefault()).format(trackTimeMillis)
+
+    fun getReleaseYear() = releaseDate.substringBefore('-')
 }
+
+
+
+

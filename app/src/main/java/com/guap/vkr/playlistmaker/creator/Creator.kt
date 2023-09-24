@@ -9,9 +9,9 @@ import com.guap.vkr.playlistmaker.search.data.network.RetrofitNetworkClient
 import com.guap.vkr.playlistmaker.search.domain.SearchInteractor
 import com.guap.vkr.playlistmaker.search.domain.SearchRepository
 import com.guap.vkr.playlistmaker.search.domain.impl.SearchInteractorImpl
-import com.guap.vkr.playlistmaker.settings.data.DataStorage
+import com.guap.vkr.playlistmaker.settings.data.DataStorageSettingsFeature
 import com.guap.vkr.playlistmaker.settings.data.SettingsRepositoryImpl
-import com.guap.vkr.playlistmaker.settings.data.sharedPrefs.SharedPrefDataStorage
+import com.guap.vkr.playlistmaker.settings.data.sharedPrefs.SharedPrefDataStorageSettingsFeature
 import com.guap.vkr.playlistmaker.settings.domain.SettingsInteractor
 import com.guap.vkr.playlistmaker.settings.domain.impl.SettingsInteractorImpl
 import com.guap.vkr.playlistmaker.sharing.data.ExternalNavigatorImpl
@@ -36,14 +36,14 @@ object Creator {
         return SearchInteractorImpl(provideSearchRepository(context))
     }
 
-    private fun provideDataStorage(context: Context): DataStorage {
-        return SharedPrefDataStorage(context)
+    private fun provideDataStorage(context: Context): DataStorageSettingsFeature {
+        return SharedPrefDataStorageSettingsFeature(context)
     }
 
     private fun provideSearchRepository(context: Context): SearchRepository {
         return SearchRepositoryImpl(
             RetrofitNetworkClient(context),
-            com.guap.vkr.playlistmaker.search.data.sharedPrefs.SharedPrefsDataStorage(context),
+            com.guap.vkr.playlistmaker.search.data.sharedPrefs.SharedPrefsDataStorageSearchFeature(context),
         )
     }
 }

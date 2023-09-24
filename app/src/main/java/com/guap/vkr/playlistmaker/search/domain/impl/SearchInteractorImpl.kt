@@ -1,7 +1,7 @@
 package com.guap.vkr.playlistmaker.search.domain.impl
 
 import com.guap.vkr.playlistmaker.search.data.dto.ResponseStatus
-import com.guap.vkr.playlistmaker.search.domain.model.Track
+import com.guap.vkr.playlistmaker.search.domain.model.TrackSearchModel
 import com.guap.vkr.playlistmaker.search.domain.SearchRepository
 import com.guap.vkr.playlistmaker.search.domain.SearchInteractor
 import java.util.concurrent.Executors
@@ -23,7 +23,7 @@ class SearchInteractorImpl(private val repository: SearchRepository) : SearchInt
         consumer.consume(repository.getTrackHistoryList())
     }
 
-    override fun addTrackToHistory(track: Track) {
+    override fun addTrackToHistory(track: TrackSearchModel) {
         repository.addTrackInHistory(track)
     }
 

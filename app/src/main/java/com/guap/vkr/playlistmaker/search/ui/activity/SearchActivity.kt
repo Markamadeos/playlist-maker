@@ -17,7 +17,7 @@ import com.google.gson.Gson
 import com.guap.vkr.playlistmaker.R
 import com.guap.vkr.playlistmaker.databinding.ActivitySearchBinding
 import com.guap.vkr.playlistmaker.player.ui.activity.PlayerActivity
-import com.guap.vkr.playlistmaker.search.domain.model.Track
+import com.guap.vkr.playlistmaker.search.domain.model.TrackSearchModel
 import com.guap.vkr.playlistmaker.search.ui.model.ScreenState
 import com.guap.vkr.playlistmaker.search.ui.TracksAdapter
 import com.guap.vkr.playlistmaker.search.ui.view_model.SearchViewModel
@@ -25,8 +25,8 @@ import com.guap.vkr.playlistmaker.utils.TRACK
 
 class SearchActivity : AppCompatActivity() {
 
-    private val tracks = ArrayList<Track>()
-    private val tracksHistory = ArrayList<Track>()
+    private val tracks = ArrayList<TrackSearchModel>()
+    private val tracksHistory = ArrayList<TrackSearchModel>()
     private val searchAdapter = TracksAdapter(tracks) { trackClickListener(it) }
     private val historyAdapter = TracksAdapter(tracksHistory) { trackClickListener(it) }
     private val handler = Handler(Looper.getMainLooper())
@@ -141,7 +141,7 @@ class SearchActivity : AppCompatActivity() {
         inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
-    private fun trackClickListener(track: Track) {
+    private fun trackClickListener(track: TrackSearchModel) {
         if (isClickAllowed()) {
             viewModel.addTrackToHistory(track)
             val playIntent =
@@ -164,7 +164,7 @@ class SearchActivity : AppCompatActivity() {
             when (state) {
                 is ScreenState.Content -> {
                     tracks.clear()
-                    tracks.addAll(state.tracks as ArrayList<Track>)
+                    tracks.addAll(state.tracks as ArrayList<TrackSearchModel>)
                     progressBar.visibility = View.GONE
                     rvSearchResult.visibility = View.VISIBLE
                     errorContainer.visibility = View.GONE

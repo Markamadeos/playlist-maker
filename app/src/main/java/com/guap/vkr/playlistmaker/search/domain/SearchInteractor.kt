@@ -1,18 +1,18 @@
 package com.guap.vkr.playlistmaker.search.domain
 
-import com.guap.vkr.playlistmaker.search.domain.model.Track
+import com.guap.vkr.playlistmaker.search.domain.model.TrackSearchModel
 
 interface SearchInteractor {
     fun searchTracks(expression: String, consumer: SearchConsumer)
     fun getTracksHistory(consumer: HistoryConsumer)
-    fun addTrackToHistory(track: Track)
+    fun addTrackToHistory(track: TrackSearchModel)
     fun clearHistory()
 
     interface SearchConsumer {
-        fun consume(tracks: List<Track>?, hasError: Boolean?)
+        fun consume(tracks: List<TrackSearchModel>?, hasError: Boolean?)
     }
 
     interface HistoryConsumer {
-        fun consume(tracks: List<Track>?)
+        fun consume(tracks: List<TrackSearchModel>?)
     }
 }

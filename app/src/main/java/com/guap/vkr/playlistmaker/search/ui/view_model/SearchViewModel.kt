@@ -12,7 +12,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.guap.vkr.playlistmaker.creator.Creator
 import com.guap.vkr.playlistmaker.search.domain.SearchInteractor
-import com.guap.vkr.playlistmaker.search.domain.model.Track
+import com.guap.vkr.playlistmaker.search.domain.model.TrackSearchModel
 import com.guap.vkr.playlistmaker.search.ui.model.ScreenState
 
 class SearchViewModel(private val searchInteractor: SearchInteractor) : ViewModel() {
@@ -45,8 +45,8 @@ class SearchViewModel(private val searchInteractor: SearchInteractor) : ViewMode
             renderState(ScreenState.Loading)
 
             searchInteractor.searchTracks(expression, object : SearchInteractor.SearchConsumer {
-                override fun consume(foundTracks: List<Track>?, hasError: Boolean?) {
-                    val tracks = mutableListOf<Track>()
+                override fun consume(foundTracks: List<TrackSearchModel>?, hasError: Boolean?) {
+                    val tracks = mutableListOf<TrackSearchModel>()
 
                     if (foundTracks != null) {
                         tracks.addAll(foundTracks)
@@ -70,7 +70,7 @@ class SearchViewModel(private val searchInteractor: SearchInteractor) : ViewMode
 
     fun getTracksHistory() {
         searchInteractor.getTracksHistory(object : SearchInteractor.HistoryConsumer {
-            override fun consume(tracks: List<Track>?) {
+            override fun consume(tracks: List<TrackSearchModel>?) {
                 if (tracks.isNullOrEmpty()) {
                     renderState(ScreenState.EmptyHistoryList())
                 } else {
@@ -80,7 +80,7 @@ class SearchViewModel(private val searchInteractor: SearchInteractor) : ViewMode
         })
     }
 
-    fun addTrackToHistory(track: Track) {
+    fun addTrackToHistory(track: TrackSearchModel) {
         searchInteractor.addTrackToHistory(track)
     }
 
