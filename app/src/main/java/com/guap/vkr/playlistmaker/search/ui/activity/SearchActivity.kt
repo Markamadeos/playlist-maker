@@ -85,9 +85,7 @@ class SearchActivity : AppCompatActivity() {
                 etSearch.setText("")
                 hideKeyboard()
                 tracks.clear()
-                if (tracksHistory.isNotEmpty()) {
-                    placeholderSearchHistory.visibility = View.VISIBLE
-                }
+                viewModel.getTracksHistory()
                 searchAdapter.notifyDataSetChanged()
             }
 

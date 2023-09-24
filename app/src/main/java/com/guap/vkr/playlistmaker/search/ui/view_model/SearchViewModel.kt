@@ -36,7 +36,7 @@ class SearchViewModel(private val searchInteractor: SearchInteractor) : ViewMode
         handler.postAtTime(
             searchRunnable,
             SEARCH_REQUEST_TOKEN,
-            postTime,
+            postTime
         )
     }
 
