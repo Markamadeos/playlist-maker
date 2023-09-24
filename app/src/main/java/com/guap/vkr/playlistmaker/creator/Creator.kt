@@ -23,7 +23,7 @@ import com.guap.vkr.playlistmaker.sharing.domain.impl.SharingIntercatorImpl
 object Creator {
 
     fun provideMediaPlayerInteractor(): MediaPlayerInteractor {
-        return MediaPlayerInteractorImpl(provideMediaPlayerRepository())
+        return MediaPlayerInteractorImpl(provideMediaPlayerRepository(MediaPlayer()))
     }
 
     fun provideSettingsInteractor(context: Context): SettingsInteractor {
