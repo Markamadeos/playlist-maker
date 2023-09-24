@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.gson.Gson
 import com.guap.vkr.playlistmaker.R
@@ -80,15 +81,15 @@ class PlayerActivity : AppCompatActivity() {
 
     private fun updateScreen(state: MediaPlayerState) {
         when (state) {
-            is MediaPlayerState.PLAYING -> {
+            is MediaPlayerState.Playing -> {
                 binding?.btnPlay?.setImageResource(R.drawable.ic_pause)
             }
 
-            is MediaPlayerState.PAUSED -> {
+            is MediaPlayerState.Paused -> {
                 binding?.btnPlay?.setImageResource(R.drawable.ic_play)
             }
 
-            is MediaPlayerState.PREPARED -> {
+            is MediaPlayerState.Prepared -> {
                 binding?.btnPlay?.setImageResource(R.drawable.ic_play)
                 binding?.tvPlaytime?.setText(R.string.default_playtime_value)
             }

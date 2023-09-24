@@ -32,7 +32,7 @@ class PlayerViewModel(
     fun observeClickAllow(): LiveData<Boolean> = clickAllowLiveData
 
     init {
-        renderState(MediaPlayerState.DEFAULT)
+        renderState(MediaPlayerState.Default)
         prepareAudioPlayer()
         setOnCompleteListener()
         isClickAllowed()
@@ -40,19 +40,19 @@ class PlayerViewModel(
 
     private fun prepareAudioPlayer() {
         mediaPlayerInteractor.preparePlayer(trackUrl) {
-            renderState(MediaPlayerState.PREPARED)
+            renderState(MediaPlayerState.Prepared)
         }
     }
 
 
     private fun startAudioPlayer() {
         mediaPlayerInteractor.startPlayer()
-        renderState(MediaPlayerState.PLAYING(mediaPlayerInteractor.getCurrentPosition()))
+        renderState(MediaPlayerState.Playing(mediaPlayerInteractor.getCurrentPosition()))
     }
 
     private fun pauseAudioPlayer() {
         mediaPlayerInteractor.pausePlayer()
-        renderState(MediaPlayerState.PAUSED)
+        renderState(MediaPlayerState.Paused)
     }
 
 
@@ -62,17 +62,17 @@ class PlayerViewModel(
 
     private fun setOnCompleteListener() {
         mediaPlayerInteractor.setOnCompletionListener {
-            renderState(MediaPlayerState.PREPARED)
+            renderState(MediaPlayerState.Prepared)
         }
     }
 
     fun playbackControl() {
         when (stateLiveData.value) {
-            is MediaPlayerState.PLAYING -> {
+            is MediaPlayerState.Playing -> {
                 pauseAudioPlayer()
             }
 
-            is MediaPlayerState.PREPARED, MediaPlayerState.PAUSED -> {
+            is MediaPlayerState.Prepared, MediaPlayerState.Paused -> {
                 startAudioPlayer()
                 handler.post(updateTime())
             }
