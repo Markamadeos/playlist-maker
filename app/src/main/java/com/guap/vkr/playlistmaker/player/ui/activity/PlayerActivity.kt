@@ -29,7 +29,7 @@ class PlayerActivity : AppCompatActivity() {
         bind(track)
 
         viewModel = ViewModelProvider(
-            this, PlayerViewModel
+                this, PlayerViewModel
                 .getViewModelFactory(track.previewUrl)
         )[PlayerViewModel::class.java]
 
@@ -56,10 +56,10 @@ class PlayerActivity : AppCompatActivity() {
         val cornerRadius = this.resources.getDimensionPixelSize(R.dimen.corner_radius_8dp)
 
         Glide.with(this)
-            .load(track.getCoverArtwork())
-            .placeholder(R.drawable.iv_track_cover)
-            .transform(CenterCrop(), RoundedCorners(cornerRadius))
-            .into(binding!!.ivCover)
+                .load(track.getCoverArtwork())
+                .placeholder(R.drawable.iv_track_cover)
+                .transform(CenterCrop(), RoundedCorners(cornerRadius))
+                .into(binding!!.ivCover)
 
         binding?.apply {
             tvTrackName.text = track.trackName
@@ -70,6 +70,9 @@ class PlayerActivity : AppCompatActivity() {
             tvYearValue.text = track.getReleaseYear()
             tvGenreValue.text = track.primaryGenreName
             tvCountryValue.text = track.country
+
+            tvTrackName.isSelected = true
+            tvArtistName.isSelected = true
         }
     }
 
