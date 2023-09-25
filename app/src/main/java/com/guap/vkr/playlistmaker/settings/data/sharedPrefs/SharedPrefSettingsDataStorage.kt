@@ -2,12 +2,12 @@ package com.guap.vkr.playlistmaker.settings.data.sharedPrefs
 
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
-import com.guap.vkr.playlistmaker.settings.data.DataStorageSettingsFeature
+import com.guap.vkr.playlistmaker.settings.data.SettingsDataStorage
 import com.guap.vkr.playlistmaker.settings.domain.model.ThemeSettings
 import com.guap.vkr.playlistmaker.utils.SHARED_PREFERENCES
 import com.guap.vkr.playlistmaker.utils.THEME_SWITCH_KEY
 
-class SharedPrefDataStorageSettingsFeature(context: Context) : DataStorageSettingsFeature {
+class SharedPrefSettingsDataStorage(context: Context) : SettingsDataStorage {
 
     private val sharedPrefs = context.getSharedPreferences(
         SHARED_PREFERENCES,

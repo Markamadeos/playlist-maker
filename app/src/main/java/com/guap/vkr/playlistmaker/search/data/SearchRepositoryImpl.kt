@@ -10,7 +10,7 @@ import javax.net.ssl.HttpsURLConnection
 
 class SearchRepositoryImpl(
     private val networkClient: NetworkClient,
-    private val dataStorageSearchFeature: DataStorageSearchFeature
+    private val searchDataStorage: SearchDataStorage
 ) : SearchRepository {
 
     override fun searchTrack(expression: String): ResponseStatus<List<TrackSearchModel>> {
@@ -45,7 +45,7 @@ class SearchRepositoryImpl(
     }
 
     override fun getTrackHistoryList(): List<TrackSearchModel> {
-        return dataStorageSearchFeature.getSearchHistory().map {
+        return searchDataStorage.getSearchHistory().map {
             TrackSearchModel(
                 it.trackId,
                 it.trackName,
@@ -62,7 +62,7 @@ class SearchRepositoryImpl(
     }
 
     override fun addTrackInHistory(track: TrackSearchModel) {
-        dataStorageSearchFeature.addTrackToHistory(
+        searchDataStorage.addTrackToHistory(
             TrackDto(
                 track.trackId,
                 track.trackName,
@@ -79,6 +79,6 @@ class SearchRepositoryImpl(
     }
 
     override fun clearHistory() {
-        dataStorageSearchFeature.clearHistory()
+        searchDataStorage.clearHistory()
     }
 }

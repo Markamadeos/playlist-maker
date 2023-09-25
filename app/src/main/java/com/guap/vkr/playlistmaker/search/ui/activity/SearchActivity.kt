@@ -91,7 +91,7 @@ class SearchActivity : AppCompatActivity() {
 
             btnClearHistory.setOnClickListener {
                 viewModel.clearHistory()
-                historyAdapter.notifyDataSetChanged()
+                viewModel.getTracksHistory()
                 placeholderSearchHistory.visibility = View.GONE
             }
 

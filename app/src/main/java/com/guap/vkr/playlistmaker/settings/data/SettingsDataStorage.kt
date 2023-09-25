@@ -2,7 +2,7 @@ package com.guap.vkr.playlistmaker.settings.data
 
 import com.guap.vkr.playlistmaker.settings.domain.model.ThemeSettings
 
-interface DataStorageSettingsFeature {
+interface SettingsDataStorage {
 
     fun saveTheme(themeSettings: ThemeSettings)
 
