@@ -3,7 +3,7 @@
 Небольшое приложение разрабатываемое в рамках курса Андроид-разработчик от Яндекс Практикума. 
 Умеет искать песни и сортировать их по плейлистам. 
 
-![](/screenshots/screenshot1.png) ![](/screenshots/screenshot2.png) ![](/screenshots/screenshot3.png)
+![](/screenshots/screenshot1.png | width=20) ![](/screenshots/screenshot2.png | width=20) ![](/screenshots/screenshot3.png | width=20)
 
 ## Содержание
 - [Технологии](#технологии)
