@@ -10,6 +10,7 @@ import com.guap.vkr.playlistmaker.utils.SEARCH_HISTORY_KEY
 import com.guap.vkr.playlistmaker.utils.SHARED_PREFERENCES
 import java.lang.reflect.Type
 
+@Suppress("UNCHECKED_CAST")
 class SharedPrefsSearchDataStorage(context: Context) : SearchDataStorage {
 
     private val sharedPref = context.getSharedPreferences(

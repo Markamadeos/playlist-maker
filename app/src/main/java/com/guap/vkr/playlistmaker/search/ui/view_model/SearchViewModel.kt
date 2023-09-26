@@ -1,6 +1,5 @@
 package com.guap.vkr.playlistmaker.search.ui.view_model
 
-import android.content.Context
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
@@ -8,14 +7,19 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.guap.vkr.playlistmaker.creator.Creator
 import com.guap.vkr.playlistmaker.search.domain.SearchInteractor
 import com.guap.vkr.playlistmaker.search.domain.model.TrackSearchModel
 import com.guap.vkr.playlistmaker.search.ui.model.ScreenState
+import com.guap.vkr.playlistmaker.utils.App
 
-class SearchViewModel(private val searchInteractor: SearchInteractor) : ViewModel() {
+class SearchViewModel(
+    private val searchInteractor: SearchInteractor,
+    private val app: App
+    ) : ViewModel() {
 
     private val handler = Handler(Looper.getMainLooper())
 
@@ -98,10 +102,12 @@ class SearchViewModel(private val searchInteractor: SearchInteractor) : ViewMode
 
     companion object {
 
-        fun getViewModelFactory(context: Context): ViewModelProvider.Factory = viewModelFactory {
+        fun getViewModelFactory(): ViewModelProvider.Factory = viewModelFactory {
             initializer {
+                val app = (this[APPLICATION_KEY] as App)
                 SearchViewModel(
-                    searchInteractor = Creator.provideSearchInteractor(context)
+                    searchInteractor = Creator.provideSearchInteractor(app.applicationContext),
+                    app = app
                 )
             }
         }

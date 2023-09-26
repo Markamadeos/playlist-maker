@@ -42,7 +42,7 @@ class SearchActivity : AppCompatActivity() {
         }
 
         viewModel = ViewModelProvider(
-                this, SearchViewModel.getViewModelFactory(applicationContext)
+                this, SearchViewModel.getViewModelFactory()
         )[SearchViewModel::class.java]
 
         viewModel.stateLiveData().observe(this) {
