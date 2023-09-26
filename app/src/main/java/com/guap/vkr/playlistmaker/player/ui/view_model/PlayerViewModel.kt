@@ -26,11 +26,8 @@ class PlayerViewModel(
 
     private val stateLiveData = MutableLiveData<MediaPlayerState>()
     private val timerLiveData = MutableLiveData<String>()
-    private val clickAllowLiveData = MutableLiveData<Boolean>()
     fun observeState(): LiveData<MediaPlayerState> = stateLiveData
     fun observeTimer(): LiveData<String> = timerLiveData
-    fun observeClickAllow(): LiveData<Boolean> = clickAllowLiveData
-
     init {
         renderState(MediaPlayerState.Default)
         prepareAudioPlayer()
