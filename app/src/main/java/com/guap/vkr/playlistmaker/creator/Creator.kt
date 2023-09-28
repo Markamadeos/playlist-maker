@@ -1,11 +1,6 @@
 package com.guap.vkr.playlistmaker.creator
 
 import android.content.Context
-import android.media.MediaPlayer
-import com.guap.vkr.playlistmaker.player.data.MediaPlayerRepositoryImpl
-import com.guap.vkr.playlistmaker.player.domain.api.MediaPlayerInteractor
-import com.guap.vkr.playlistmaker.player.domain.api.MediaPlayerRepository
-import com.guap.vkr.playlistmaker.player.domain.impl.MediaPlayerInteractorImpl
 import com.guap.vkr.playlistmaker.search.data.SearchRepositoryImpl
 import com.guap.vkr.playlistmaker.search.data.network.RetrofitNetworkClient
 import com.guap.vkr.playlistmaker.search.domain.SearchInteractor
@@ -22,10 +17,6 @@ import com.guap.vkr.playlistmaker.sharing.domain.impl.SharingIntercatorImpl
 
 object Creator {
 
-    fun provideMediaPlayerInteractor(): MediaPlayerInteractor {
-        return MediaPlayerInteractorImpl(provideMediaPlayerRepository(MediaPlayer()))
-    }
-
     fun provideSettingsInteractor(context: Context): SettingsInteractor {
         return SettingsInteractorImpl(SettingsRepositoryImpl(provideDataStorage(context)))
     }
@@ -40,10 +31,6 @@ object Creator {
 
     private fun provideDataStorage(context: Context): SettingsDataStorage {
         return SharedPrefSettingsDataStorage(context)
-    }
-
-    private fun provideMediaPlayerRepository(mediaPlayer: MediaPlayer): MediaPlayerRepository {
-        return MediaPlayerRepositoryImpl(mediaPlayer)
     }
 
     private fun provideSearchRepository(context: Context): SearchRepository {

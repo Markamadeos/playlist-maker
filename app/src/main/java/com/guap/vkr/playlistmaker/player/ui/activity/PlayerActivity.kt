@@ -2,7 +2,6 @@ package com.guap.vkr.playlistmaker.player.ui.activity
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
@@ -13,25 +12,23 @@ import com.guap.vkr.playlistmaker.player.domain.model.TrackPlayerModel
 import com.guap.vkr.playlistmaker.player.ui.model.MediaPlayerState
 import com.guap.vkr.playlistmaker.player.ui.view_model.PlayerViewModel
 import com.guap.vkr.playlistmaker.utils.TRACK
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 
 class PlayerActivity : AppCompatActivity() {
 
     private var binding: ActivityPlayerBinding? = null
 
-    private lateinit var viewModel: PlayerViewModel
+    private val viewModel: PlayerViewModel by viewModel() {
+        parametersOf(getTrack().previewUrl)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPlayerBinding.inflate(layoutInflater)
         setContentView(binding?.root)
 
-        val track = getTrack()
-        bind(track)
-
-        viewModel = ViewModelProvider(
-                this, PlayerViewModel
-                .getViewModelFactory(track.previewUrl)
-        )[PlayerViewModel::class.java]
+        bind(getTrack())
 
         viewModel.observeState().observe(this) {
             updateScreen(it)
@@ -56,10 +53,10 @@ class PlayerActivity : AppCompatActivity() {
         val cornerRadius = this.resources.getDimensionPixelSize(R.dimen.corner_radius_8dp)
 
         Glide.with(this)
-                .load(track.getCoverArtwork())
-                .placeholder(R.drawable.iv_track_cover)
-                .transform(CenterCrop(), RoundedCorners(cornerRadius))
-                .into(binding!!.ivCover)
+            .load(track.getCoverArtwork())
+            .placeholder(R.drawable.iv_track_cover)
+            .transform(CenterCrop(), RoundedCorners(cornerRadius))
+            .into(binding!!.ivCover)
 
         binding?.apply {
             tvTrackName.text = track.trackName
@@ -76,7 +73,8 @@ class PlayerActivity : AppCompatActivity() {
         }
     }
 
-    private fun getTrack() = Gson().fromJson(intent.getStringExtra(TRACK), TrackPlayerModel::class.java)
+    private fun getTrack() =
+        Gson().fromJson(intent.getStringExtra(TRACK), TrackPlayerModel::class.java)
 
     private fun updateTimer(time: String) {
         binding?.tvPlaytime?.text = time
