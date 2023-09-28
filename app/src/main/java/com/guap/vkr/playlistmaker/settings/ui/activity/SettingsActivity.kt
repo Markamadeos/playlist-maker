@@ -5,13 +5,13 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
-import androidx.lifecycle.ViewModelProvider
 import com.guap.vkr.playlistmaker.R
 import com.guap.vkr.playlistmaker.settings.ui.view_model.SettingsViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SettingsActivity : AppCompatActivity() {
 
-    private lateinit var viewModel: SettingsViewModel
+    private val viewModel by viewModel<SettingsViewModel>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_settings)
@@ -22,10 +22,10 @@ class SettingsActivity : AppCompatActivity() {
         val feedbackButton = findViewById<TextView>(R.id.btn_feedback)
         val licenseButton = findViewById<TextView>(R.id.btn_license)
 
-        viewModel = ViewModelProvider(
-            this,
-            SettingsViewModel.getViewModelFactory()
-        )[SettingsViewModel::class.java]
+//        viewModel = ViewModelProvider(
+//            this,
+//            SettingsViewModel.getViewModelFactory()
+//        )[SettingsViewModel::class.java]
 
         viewModel.themeLiveData.observe(this) {
             darkThemeButton.isChecked = it

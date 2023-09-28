@@ -12,16 +12,16 @@ import android.text.TextWatcher
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import com.google.gson.Gson
 import com.guap.vkr.playlistmaker.R
 import com.guap.vkr.playlistmaker.databinding.ActivitySearchBinding
 import com.guap.vkr.playlistmaker.player.ui.activity.PlayerActivity
 import com.guap.vkr.playlistmaker.search.domain.model.TrackSearchModel
-import com.guap.vkr.playlistmaker.search.ui.model.ScreenState
 import com.guap.vkr.playlistmaker.search.ui.TracksAdapter
+import com.guap.vkr.playlistmaker.search.ui.model.ScreenState
 import com.guap.vkr.playlistmaker.search.ui.view_model.SearchViewModel
 import com.guap.vkr.playlistmaker.utils.TRACK
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchActivity : AppCompatActivity() {
 
@@ -33,7 +33,7 @@ class SearchActivity : AppCompatActivity() {
     private var userInput = ""
     private var clickAllowed = true
     private lateinit var binding: ActivitySearchBinding
-    private lateinit var viewModel: SearchViewModel
+    private val viewModel by viewModel<SearchViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,9 +41,9 @@ class SearchActivity : AppCompatActivity() {
             setContentView(it.root)
         }
 
-        viewModel = ViewModelProvider(
-                this, SearchViewModel.getViewModelFactory()
-        )[SearchViewModel::class.java]
+//        viewModel = ViewModelProvider(
+//                this, SearchViewModel.getViewModelFactory()
+//        )[SearchViewModel::class.java]
 
         viewModel.stateLiveData().observe(this) {
             updateScreen(it)
