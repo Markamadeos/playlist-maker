@@ -1,10 +1,14 @@
 package com.guap.vkr.playlistmaker.settings.data
 
-import androidx.appcompat.app.AppCompatDelegate
+import android.content.Context
 import com.guap.vkr.playlistmaker.settings.domain.SettingsRepository
 import com.guap.vkr.playlistmaker.settings.domain.model.ThemeSettings
+import com.guap.vkr.playlistmaker.utils.App
 
-class SettingsRepositoryImpl(private val settingsDataStorage: SettingsDataStorage) :
+class SettingsRepositoryImpl(
+    private val settingsDataStorage: SettingsDataStorage,
+    private val applicationContext: Context
+) :
     SettingsRepository {
 
     override fun getThemeSettings(): ThemeSettings {
@@ -12,13 +16,7 @@ class SettingsRepositoryImpl(private val settingsDataStorage: SettingsDataStorag
     }
 
     override fun updateThemeSetting(settings: ThemeSettings) {
-        AppCompatDelegate.setDefaultNightMode(
-            if (settings.isDark) {
-                AppCompatDelegate.MODE_NIGHT_YES
-            } else {
-                AppCompatDelegate.MODE_NIGHT_NO
-            }
-        )
+        (applicationContext as App).switchTheme(settings.isDark)
         settingsDataStorage.saveTheme(settings)
     }
 }

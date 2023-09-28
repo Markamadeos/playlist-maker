@@ -22,11 +22,6 @@ class SettingsActivity : AppCompatActivity() {
         val feedbackButton = findViewById<TextView>(R.id.btn_feedback)
         val licenseButton = findViewById<TextView>(R.id.btn_license)
 
-//        viewModel = ViewModelProvider(
-//            this,
-//            SettingsViewModel.getViewModelFactory()
-//        )[SettingsViewModel::class.java]
-
         viewModel.themeLiveData.observe(this) {
             darkThemeButton.isChecked = it
         }

@@ -2,6 +2,7 @@ package com.guap.vkr.playlistmaker.di
 
 import android.content.Context.MODE_PRIVATE
 import android.media.MediaPlayer
+import com.google.gson.Gson
 import com.guap.vkr.playlistmaker.search.data.NetworkClient
 import com.guap.vkr.playlistmaker.search.data.SearchDataStorage
 import com.guap.vkr.playlistmaker.search.data.network.ITunesApi
@@ -21,7 +22,7 @@ val dataModule = module {
         MediaPlayer()
     }
 
-    factory {
+    single {
         androidContext().getSharedPreferences(
             SHARED_PREFERENCES,
             MODE_PRIVATE
@@ -44,7 +45,9 @@ val dataModule = module {
         RetrofitNetworkClient(apiService = get(), androidContext())
     }
 
-    single<SearchDataStorage>{
-        SharedPrefsSearchDataStorage(sharedPref = get())
+    single<SearchDataStorage> {
+        SharedPrefsSearchDataStorage(sharedPref = get(), gson = get())
     }
+
+    factory { Gson() }
 }
