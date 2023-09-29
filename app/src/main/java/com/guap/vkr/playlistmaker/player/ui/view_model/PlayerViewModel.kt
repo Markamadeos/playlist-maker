@@ -5,10 +5,6 @@ import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
-import com.guap.vkr.playlistmaker.creator.Creator
 import com.guap.vkr.playlistmaker.player.domain.api.MediaPlayerInteractor
 import com.guap.vkr.playlistmaker.player.ui.model.MediaPlayerState
 import java.text.SimpleDateFormat
@@ -116,12 +112,6 @@ class PlayerViewModel(
     companion object {
         private const val CLICK_DEBOUNCE_DELAY_MS = 1000L
         private const val PLAYBACK_UPDATE_DELAY_MS = 300L
-
-        fun getViewModelFactory(url: String): ViewModelProvider.Factory = viewModelFactory() {
-            initializer {
-                PlayerViewModel(Creator.provideMediaPlayerInteractor(), url)
-            }
-        }
     }
 
 }

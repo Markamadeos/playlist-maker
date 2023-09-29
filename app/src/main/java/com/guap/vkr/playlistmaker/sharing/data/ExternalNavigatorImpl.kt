@@ -14,6 +14,7 @@ class ExternalNavigatorImpl(private val context: Context) : ExternalNavigator {
     override fun shareLink(sharedLink: String) {
         val shareIntent = Intent().apply {
             action = Intent.ACTION_SEND
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
             type = "text/plan"
             putExtra(Intent.EXTRA_TEXT, context.getString(R.string.android_developer_url))
         }
@@ -24,6 +25,7 @@ class ExternalNavigatorImpl(private val context: Context) : ExternalNavigator {
     override fun openLink(openLink: String) {
         val licenseIntent = Intent().apply {
             action = Intent.ACTION_VIEW
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
             data = Uri.parse(context.getString(R.string.license_url))
         }
 
@@ -33,6 +35,7 @@ class ExternalNavigatorImpl(private val context: Context) : ExternalNavigator {
     override fun openEmail(emailData: EmailData) {
         val feedbackIntent = Intent().apply {
             action = Intent.ACTION_SENDTO
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
             data = Uri.parse("mailto:")
             putExtra(Intent.EXTRA_EMAIL, arrayOf(context.getString(R.string.developer_email)))
             putExtra(Intent.EXTRA_SUBJECT, context.getString(R.string.letter_topic))
