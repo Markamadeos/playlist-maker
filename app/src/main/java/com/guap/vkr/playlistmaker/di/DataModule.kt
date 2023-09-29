@@ -10,6 +10,7 @@ import com.guap.vkr.playlistmaker.search.data.network.RetrofitNetworkClient
 import com.guap.vkr.playlistmaker.search.data.sharedPrefs.SharedPrefsSearchDataStorage
 import com.guap.vkr.playlistmaker.settings.data.SettingsDataStorage
 import com.guap.vkr.playlistmaker.settings.data.sharedPrefs.SharedPrefSettingsDataStorage
+import com.guap.vkr.playlistmaker.utils.ITUNES_BASE_URL
 import com.guap.vkr.playlistmaker.utils.SHARED_PREFERENCES
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
@@ -35,7 +36,7 @@ val dataModule = module {
 
     single<ITunesApi> {
         Retrofit.Builder()
-            .baseUrl("https://itunes.apple.com/")
+            .baseUrl(ITUNES_BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(ITunesApi::class.java)

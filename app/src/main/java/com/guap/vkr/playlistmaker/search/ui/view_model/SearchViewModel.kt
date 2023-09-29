@@ -94,18 +94,9 @@ class SearchViewModel(
     }
 
     companion object {
-//
-//        fun getViewModelFactory(): ViewModelProvider.Factory = viewModelFactory {
-//            initializer {
-//                val app = (this[APPLICATION_KEY] as App)
-//                SearchViewModel(
-//                    searchInteractor = Creator.provideSearchInteractor(app.applicationContext),
-//                    app = app
-//                )
-//            }
-//        }
 
         private const val SEARCH_DEBOUNCE_DELAY_MS = 2000L
         private val SEARCH_REQUEST_TOKEN = Any()
     }
+
 }
