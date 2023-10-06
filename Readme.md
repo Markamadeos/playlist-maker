@@ -15,7 +15,6 @@
 - [SharedPreferences](https://developer.android.com/reference/android/content/SharedPreferences)
 - [ViewBinding](https://developer.android.com/topic/libraries/view-binding)
 
-
 ## To do
 - [x] Добавить крутое README
 - [x] Добавить DI 
