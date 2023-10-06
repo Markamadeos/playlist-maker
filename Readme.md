@@ -5,11 +5,6 @@
 
 <img src="https://github.com/Markamadeos/playlist-maker/blob/dev/screenshots/screenshot4.png" width=30% height=30%> <img src="https://github.com/Markamadeos/playlist-maker/blob/dev/screenshots/screenshot2.png" width=30% height=30%> <img src="https://github.com/Markamadeos/playlist-maker/blob/dev/screenshots/screenshot3.png" width=30% height=30%>
 
-
-## Содержание
-- [Технологии](#технологии)
-- [To do](#to-do)
-
 ## Технологии
 - [Kotlin](https://kotlinlang.org/)
 - [Retrofit](https://square.github.io/retrofit/)
@@ -23,7 +18,7 @@
 
 ## To do
 - [x] Добавить крутое README
-- [ ] Добавить DI 
+- [x] Добавить DI 
 - [ ] Реализовать создание плейлистов
 - [ ] Реализовать добавление треков в избранное
 - [ ] Реализовать добавление треков в плейлисты
