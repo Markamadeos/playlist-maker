@@ -24,8 +24,8 @@
             style="@style/TrackNameTextStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/artist_name_text_margin_14dp"
-            android:layout_marginBottom="@dimen/artist_name_text_margin_1dp"
+            android:layout_marginTop="@dimen/_14dp"
+            android:layout_marginBottom="@dimen/_1dp"
             tools:text="Yesterday (Remastered 2009)" />
 
         <LinearLayout
@@ -43,10 +43,10 @@
                 tools:text="The Beatles" />
 
             <ImageView
-                android:layout_width="@dimen/circle_artist_size"
-                android:layout_height="@dimen/circle_artist_size"
+                android:layout_width="@dimen/_4dp"
+                android:layout_height="@dimen/_4dp"
                 android:layout_gravity="center_vertical"
-                android:layout_marginHorizontal="@dimen/track_time_margin_5dp"
+                android:layout_marginHorizontal="@dimen/_5dp"
                 android:src="@drawable/ic_baseline_circle_24"
                 app:tint="?attr/drawable_tint_color" />
 

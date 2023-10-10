@@ -138,7 +138,7 @@
             style="@style/PlaceholderTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/placeholder_error_margin_16dp"
+            android:layout_marginTop="@dimen/_16dp"
             android:textColor="?attr/placeholder_error_text_color"
             tools:text="oops" />
 

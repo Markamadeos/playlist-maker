@@ -11,7 +11,7 @@ class TracksViewHolder(private val binding: TrackItemViewBinding) :
     RecyclerView.ViewHolder(binding.root) {
 
     fun bind(model: TrackSearchModel) {
-        val cornerRadius = itemView.resources.getDimensionPixelSize(R.dimen.corner_radius_2dp)
+        val cornerRadius = itemView.resources.getDimensionPixelSize(R.dimen._2dp)
         binding.tvTrackName.text = model.trackName
         binding.tvArtistName.text = model.artistName
         binding.tvTrackTime.text = model.getDuration()

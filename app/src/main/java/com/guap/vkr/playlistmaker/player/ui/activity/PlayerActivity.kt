@@ -50,7 +50,7 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     private fun bind(track: TrackPlayerModel) {
-        val cornerRadius = this.resources.getDimensionPixelSize(R.dimen.corner_radius_8dp)
+        val cornerRadius = this.resources.getDimensionPixelSize(R.dimen._8dp)
 
         Glide.with(this)
             .load(track.getCoverArtwork())
