@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingBottom="@dimen/_40dp">
+        android:paddingBottom="@dimen/_16dp">
 
         <ImageView
             android:id="@+id/btn_back"
@@ -32,12 +32,10 @@
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tab_layout"
-        app:tabTextAppearance="@style/PlaceholderTextStyle"
+        style="@style/TabStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:textAllCaps="false"
-        app:tabTextColor="@color/black" />
+        app:tabTextAppearance="@style/TabLayoutTextStyle" />
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/view_pager"
