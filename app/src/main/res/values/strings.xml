@@ -33,4 +33,6 @@
     <string name="empty_favorite_text">Ваша медиатека пуста</string>
     <string name="create_playlist_button_text">Новый плейлист</string>
     <string name="empty_playlists_text">Вы не создали\nни одного плейлиста</string>
+    <string name="favorite_tracks_tab_text">Избранные треки</string>
+    <string name="playlists_tab_text">Плейлисты</string>
 </resources>
