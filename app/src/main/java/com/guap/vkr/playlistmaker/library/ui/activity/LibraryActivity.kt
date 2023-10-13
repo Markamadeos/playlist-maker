@@ -3,6 +3,7 @@ package com.guap.vkr.playlistmaker.library.ui.activity
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.tabs.TabLayoutMediator
+import com.guap.vkr.playlistmaker.R
 import com.guap.vkr.playlistmaker.databinding.ActivityLibraryBinding
 import com.guap.vkr.playlistmaker.library.ui.LibraryViewPagerAdapter
 
@@ -26,8 +27,8 @@ class LibraryActivity : AppCompatActivity() {
 
         _tabMediator = TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
             when (position) {
-                FAVORITE_FRAGMENT -> tab.text = "Избранные треки"
-                PLAYLIST_FRAGMENT -> tab.text = "Плейлисты"
+                FAVORITE_FRAGMENT -> tab.text = getString(R.string.favorite_tracks_tab_text)
+                PLAYLIST_FRAGMENT -> tab.text = getString(R.string.playlists_tab_text)
             }
         }
 
