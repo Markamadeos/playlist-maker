@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginHorizontal="@dimen/_16dp"
     android:orientation="vertical"
+    android:paddingHorizontal="@dimen/_16dp"
     android:paddingTop="@dimen/_16dp"
     android:theme="@style/Theme.PlaylistMaker">
 
@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingBottom="@dimen/_40dp">
+        android:paddingBottom="@dimen/_16dp">
 
         <ImageView
             android:id="@+id/btn_back"
@@ -27,6 +27,19 @@
             style="@style/TitleTextStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/settings_title_text" />
+            android:text="@string/library_title_text" />
     </LinearLayout>
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tab_layout"
+        style="@style/TabStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tabTextAppearance="@style/TabLayoutTextStyle" />
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
 </LinearLayout>
