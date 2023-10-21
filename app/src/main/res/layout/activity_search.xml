@@ -97,9 +97,11 @@
             style="@style/PlaceholderTextStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
             android:paddingBottom="20dp"
             android:text="@string/your_search_history"
-            android:textColor="?attr/placeholder_error_text_color" />
+            android:textColor="?attr/placeholder_error_text_color"
+            android:textSize="@dimen/_19sp" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_history"
