@@ -79,6 +79,7 @@
     <style name="TabStyle">
         <item name="tabIndicatorColor">?attr/title_text_color</item>
         <item name="tabTextColor">?attr/title_text_color</item>
+        <item name="android:background">?attr/background_color</item>
     </style>
 
     <style name="TabLayoutTextStyle">

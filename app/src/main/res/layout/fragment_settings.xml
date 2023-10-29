@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginHorizontal="16dp"
     android:background="?attr/background_color"
     android:orientation="vertical"
-    android:paddingTop="16dp"
+    android:paddingHorizontal="@dimen/_16dp"
+    android:paddingTop="@dimen/_16dp"
     android:theme="@style/Theme.PlaylistMaker"
     tools:context="com.guap.vkr.playlistmaker.settings.ui.SettingsFragment">
 
