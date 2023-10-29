@@ -27,7 +27,7 @@ class SettingsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.themeLiveData.observe(this) {
+        viewModel.themeLiveData.observe(viewLifecycleOwner) {
             binding.btnDarkTheme.isChecked = it
         }
 
