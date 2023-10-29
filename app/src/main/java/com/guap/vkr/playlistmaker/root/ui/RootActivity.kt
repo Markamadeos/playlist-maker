@@ -2,10 +2,11 @@ package com.guap.vkr.playlistmaker.root.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.commit
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.guap.vkr.playlistmaker.R
 import com.guap.vkr.playlistmaker.databinding.ActivityRootBinding
-import com.guap.vkr.playlistmaker.search.ui.SearchFragment
 
 class RootActivity : AppCompatActivity() {
 
@@ -17,11 +18,11 @@ class RootActivity : AppCompatActivity() {
         _binding = ActivityRootBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        if (savedInstanceState == null) {
-            // Добавляем фрагмент в контейнер
-            supportFragmentManager.commit {
-                this.add(R.id.rootFragmentContainerView, SearchFragment())
-            }
-        }
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.container_view) as NavHostFragment
+        val navController = navHostFragment.navController
+
+        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
+        bottomNavigationView.setupWithNavController(navController)
     }
 }

@@ -83,8 +83,9 @@ class SearchFragment : Fragment() {
                 etSearch.setText("")
 
                 //TODO научиться скрывать клавиатуру во фрагемте
-               // hideKeyboard()
+                // hideKeyboard()
                 tracks.clear()
+                errorContainer.visibility = View.GONE
                 viewModel.getTracksHistory()
                 searchAdapter.notifyDataSetChanged()
             }
@@ -127,7 +128,10 @@ class SearchFragment : Fragment() {
             viewModel.addTrackToHistory(track)
             viewModel.getTracksHistory()
             val playIntent =
-                Intent(requireContext(), PlayerActivity::class.java).putExtra(TRACK, Gson().toJson(track))
+                Intent(requireContext(), PlayerActivity::class.java).putExtra(
+                    TRACK,
+                    Gson().toJson(track)
+                )
             startActivity(playIntent)
         }
     }
@@ -192,6 +196,6 @@ class SearchFragment : Fragment() {
 
     companion object {
         private const val CLICK_DEBOUNCE_DELAY_MS = 500L
-            // private const val USER_INPUT = "USER_INPUT"
+        // private const val USER_INPUT = "USER_INPUT"
     }
 }
