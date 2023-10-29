@@ -3,7 +3,7 @@
 Небольшое приложение разрабатываемое в рамках курса Андроид-разработчик от Яндекс Практикума. 
 Умеет искать песни и сортировать их по плейлистам. 
 
-<img src="https://github.com/Markamadeos/playlist-maker/blob/dev/screenshots/screenshot4.png" width=30% height=30%> <img src="https://github.com/Markamadeos/playlist-maker/blob/dev/screenshots/screenshot2.png" width=30% height=30%> <img src="https://github.com/Markamadeos/playlist-maker/blob/dev/screenshots/screenshot3.png" width=30% height=30%>
+<img src="https://github.com/Markamadeos/playlist-maker/blob/main/screenshots/screenshot4.png" width=30% height=30%> <img src="https://github.com/Markamadeos/playlist-maker/blob/main/screenshots/screenshot2.png" width=30% height=30%> <img src="https://github.com/Markamadeos/playlist-maker/blob/main/screenshots/screenshot3.png" width=30% height=30%>
 
 ## Технологии
 - [Kotlin](https://kotlinlang.org/)
@@ -20,6 +20,9 @@
 ## To do
 - [x] Добавить крутое README
 - [x] Добавить DI 
+- [ ] Применить подход Single activity
+- [ ] Перевести навигацию на Jetpack navigation component
+- [ ] Реализовать bottom navigation 
 - [ ] Реализовать создание плейлистов
 - [ ] Реализовать добавление треков в избранное
 - [ ] Реализовать добавление треков в плейлисты
