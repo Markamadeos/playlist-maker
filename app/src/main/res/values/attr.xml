@@ -20,4 +20,8 @@
     <attr name="placeholder_error_text_color" format="reference" />
     <attr name="refresh_button_tint_color" format="reference" />
     <attr name="refresh_button_text_color" format="reference" />
+    <attr name="bottom_navigation_selected_color" format="reference" />
+    <attr name="bottom_navigation_unselected_color" format="reference" />
+    <attr name="bottom_navigation_background_color" format="reference" />
+
 </resources>

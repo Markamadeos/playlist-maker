@@ -1,5 +1,9 @@
 package com.guap.vkr.playlistmaker.search.ui
 
+import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Context
+import android.content.Context.INPUT_METHOD_SERVICE
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -9,7 +13,10 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.fragment.app.Fragment
+import com.google.android.material.internal.ViewUtils.hideKeyboard
 import com.google.gson.Gson
 import com.guap.vkr.playlistmaker.R
 import com.guap.vkr.playlistmaker.databinding.FragmentSearchBinding
@@ -18,6 +25,8 @@ import com.guap.vkr.playlistmaker.search.domain.model.TrackSearchModel
 import com.guap.vkr.playlistmaker.search.ui.model.ScreenState
 import com.guap.vkr.playlistmaker.search.ui.view_model.SearchViewModel
 import com.guap.vkr.playlistmaker.utils.TRACK
+import com.guap.vkr.playlistmaker.utils.hideKeyboard
+import org.koin.androidx.scope.fragmentScope
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchFragment : Fragment() {
@@ -81,11 +90,8 @@ class SearchFragment : Fragment() {
         binding.apply {
             btnClear.setOnClickListener {
                 etSearch.setText("")
-
-                //TODO научиться скрывать клавиатуру во фрагемте
-                // hideKeyboard()
+                hideKeyboard()
                 tracks.clear()
-                errorContainer.visibility = View.GONE
                 viewModel.getTracksHistory()
                 searchAdapter.notifyDataSetChanged()
             }
@@ -184,18 +190,24 @@ class SearchFragment : Fragment() {
                     placeholderSearchHistory.visibility = View.VISIBLE
                     tracksHistory.clear()
                     tracksHistory.addAll(state.historyList)
+                    errorContainer.visibility = View.GONE
                     historyAdapter.notifyDataSetChanged()
                 }
 
                 is ScreenState.EmptyHistoryList -> {
                     placeholderSearchHistory.visibility = View.GONE
+                    errorContainer.visibility = View.GONE
                 }
             }
         }
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     companion object {
         private const val CLICK_DEBOUNCE_DELAY_MS = 500L
-        // private const val USER_INPUT = "USER_INPUT"
     }
 }

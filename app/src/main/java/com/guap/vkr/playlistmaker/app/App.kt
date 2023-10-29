@@ -1,4 +1,4 @@
-package com.guap.vkr.playlistmaker.utils
+package com.guap.vkr.playlistmaker.app
 
 import android.app.Application
 import androidx.appcompat.app.AppCompatDelegate
@@ -6,6 +6,8 @@ import com.guap.vkr.playlistmaker.di.dataModule
 import com.guap.vkr.playlistmaker.di.interactorModule
 import com.guap.vkr.playlistmaker.di.repositoryModule
 import com.guap.vkr.playlistmaker.di.viewModelModule
+import com.guap.vkr.playlistmaker.utils.SHARED_PREFERENCES
+import com.guap.vkr.playlistmaker.utils.THEME_SWITCH_KEY
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 
