@@ -15,6 +15,7 @@
 - [SharedPreferences](https://developer.android.com/reference/android/content/SharedPreferences)
 - [ViewBinding](https://developer.android.com/topic/libraries/view-binding)
 - [Koin](https://insert-koin.io/)
+- [Fragments](https://developer.android.com/guide/fragments)
 
 ## To do
 - [x] Добавить крутое README
