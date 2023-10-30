@@ -56,6 +56,7 @@ class PlayerViewModel(
     private fun setOnCompleteListener() {
         mediaPlayerInteractor.setOnCompletionListener {
             renderState(MediaPlayerState.Prepared)
+            handler.removeCallbacksAndMessages(null)
         }
     }
 

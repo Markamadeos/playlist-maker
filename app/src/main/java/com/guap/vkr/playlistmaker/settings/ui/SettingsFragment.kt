@@ -31,6 +31,11 @@ class SettingsFragment : Fragment() {
             binding.btnDarkTheme.isChecked = it
         }
 
+        setupButtons()
+
+    }
+
+    private fun setupButtons() {
         with(binding) {
             btnDarkTheme.setOnCheckedChangeListener { _, checked ->
                 viewModel.setupTheme(checked)

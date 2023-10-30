@@ -17,7 +17,7 @@ import org.koin.core.parameter.parametersOf
 
 class PlayerActivity : AppCompatActivity() {
 
-    private var binding: ActivityPlayerBinding? = null
+    private lateinit var binding: ActivityPlayerBinding
 
     private val viewModel: PlayerViewModel by viewModel {
         parametersOf(getTrack().previewUrl)
@@ -26,7 +26,7 @@ class PlayerActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPlayerBinding.inflate(layoutInflater)
-        setContentView(binding?.root)
+        setContentView(binding.root)
 
         bind(getTrack())
 
@@ -38,13 +38,13 @@ class PlayerActivity : AppCompatActivity() {
             updateTimer(it)
         }
 
-        binding?.btnPlay?.setOnClickListener {
+        binding.btnPlay.setOnClickListener {
             if (viewModel.isClickAllowed()) {
                 viewModel.playbackControl()
             }
         }
 
-        binding?.btnBack?.setOnClickListener {
+        binding.btnBack.setOnClickListener {
             finish()
         }
     }
@@ -56,9 +56,9 @@ class PlayerActivity : AppCompatActivity() {
             .load(track.getCoverArtwork())
             .placeholder(R.drawable.iv_track_cover)
             .transform(CenterCrop(), RoundedCorners(cornerRadius))
-            .into(binding!!.ivCover)
+            .into(binding.ivCover)
 
-        binding?.apply {
+        binding.apply {
             tvTrackName.text = track.trackName
             tvArtistName.text = track.artistName
             tvPlaytime.text = getString(R.string.default_playtime_value)
@@ -77,22 +77,22 @@ class PlayerActivity : AppCompatActivity() {
         Gson().fromJson(intent.getStringExtra(TRACK), TrackPlayerModel::class.java)
 
     private fun updateTimer(time: String) {
-        binding?.tvPlaytime?.text = time
+        binding.tvPlaytime.text = time
     }
 
     private fun updateScreen(state: MediaPlayerState) {
         when (state) {
             is MediaPlayerState.Playing -> {
-                binding?.btnPlay?.setImageResource(R.drawable.ic_pause)
+                binding.btnPlay.setImageResource(R.drawable.ic_pause)
             }
 
             is MediaPlayerState.Paused -> {
-                binding?.btnPlay?.setImageResource(R.drawable.ic_play)
+                binding.btnPlay.setImageResource(R.drawable.ic_play)
             }
 
             is MediaPlayerState.Prepared -> {
-                binding?.btnPlay?.setImageResource(R.drawable.ic_play)
-                binding?.tvPlaytime?.setText(R.string.default_playtime_value)
+                binding.btnPlay.setImageResource(R.drawable.ic_play)
+                binding.tvPlaytime.setText(R.string.default_playtime_value)
             }
 
             else -> {}
