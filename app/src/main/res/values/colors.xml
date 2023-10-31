@@ -11,4 +11,5 @@
     <color name="yp_light_gray">#E6E8EB</color>
     <color name="yp_text_gray">#AEAFB4</color>
     <color name="yp_primary_color">#6200EE</color>
+    <color name="yp_black">#1a1b22</color>
 </resources>

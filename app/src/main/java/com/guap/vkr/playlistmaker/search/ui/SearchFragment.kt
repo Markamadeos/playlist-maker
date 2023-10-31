@@ -1,29 +1,30 @@
-package com.guap.vkr.playlistmaker.search.ui.activity
+package com.guap.vkr.playlistmaker.search.ui
 
-import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.os.PersistableBundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.LayoutInflater
 import android.view.View
-import android.view.inputmethod.InputMethodManager
-import androidx.appcompat.app.AppCompatActivity
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import com.google.gson.Gson
 import com.guap.vkr.playlistmaker.R
-import com.guap.vkr.playlistmaker.databinding.ActivitySearchBinding
+import com.guap.vkr.playlistmaker.databinding.FragmentSearchBinding
 import com.guap.vkr.playlistmaker.player.ui.activity.PlayerActivity
 import com.guap.vkr.playlistmaker.search.domain.model.TrackSearchModel
-import com.guap.vkr.playlistmaker.search.ui.TracksAdapter
 import com.guap.vkr.playlistmaker.search.ui.model.ScreenState
 import com.guap.vkr.playlistmaker.search.ui.view_model.SearchViewModel
 import com.guap.vkr.playlistmaker.utils.TRACK
+import com.guap.vkr.playlistmaker.utils.hideKeyboard
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SearchActivity : AppCompatActivity() {
+class SearchFragment : Fragment() {
+
+    private var _binding: FragmentSearchBinding? = null
+    private val binding get() = _binding!!
 
     private val tracks = ArrayList<TrackSearchModel>()
     private val tracksHistory = ArrayList<TrackSearchModel>()
@@ -32,16 +33,21 @@ class SearchActivity : AppCompatActivity() {
     private val handler = Handler(Looper.getMainLooper())
     private var userInput = ""
     private var clickAllowed = true
-    private lateinit var binding: ActivitySearchBinding
     private val viewModel by viewModel<SearchViewModel>()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivitySearchBinding.inflate(layoutInflater).also {
-            setContentView(it.root)
-        }
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentSearchBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
-        viewModel.stateLiveData().observe(this) {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        viewModel.stateLiveData().observe(viewLifecycleOwner) {
             updateScreen(it)
         }
 
@@ -53,6 +59,7 @@ class SearchActivity : AppCompatActivity() {
         buttonsConfig()
         queryInputConfig(initTextWatcher())
     }
+
 
     private fun initTextWatcher() = object : TextWatcher {
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -73,10 +80,6 @@ class SearchActivity : AppCompatActivity() {
 
     private fun buttonsConfig() {
         binding.apply {
-            btnBack.setOnClickListener {
-                finish()
-            }
-
             btnClear.setOnClickListener {
                 etSearch.setText("")
                 hideKeyboard()
@@ -110,16 +113,6 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    override fun onSaveInstanceState(outState: Bundle, outPersistentState: PersistableBundle) {
-        super.onSaveInstanceState(outState, outPersistentState)
-        outState.putString(USER_INPUT, userInput)
-    }
-
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
-        userInput = savedInstanceState.getString(USER_INPUT, "")
-    }
-
     private fun clearButtonVisibility(s: CharSequence?): Int {
         return if (s.isNullOrEmpty()) {
             View.GONE
@@ -128,22 +121,15 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    private fun Activity.hideKeyboard() {
-        hideKeyboard(currentFocus ?: View(this))
-    }
-
-    private fun Context.hideKeyboard(view: View) {
-        val inputMethodManager =
-            getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-        inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)
-    }
-
     private fun trackClickListener(track: TrackSearchModel) {
         if (isClickAllowed()) {
             viewModel.addTrackToHistory(track)
             viewModel.getTracksHistory()
             val playIntent =
-                Intent(this, PlayerActivity::class.java).putExtra(TRACK, Gson().toJson(track))
+                Intent(requireContext(), PlayerActivity::class.java).putExtra(
+                    TRACK,
+                    Gson().toJson(track)
+                )
             startActivity(playIntent)
         }
     }
@@ -196,18 +182,24 @@ class SearchActivity : AppCompatActivity() {
                     placeholderSearchHistory.visibility = View.VISIBLE
                     tracksHistory.clear()
                     tracksHistory.addAll(state.historyList)
+                    errorContainer.visibility = View.GONE
                     historyAdapter.notifyDataSetChanged()
                 }
 
                 is ScreenState.EmptyHistoryList -> {
                     placeholderSearchHistory.visibility = View.GONE
+                    errorContainer.visibility = View.GONE
                 }
             }
         }
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     companion object {
         private const val CLICK_DEBOUNCE_DELAY_MS = 500L
-        private const val USER_INPUT = "USER_INPUT"
     }
 }

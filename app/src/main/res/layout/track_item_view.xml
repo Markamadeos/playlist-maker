@@ -47,7 +47,7 @@
                 android:layout_height="@dimen/_4dp"
                 android:layout_gravity="center_vertical"
                 android:layout_marginHorizontal="@dimen/_5dp"
-                android:src="@drawable/ic_baseline_circle_24"
+                android:src="@drawable/ic_circle"
                 app:tint="?attr/drawable_tint_color" />
 
             <TextView

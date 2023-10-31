@@ -3,7 +3,7 @@ package com.guap.vkr.playlistmaker.settings.data
 import android.content.Context
 import com.guap.vkr.playlistmaker.settings.domain.SettingsRepository
 import com.guap.vkr.playlistmaker.settings.domain.model.ThemeSettings
-import com.guap.vkr.playlistmaker.utils.App
+import com.guap.vkr.playlistmaker.app.App
 
 class SettingsRepositoryImpl(
     private val settingsDataStorage: SettingsDataStorage,

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.guap.vkr.playlistmaker" >
+    package="com.guap.vkr.playlistmaker">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
-        android:name=".utils.App"
+        android:name=".app.App"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -16,28 +16,20 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar"
-        tools:targetApi="31" >
+        tools:targetApi="31">
         <activity
-            android:name=".player.ui.activity.PlayerActivity"
-            android:exported="false" />
-        <activity
-            android:name=".library.ui.activity.LibraryActivity"
-            android:exported="false" />
-        <activity
-            android:name=".search.ui.activity.SearchActivity"
-            android:exported="false" />
-        <activity
-            android:name=".settings.ui.activity.SettingsActivity"
-            android:exported="false" />
-        <activity
-            android:name=".main.ui.activity.MainActivity"
-            android:exported="true" >
+            android:name=".root.ui.RootActivity"
+            android:exported="true"
+            android:windowSoftInputMode="adjustNothing">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".player.ui.activity.PlayerActivity"
+            android:exported="false" />
     </application>
 
 </manifest>
