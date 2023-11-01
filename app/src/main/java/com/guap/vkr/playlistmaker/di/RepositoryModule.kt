@@ -16,15 +16,15 @@ val repositoryModule = module {
         MediaPlayerRepositoryImpl(audioPlayer = get())
     }
 
-    factory<SettingsRepository> {
+    single<SettingsRepository> {
         SettingsRepositoryImpl(settingsDataStorage = get(), applicationContext = get())
     }
 
-    factory<ExternalNavigator> {
+    single<ExternalNavigator> {
         ExternalNavigatorImpl(context = get())
     }
 
-    factory<SearchRepository> {
+    single<SearchRepository> {
         SearchRepositoryImpl(networkClient = get(), searchDataStorage = get())
     }
 }

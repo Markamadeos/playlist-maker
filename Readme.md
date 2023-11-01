@@ -16,6 +16,8 @@
 - [ViewBinding](https://developer.android.com/topic/libraries/view-binding)
 - [Koin](https://insert-koin.io/)
 - [Fragments](https://developer.android.com/guide/fragments)
+- [Jetpack navigation component](https://developer.android.com/guide/navigation)
+- [Bottom navigation](https://m2.material.io/components/bottom-navigation/android)
 
 ## To do
 - [x] Добавить крутое README

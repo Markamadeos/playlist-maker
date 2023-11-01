@@ -16,15 +16,15 @@ val interactorModule = module {
         MediaPlayerInteractorImpl(mediaPlayerRepository = get())
     }
 
-    factory<SettingsInteractor> {
+    single<SettingsInteractor> {
         SettingsInteractorImpl(repository = get())
     }
 
-    factory<SharingInteractor> {
+    single<SharingInteractor> {
        SharingIntercatorImpl(externalNavigator = get())
     }
 
-    factory<SearchInteractor> {
+    single<SearchInteractor> {
         SearchInteractorImpl(repository = get())
     }
 }
