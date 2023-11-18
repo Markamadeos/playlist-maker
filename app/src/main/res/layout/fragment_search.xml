@@ -118,7 +118,7 @@
         android:id="@+id/error_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="110dp"
+        android:paddingTop="@dimen/_80dp"
         android:gravity="center_horizontal"
         android:orientation="vertical"
         android:visibility="gone">
@@ -134,7 +134,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_16dp"
+            android:textAlignment="center"
             android:textColor="?attr/placeholder_error_text_color"
+            android:textSize="@dimen/_19sp"
             tools:text="oops" />
 
         <Button
