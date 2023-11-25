@@ -1,10 +1,9 @@
 package com.guap.vkr.playlistmaker.search.domain.impl
 
-import com.bumptech.glide.load.engine.Resource
 import com.guap.vkr.playlistmaker.search.data.dto.ResponseStatus
-import com.guap.vkr.playlistmaker.search.domain.model.TrackSearchModel
-import com.guap.vkr.playlistmaker.search.domain.SearchRepository
 import com.guap.vkr.playlistmaker.search.domain.SearchInteractor
+import com.guap.vkr.playlistmaker.search.domain.SearchRepository
+import com.guap.vkr.playlistmaker.search.domain.model.TrackSearchModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import java.util.concurrent.Executors

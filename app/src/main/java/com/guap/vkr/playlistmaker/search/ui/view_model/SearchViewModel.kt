@@ -44,13 +44,13 @@ class SearchViewModel(
                 searchInteractor
                     .searchTracks(expression = expression)
                     .collect { pair ->
-                        processResult(pair.first, pair.second)
+                        processResult(pair.first)
                     }
             }
         }
     }
 
-    private fun processResult(foundTracks: List<TrackSearchModel>?, error: Boolean?) {
+    private fun processResult(foundTracks: List<TrackSearchModel>?) {
 
         val tracks = mutableListOf<TrackSearchModel>()
 
