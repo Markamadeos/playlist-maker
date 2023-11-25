@@ -6,6 +6,8 @@ import com.guap.vkr.playlistmaker.search.data.dto.TracksSearchRequest
 import com.guap.vkr.playlistmaker.search.data.dto.TracksSearchResponse
 import com.guap.vkr.playlistmaker.search.domain.SearchRepository
 import com.guap.vkr.playlistmaker.search.domain.model.TrackSearchModel
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import javax.net.ssl.HttpsURLConnection
 
 class SearchRepositoryImpl(
@@ -13,36 +15,42 @@ class SearchRepositoryImpl(
     private val searchDataStorage: SearchDataStorage
 ) : SearchRepository {
 
-    override fun searchTrack(expression: String): ResponseStatus<List<TrackSearchModel>> {
-        val response = networkClient.doRequest(TracksSearchRequest(expression))
+    override fun searchTrack(expression: String): Flow<ResponseStatus<List<TrackSearchModel>>> =
+        flow {
 
-        return when (response.resultCode) {
-            -1 -> {
-                ResponseStatus.Error()
-            }
+            val response = networkClient.doRequest(TracksSearchRequest(expression))
 
-            HttpsURLConnection.HTTP_OK -> {
-                ResponseStatus.Success((response as TracksSearchResponse).results.map {
-                    TrackSearchModel(
-                        it.trackId,
-                        it.trackName,
-                        it.artistName,
-                        it.trackTimeMillis,
-                        it.artworkUrl100,
-                        it.collectionName,
-                        it.releaseDate,
-                        it.primaryGenreName,
-                        it.country,
-                        it.previewUrl
-                    )
-                })
-            }
+            when (response.resultCode) {
+                -1 -> {
+                    emit(ResponseStatus.Error())
+                }
 
-            else -> {
-                ResponseStatus.Error()
+                HttpsURLConnection.HTTP_OK -> {
+                    with(response as TracksSearchResponse) {
+                        val data = results.map {
+                            TrackSearchModel(
+                                it.trackId,
+                                it.trackName,
+                                it.artistName,
+                                it.trackTimeMillis,
+                                it.artworkUrl100,
+                                it.collectionName,
+                                it.releaseDate,
+                                it.primaryGenreName,
+                                it.country,
+                                it.previewUrl
+                            )
+                        }
+                        emit(ResponseStatus.Success(data = data))
+                    }
+                }
+
+                else -> {
+                    emit(ResponseStatus.Error())
+                }
             }
         }
-    }
+
 
     override fun getTrackHistoryList(): List<TrackSearchModel> {
         return searchDataStorage.getSearchHistory().map {

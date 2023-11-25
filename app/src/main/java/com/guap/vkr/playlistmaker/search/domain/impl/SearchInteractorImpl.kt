@@ -1,20 +1,27 @@
 package com.guap.vkr.playlistmaker.search.domain.impl
 
+import com.bumptech.glide.load.engine.Resource
 import com.guap.vkr.playlistmaker.search.data.dto.ResponseStatus
 import com.guap.vkr.playlistmaker.search.domain.model.TrackSearchModel
 import com.guap.vkr.playlistmaker.search.domain.SearchRepository
 import com.guap.vkr.playlistmaker.search.domain.SearchInteractor
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import java.util.concurrent.Executors
 
 class SearchInteractorImpl(private val repository: SearchRepository) : SearchInteractor {
 
     private val executor = Executors.newCachedThreadPool()
 
-    override fun searchTracks(expression: String, consumer: SearchInteractor.SearchConsumer) {
-        executor.execute {
-            when(val resource = repository.searchTrack(expression)) {
-                is ResponseStatus.Success -> { consumer.consume(resource.data, false) }
-                is ResponseStatus.Error -> { consumer.consume(null,  true) }
+    override fun searchTracks(expression: String): Flow<Pair<List<TrackSearchModel>?, Boolean?>> {
+        return repository.searchTrack(expression = expression).map { result ->
+            when (result) {
+                is ResponseStatus.Success -> {
+                    Pair(result.data, null)
+                }
+                is ResponseStatus.Error -> {
+                    Pair(null, true)
+                }
             }
         }
     }
