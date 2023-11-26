@@ -32,13 +32,6 @@ class RetrofitNetworkClient(
                 Response().apply { resultCode =  HttpsURLConnection.HTTP_INTERNAL_ERROR}
             }
         }
-
-//        val response = this.apiService.search(dto.expression).execute()
-//        val body = response.body()
-//
-//        return body?.apply { resultCode = response.code() } ?: Response().apply {
-//            resultCode = response.code()
-//        }
     }
 
     private fun isConnected(): Boolean {

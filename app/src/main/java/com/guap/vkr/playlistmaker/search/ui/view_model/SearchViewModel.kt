@@ -43,27 +43,22 @@ class SearchViewModel(
             viewModelScope.launch {
                 searchInteractor
                     .searchTracks(expression = expression)
-                    .collect { pair ->
-                        processResult(pair.first)
+                    .collect {
+                        processResult(it)
                     }
             }
         }
     }
 
     private fun processResult(foundTracks: List<TrackSearchModel>?) {
-
-        val tracks = mutableListOf<TrackSearchModel>()
-
         if (foundTracks != null) {
-            tracks.addAll(foundTracks)
-
             when {
-                tracks.isEmpty() -> {
+                foundTracks.isEmpty() -> {
                     renderState(ScreenState.Empty())
                 }
 
-                tracks.isNotEmpty() -> {
-                    renderState(ScreenState.Content(tracks))
+                foundTracks.isNotEmpty() -> {
+                    renderState(ScreenState.Content(foundTracks))
                 }
             }
         } else {

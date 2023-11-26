@@ -6,20 +6,18 @@ import com.guap.vkr.playlistmaker.search.domain.SearchRepository
 import com.guap.vkr.playlistmaker.search.domain.model.TrackSearchModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import java.util.concurrent.Executors
 
 class SearchInteractorImpl(private val repository: SearchRepository) : SearchInteractor {
 
-    private val executor = Executors.newCachedThreadPool()
-
-    override fun searchTracks(expression: String): Flow<Pair<List<TrackSearchModel>?, Boolean?>> {
+    override fun searchTracks(expression: String): Flow<List<TrackSearchModel>?> {
         return repository.searchTrack(expression = expression).map { result ->
             when (result) {
                 is ResponseStatus.Success -> {
-                    Pair(result.data, null)
+                    result.data
                 }
+
                 is ResponseStatus.Error -> {
-                    Pair(null, true)
+                    null
                 }
             }
         }

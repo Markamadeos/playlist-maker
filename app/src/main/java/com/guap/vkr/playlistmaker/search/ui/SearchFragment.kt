@@ -138,7 +138,7 @@ class SearchFragment : Fragment() {
         val current = clickAllowed
         if (clickAllowed) {
             clickAllowed = false
-            viewLifecycleOwner.lifecycleScope.launch {
+            lifecycleScope.launch {
                 delay(CLICK_DEBOUNCE_DELAY_MS)
                 clickAllowed = true
             }
