@@ -13,4 +13,6 @@ interface MediaPlayerInteractor {
     fun pausePlayer()
 
     fun destroyPlayer()
+
+    fun isPlaying(): Boolean
 }

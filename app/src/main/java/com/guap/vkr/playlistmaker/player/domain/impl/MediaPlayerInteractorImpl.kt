@@ -28,4 +28,8 @@ class MediaPlayerInteractorImpl(private val mediaPlayerRepository: MediaPlayerRe
     override fun destroyPlayer() {
         mediaPlayerRepository.destroyPlayer()
     }
+
+    override fun isPlaying(): Boolean {
+        return mediaPlayerRepository.isPlaying()
+    }
 }

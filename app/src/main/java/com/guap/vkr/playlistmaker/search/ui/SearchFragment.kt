@@ -2,14 +2,13 @@ package com.guap.vkr.playlistmaker.search.ui
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.google.gson.Gson
 import com.guap.vkr.playlistmaker.R
 import com.guap.vkr.playlistmaker.databinding.FragmentSearchBinding
@@ -19,6 +18,8 @@ import com.guap.vkr.playlistmaker.search.ui.model.ScreenState
 import com.guap.vkr.playlistmaker.search.ui.view_model.SearchViewModel
 import com.guap.vkr.playlistmaker.utils.TRACK
 import com.guap.vkr.playlistmaker.utils.hideKeyboard
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class SearchFragment : Fragment() {
@@ -30,7 +31,6 @@ class SearchFragment : Fragment() {
     private val tracksHistory = ArrayList<TrackSearchModel>()
     private val searchAdapter = TracksAdapter(tracks) { trackClickListener(it) }
     private val historyAdapter = TracksAdapter(tracksHistory) { trackClickListener(it) }
-    private val handler = Handler(Looper.getMainLooper())
     private var userInput = ""
     private var clickAllowed = true
     private val viewModel by viewModel<SearchViewModel>()
@@ -138,7 +138,10 @@ class SearchFragment : Fragment() {
         val current = clickAllowed
         if (clickAllowed) {
             clickAllowed = false
-            handler.postDelayed({ clickAllowed = true }, CLICK_DEBOUNCE_DELAY_MS)
+            lifecycleScope.launch {
+                delay(CLICK_DEBOUNCE_DELAY_MS)
+                clickAllowed = true
+            }
         }
         return current
     }
@@ -200,6 +203,6 @@ class SearchFragment : Fragment() {
     }
 
     companion object {
-        private const val CLICK_DEBOUNCE_DELAY_MS = 500L
+        private const val CLICK_DEBOUNCE_DELAY_MS = 1000L
     }
 }

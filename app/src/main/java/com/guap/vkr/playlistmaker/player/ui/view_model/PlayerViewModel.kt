@@ -1,12 +1,14 @@
 package com.guap.vkr.playlistmaker.player.ui.view_model
 
-import android.os.Handler
-import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.guap.vkr.playlistmaker.player.domain.api.MediaPlayerInteractor
 import com.guap.vkr.playlistmaker.player.ui.model.MediaPlayerState
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -16,14 +18,14 @@ class PlayerViewModel(
     private val trackUrl: String
 ) : ViewModel() {
 
-    private val handler = Handler(Looper.getMainLooper())
-
+    private var timerJob: Job? = null
     private var clickAllowed = true
 
     private val stateLiveData = MutableLiveData<MediaPlayerState>()
     private val timerLiveData = MutableLiveData<String>()
     fun observeState(): LiveData<MediaPlayerState> = stateLiveData
     fun observeTimer(): LiveData<String> = timerLiveData
+
     init {
         renderState(MediaPlayerState.Default)
         prepareAudioPlayer()
@@ -39,8 +41,8 @@ class PlayerViewModel(
 
 
     private fun startAudioPlayer() {
+        renderState(MediaPlayerState.Playing)
         mediaPlayerInteractor.startPlayer()
-        renderState(MediaPlayerState.Playing(mediaPlayerInteractor.getCurrentPosition()))
     }
 
     private fun pauseAudioPlayer() {
@@ -49,15 +51,16 @@ class PlayerViewModel(
     }
 
 
-    private fun getCurrentPosition(): Int {
-        return mediaPlayerInteractor.getCurrentPosition()
+    private fun getCurrentPlaybackPosition(): String {
+        return SimpleDateFormat("mm:ss", Locale.getDefault())
+            .format(mediaPlayerInteractor.getCurrentPosition()) ?: "00:00"
     }
 
     private fun setOnCompleteListener() {
         mediaPlayerInteractor.setOnCompletionListener {
             renderState(MediaPlayerState.Prepared)
-            handler.removeCallbacksAndMessages(null)
         }
+        timerJob?.cancel()
     }
 
     fun playbackControl() {
@@ -65,14 +68,12 @@ class PlayerViewModel(
             is MediaPlayerState.Playing -> {
                 pauseAudioPlayer()
             }
-
             is MediaPlayerState.Prepared, MediaPlayerState.Paused -> {
                 startAudioPlayer()
-                handler.post(updateTime())
             }
-
             else -> {}
         }
+        updateTimer()
     }
 
     private fun renderState(state: MediaPlayerState) {
@@ -80,23 +81,19 @@ class PlayerViewModel(
     }
 
     override fun onCleared() {
-        handler.removeCallbacksAndMessages(null)
         mediaPlayerInteractor.destroyPlayer()
     }
 
     fun onPause() {
         pauseAudioPlayer()
-        handler.removeCallbacksAndMessages(updateTime())
+        timerJob?.cancel()
     }
 
-    private fun updateTime(): Runnable {
-        return object : Runnable {
-            override fun run() {
-                timerLiveData.postValue(
-                    SimpleDateFormat("mm:ss", Locale.getDefault())
-                        .format(getCurrentPosition())
-                )
-                handler.postDelayed(this, PLAYBACK_UPDATE_DELAY_MS)
+    private fun updateTimer() {
+        timerJob = viewModelScope.launch {
+            while (mediaPlayerInteractor.isPlaying()) {
+                timerLiveData.postValue(getCurrentPlaybackPosition())
+                delay(PLAYBACK_UPDATE_DELAY_MS)
             }
         }
     }
@@ -105,13 +102,16 @@ class PlayerViewModel(
         val current = clickAllowed
         if (clickAllowed) {
             clickAllowed = false
-            handler.postDelayed({ clickAllowed = true }, CLICK_DEBOUNCE_DELAY_MS)
+            viewModelScope.launch {
+                delay(CLICK_DEBOUNCE_DELAY_MS)
+                clickAllowed = true
+            }
         }
         return current
     }
 
     companion object {
-        private const val CLICK_DEBOUNCE_DELAY_MS = 1000L
+        private const val CLICK_DEBOUNCE_DELAY_MS = 500L
         private const val PLAYBACK_UPDATE_DELAY_MS = 300L
     }
 

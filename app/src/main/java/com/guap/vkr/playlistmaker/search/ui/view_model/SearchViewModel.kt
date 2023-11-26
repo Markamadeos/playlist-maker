@@ -1,20 +1,21 @@
 package com.guap.vkr.playlistmaker.search.ui.view_model
 
-import android.os.Handler
-import android.os.Looper
-import android.os.SystemClock
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.guap.vkr.playlistmaker.search.domain.SearchInteractor
 import com.guap.vkr.playlistmaker.search.domain.model.TrackSearchModel
 import com.guap.vkr.playlistmaker.search.ui.model.ScreenState
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class SearchViewModel(
     private val searchInteractor: SearchInteractor,
-    ) : ViewModel() {
+) : ViewModel() {
 
-    private val handler = Handler(Looper.getMainLooper())
+    private var searchJob: Job? = null
 
     private val _stateLiveData = MutableLiveData<ScreenState>()
     fun stateLiveData(): LiveData<ScreenState> = _stateLiveData
@@ -26,42 +27,42 @@ class SearchViewModel(
             return
         }
 
-        this.latestSearchText = changedText
-        handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
-        val searchRunnable = Runnable { search(changedText) }
-        val postTime = SystemClock.uptimeMillis() + SEARCH_DEBOUNCE_DELAY_MS
-        handler.postAtTime(
-            searchRunnable,
-            SEARCH_REQUEST_TOKEN,
-            postTime
-        )
+        latestSearchText = changedText
+
+        searchJob?.cancel()
+        searchJob = viewModelScope.launch {
+            delay(SEARCH_DEBOUNCE_DELAY_MS)
+            search(changedText)
+        }
     }
 
     private fun search(expression: String) {
         if (expression.isNotEmpty()) {
             renderState(ScreenState.Loading)
 
-            searchInteractor.searchTracks(expression, object : SearchInteractor.SearchConsumer {
-                override fun consume(foundTracks: List<TrackSearchModel>?, hasError: Boolean?) {
-                    val tracks = mutableListOf<TrackSearchModel>()
-
-                    if (foundTracks != null) {
-                        tracks.addAll(foundTracks)
-
-                        when {
-                            tracks.isEmpty() -> {
-                                renderState(ScreenState.Empty())
-                            }
-
-                            tracks.isNotEmpty() -> {
-                                renderState(ScreenState.Content(tracks))
-                            }
-                        }
-                    } else {
-                        renderState(ScreenState.Error())
+            viewModelScope.launch {
+                searchInteractor
+                    .searchTracks(expression = expression)
+                    .collect {
+                        processResult(it)
                     }
+            }
+        }
+    }
+
+    private fun processResult(foundTracks: List<TrackSearchModel>?) {
+        if (foundTracks != null) {
+            when {
+                foundTracks.isEmpty() -> {
+                    renderState(ScreenState.Empty())
                 }
-            })
+
+                foundTracks.isNotEmpty() -> {
+                    renderState(ScreenState.Content(foundTracks))
+                }
+            }
+        } else {
+            renderState(ScreenState.Error())
         }
     }
 
@@ -89,14 +90,8 @@ class SearchViewModel(
         _stateLiveData.postValue(state)
     }
 
-    override fun onCleared() {
-        handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
-    }
-
     companion object {
-
         private const val SEARCH_DEBOUNCE_DELAY_MS = 2000L
-        private val SEARCH_REQUEST_TOKEN = Any()
     }
 
 }

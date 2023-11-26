@@ -33,4 +33,8 @@ class MediaPlayerRepositoryImpl(private val audioPlayer: MediaPlayer) : MediaPla
         audioPlayer.release()
     }
 
+    override fun isPlaying(): Boolean {
+        return audioPlayer.isPlaying
+    }
+
 }

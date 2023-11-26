@@ -6,6 +6,8 @@ import android.net.NetworkCapabilities
 import com.guap.vkr.playlistmaker.search.data.NetworkClient
 import com.guap.vkr.playlistmaker.search.data.dto.Response
 import com.guap.vkr.playlistmaker.search.data.dto.TracksSearchRequest
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import javax.net.ssl.HttpsURLConnection
 
 class RetrofitNetworkClient(
@@ -13,7 +15,7 @@ class RetrofitNetworkClient(
     private val context: Context
 ) : NetworkClient {
 
-    override fun doRequest(dto: Any): Response {
+    override suspend fun doRequest(dto: Any): Response {
         if (!isConnected()) {
             return Response().apply { resultCode = -1 }
         }
@@ -22,11 +24,13 @@ class RetrofitNetworkClient(
             return Response().apply { resultCode = HttpsURLConnection.HTTP_BAD_REQUEST }
         }
 
-        val response = this.apiService.search(dto.expression).execute()
-        val body = response.body()
-
-        return body?.apply { resultCode = response.code() } ?: Response().apply {
-            resultCode = response.code()
+        return withContext(Dispatchers.IO) {
+            try {
+                val response = apiService.search(dto.expression)
+                response.apply { resultCode = HttpsURLConnection.HTTP_OK }
+            } catch (e: Throwable) {
+                Response().apply { resultCode =  HttpsURLConnection.HTTP_INTERNAL_ERROR}
+            }
         }
     }
 
