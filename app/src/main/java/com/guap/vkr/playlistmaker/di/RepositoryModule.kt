@@ -6,7 +6,7 @@ import com.guap.vkr.playlistmaker.library.domain.api.LibraryRepository
 import com.guap.vkr.playlistmaker.player.data.MediaPlayerRepositoryImpl
 import com.guap.vkr.playlistmaker.player.domain.api.MediaPlayerRepository
 import com.guap.vkr.playlistmaker.search.data.SearchRepositoryImpl
-import com.guap.vkr.playlistmaker.search.domain.SearchRepository
+import com.guap.vkr.playlistmaker.search.domain.api.SearchRepository
 import com.guap.vkr.playlistmaker.settings.data.SettingsRepositoryImpl
 import com.guap.vkr.playlistmaker.settings.domain.SettingsRepository
 import com.guap.vkr.playlistmaker.sharing.data.ExternalNavigatorImpl

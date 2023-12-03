@@ -1,4 +1,4 @@
-package com.guap.vkr.playlistmaker.search.domain
+package com.guap.vkr.playlistmaker.search.domain.api
 
 import com.guap.vkr.playlistmaker.search.data.dto.ResponseStatus
 import com.guap.vkr.playlistmaker.search.domain.model.Track
@@ -9,4 +9,5 @@ interface SearchRepository {
     fun getTrackHistoryList(): List<Track>
     fun addTrackInHistory(track: Track)
     fun clearHistory()
+    fun getFavoriteTracksIds(): Flow<List<Long>>
 }

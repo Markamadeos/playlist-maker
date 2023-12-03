@@ -29,13 +29,6 @@ class LibraryRepositoryImpl(
         }
     }
 
-    override fun getFavoriteTracksIds(): Flow<List<Long>> {
-        return flow {
-            val ids = appDatabase.trackDao().getTracksIds()
-            emit(ids)
-        }
-    }
-
     private fun convertFromTrackEntity(tracks: List<TrackEntity>): List<Track> {
         return tracks.map { track -> trackDbConverter.map(track) }
     }

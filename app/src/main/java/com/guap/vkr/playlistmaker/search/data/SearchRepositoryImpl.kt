@@ -5,10 +5,13 @@ import com.guap.vkr.playlistmaker.search.data.dto.ResponseStatus
 import com.guap.vkr.playlistmaker.search.data.dto.TrackDto
 import com.guap.vkr.playlistmaker.search.data.dto.TracksSearchRequest
 import com.guap.vkr.playlistmaker.search.data.dto.TracksSearchResponse
-import com.guap.vkr.playlistmaker.search.domain.SearchRepository
+import com.guap.vkr.playlistmaker.search.domain.api.SearchRepository
 import com.guap.vkr.playlistmaker.search.domain.model.Track
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.toList
 import javax.net.ssl.HttpsURLConnection
 
 class SearchRepositoryImpl(
@@ -43,11 +46,11 @@ class SearchRepositoryImpl(
                                 it.previewUrl
                             )
                         }
-
-                        val favoriteTracksIds = appDatabase.trackDao().getTracksIds()
-                        data.forEach {
-                            if (favoriteTracksIds.contains(it.trackId)) {
-                                it.isFavorite = true
+                        getFavoriteTracksIds().map { favoriteTracksIds ->
+                            data.forEach { track ->
+                                if (favoriteTracksIds.contains(track.trackId)) {
+                                    track.isFavorite = true
+                                }
                             }
                         }
                         emit(ResponseStatus.Success(data = data))
@@ -62,7 +65,17 @@ class SearchRepositoryImpl(
 
 
     override fun getTrackHistoryList(): List<Track> {
-        return searchDataStorage.getSearchHistory().map {
+        val tracksHistory = searchDataStorage.getSearchHistory()
+
+        getFavoriteTracksIds().map { favoriteTracksIds ->
+            tracksHistory.forEach { track ->
+                if (favoriteTracksIds.contains(track.trackId)) {
+                    track.isFavorite = true
+                }
+            }
+        }
+
+        return tracksHistory.map {
             Track(
                 it.trackId,
                 it.trackName,
@@ -73,7 +86,8 @@ class SearchRepositoryImpl(
                 it.releaseDate,
                 it.primaryGenreName,
                 it.country,
-                it.previewUrl
+                it.previewUrl,
+                it.isFavorite
             )
         }
     }
@@ -90,12 +104,20 @@ class SearchRepositoryImpl(
                 track.releaseDate,
                 track.primaryGenreName,
                 track.country,
-                track.previewUrl
+                track.previewUrl,
+                track.isFavorite
             )
         )
     }
 
     override fun clearHistory() {
         searchDataStorage.clearHistory()
+    }
+
+    override fun getFavoriteTracksIds(): Flow<List<Long>> {
+        return flow {
+            val ids = appDatabase.trackDao().getTracksIds()
+            emit(ids)
+        }
     }
 }

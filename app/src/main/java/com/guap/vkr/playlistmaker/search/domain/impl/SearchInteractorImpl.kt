@@ -1,8 +1,8 @@
 package com.guap.vkr.playlistmaker.search.domain.impl
 
 import com.guap.vkr.playlistmaker.search.data.dto.ResponseStatus
-import com.guap.vkr.playlistmaker.search.domain.SearchInteractor
-import com.guap.vkr.playlistmaker.search.domain.SearchRepository
+import com.guap.vkr.playlistmaker.search.domain.api.SearchInteractor
+import com.guap.vkr.playlistmaker.search.domain.api.SearchRepository
 import com.guap.vkr.playlistmaker.search.domain.model.Track
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
