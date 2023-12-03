@@ -6,7 +6,7 @@ import com.guap.vkr.playlistmaker.search.data.dto.TrackDto
 
 class TrackDbConverter {
 
-    fun map(track: TrackDto): TrackEntity {
+    fun map(track: TrackLibraryModel): TrackEntity {
         return TrackEntity(
             track.trackId,
             track.trackName,
