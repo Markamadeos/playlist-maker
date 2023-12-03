@@ -11,6 +11,6 @@ interface LibraryInteractor {
 
     fun getFavoriteTracks(): Flow<List<Track>>
 
-    fun getFavoriteTracksIds(): Flow<List<String>>
+    fun getFavoriteTracksIds(): Flow<List<Long>>
 
 }

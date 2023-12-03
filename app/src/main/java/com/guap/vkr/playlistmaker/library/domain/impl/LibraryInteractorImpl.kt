@@ -18,7 +18,7 @@ class LibraryInteractorImpl(private val libraryRepository: LibraryRepository) : 
         return libraryRepository.getFavoriteTracks()
     }
 
-    override fun getFavoriteTracksIds(): Flow<List<String>> {
-        TODO("Not yet implemented")
+    override fun getFavoriteTracksIds(): Flow<List<Long>> {
+        return libraryRepository.getFavoriteTracksIds()
     }
 }
