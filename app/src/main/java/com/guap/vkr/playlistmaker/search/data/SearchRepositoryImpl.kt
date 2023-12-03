@@ -5,7 +5,7 @@ import com.guap.vkr.playlistmaker.search.data.dto.TrackDto
 import com.guap.vkr.playlistmaker.search.data.dto.TracksSearchRequest
 import com.guap.vkr.playlistmaker.search.data.dto.TracksSearchResponse
 import com.guap.vkr.playlistmaker.search.domain.SearchRepository
-import com.guap.vkr.playlistmaker.search.domain.model.TrackSearchModel
+import com.guap.vkr.playlistmaker.search.domain.model.Track
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.net.ssl.HttpsURLConnection
@@ -15,7 +15,7 @@ class SearchRepositoryImpl(
     private val searchDataStorage: SearchDataStorage
 ) : SearchRepository {
 
-    override fun searchTrack(expression: String): Flow<ResponseStatus<List<TrackSearchModel>>> =
+    override fun searchTrack(expression: String): Flow<ResponseStatus<List<Track>>> =
         flow {
 
             val response = networkClient.doRequest(TracksSearchRequest(expression))
@@ -28,7 +28,7 @@ class SearchRepositoryImpl(
                 HttpsURLConnection.HTTP_OK -> {
                     with(response as TracksSearchResponse) {
                         val data = results.map {
-                            TrackSearchModel(
+                            Track(
                                 it.trackId,
                                 it.trackName,
                                 it.artistName,
@@ -52,9 +52,9 @@ class SearchRepositoryImpl(
         }
 
 
-    override fun getTrackHistoryList(): List<TrackSearchModel> {
+    override fun getTrackHistoryList(): List<Track> {
         return searchDataStorage.getSearchHistory().map {
-            TrackSearchModel(
+            Track(
                 it.trackId,
                 it.trackName,
                 it.artistName,
@@ -69,7 +69,7 @@ class SearchRepositoryImpl(
         }
     }
 
-    override fun addTrackInHistory(track: TrackSearchModel) {
+    override fun addTrackInHistory(track: Track) {
         searchDataStorage.addTrackToHistory(
             TrackDto(
                 track.trackId,

@@ -8,9 +8,9 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.gson.Gson
 import com.guap.vkr.playlistmaker.R
 import com.guap.vkr.playlistmaker.databinding.ActivityPlayerBinding
-import com.guap.vkr.playlistmaker.player.domain.model.TrackPlayerModel
 import com.guap.vkr.playlistmaker.player.ui.model.MediaPlayerState
 import com.guap.vkr.playlistmaker.player.ui.view_model.PlayerViewModel
+import com.guap.vkr.playlistmaker.search.domain.model.Track
 import com.guap.vkr.playlistmaker.utils.TRACK
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -49,7 +49,7 @@ class PlayerActivity : AppCompatActivity() {
         }
     }
 
-    private fun bind(track: TrackPlayerModel) {
+    private fun bind(track: Track) {
         val cornerRadius = this.resources.getDimensionPixelSize(R.dimen._8dp)
 
         Glide.with(this)
@@ -74,7 +74,7 @@ class PlayerActivity : AppCompatActivity() {
     }
 
     private fun getTrack() =
-        Gson().fromJson(intent.getStringExtra(TRACK), TrackPlayerModel::class.java)
+        Gson().fromJson(intent.getStringExtra(TRACK), Track::class.java)
 
     private fun updateTimer(time: String) {
         binding.tvPlaytime.text = time

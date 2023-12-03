@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.guap.vkr.playlistmaker.search.domain.SearchInteractor
-import com.guap.vkr.playlistmaker.search.domain.model.TrackSearchModel
+import com.guap.vkr.playlistmaker.search.domain.model.Track
 import com.guap.vkr.playlistmaker.search.ui.model.ScreenState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -50,7 +50,7 @@ class SearchViewModel(
         }
     }
 
-    private fun processResult(foundTracks: List<TrackSearchModel>?) {
+    private fun processResult(foundTracks: List<Track>?) {
         if (foundTracks != null) {
             when {
                 foundTracks.isEmpty() -> {
@@ -68,7 +68,7 @@ class SearchViewModel(
 
     fun getTracksHistory() {
         searchInteractor.getTracksHistory(object : SearchInteractor.HistoryConsumer {
-            override fun consume(tracks: List<TrackSearchModel>?) {
+            override fun consume(tracks: List<Track>?) {
                 if (tracks.isNullOrEmpty()) {
                     renderState(ScreenState.EmptyHistoryList())
                 } else {
@@ -78,7 +78,7 @@ class SearchViewModel(
         })
     }
 
-    fun addTrackToHistory(track: TrackSearchModel) {
+    fun addTrackToHistory(track: Track) {
         searchInteractor.addTrackToHistory(track)
     }
 
