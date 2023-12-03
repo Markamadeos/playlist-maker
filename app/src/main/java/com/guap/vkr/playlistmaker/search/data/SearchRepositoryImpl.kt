@@ -1,5 +1,6 @@
 package com.guap.vkr.playlistmaker.search.data
 
+import com.guap.vkr.playlistmaker.library.data.db.AppDatabase
 import com.guap.vkr.playlistmaker.search.data.dto.ResponseStatus
 import com.guap.vkr.playlistmaker.search.data.dto.TrackDto
 import com.guap.vkr.playlistmaker.search.data.dto.TracksSearchRequest
@@ -12,7 +13,8 @@ import javax.net.ssl.HttpsURLConnection
 
 class SearchRepositoryImpl(
     private val networkClient: NetworkClient,
-    private val searchDataStorage: SearchDataStorage
+    private val searchDataStorage: SearchDataStorage,
+    private val appDatabase: AppDatabase
 ) : SearchRepository {
 
     override fun searchTrack(expression: String): Flow<ResponseStatus<List<Track>>> =
@@ -40,6 +42,13 @@ class SearchRepositoryImpl(
                                 it.country,
                                 it.previewUrl
                             )
+                        }
+
+                        val favoriteTracksIds = appDatabase.trackDao().getTracksIds()
+                        data.forEach {
+                            if (favoriteTracksIds.contains(it.trackId)) {
+                                it.isFavorite = true
+                            }
                         }
                         emit(ResponseStatus.Success(data = data))
                     }

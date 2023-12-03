@@ -28,7 +28,7 @@ val repositoryModule = module {
     }
 
     single<SearchRepository> {
-        SearchRepositoryImpl(networkClient = get(), searchDataStorage = get())
+        SearchRepositoryImpl(networkClient = get(), searchDataStorage = get(), appDatabase = get())
     }
 
     single<LibraryRepository> {
