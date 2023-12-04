@@ -112,7 +112,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/_28dp"
         android:background="@null"
-        android:src="@drawable/ic_like"
+        android:src="@drawable/ic_like_unpressed"
         app:layout_constraintBottom_toTopOf="@id/tv_playtime"
         app:layout_constraintEnd_toStartOf="@id/right_guideline" />
 
