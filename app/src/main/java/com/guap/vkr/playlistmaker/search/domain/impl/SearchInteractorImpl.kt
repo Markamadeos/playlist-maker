@@ -23,9 +23,13 @@ class SearchInteractorImpl(private val repository: SearchRepository) : SearchInt
         }
     }
 
-    override fun getTracksHistory(consumer: SearchInteractor.HistoryConsumer) {
-        consumer.consume(repository.getTrackHistoryList())
+    override fun getTracksHistory(): Flow<List<Track>?> {
+        return repository.getTrackHistoryList()
     }
+
+//    override fun getTracksHistory(consumer: SearchInteractor.HistoryConsumer) {
+//        consumer.consume(repository.getTrackHistoryList())
+//    }
 
     override fun addTrackToHistory(track: Track) {
         repository.addTrackInHistory(track)

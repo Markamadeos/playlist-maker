@@ -67,15 +67,16 @@ class SearchViewModel(
     }
 
     fun getTracksHistory() {
-        searchInteractor.getTracksHistory(object : SearchInteractor.HistoryConsumer {
-            override fun consume(tracks: List<Track>?) {
-                if (tracks.isNullOrEmpty()) {
+        viewModelScope.launch {
+            searchInteractor.getTracksHistory().collect {
+                val historyTrackList = it
+                if (historyTrackList.isNullOrEmpty()) {
                     renderState(ScreenState.EmptyHistoryList())
                 } else {
-                    renderState(ScreenState.ContentHistoryList(tracks))
+                    renderState(ScreenState.ContentHistoryList(historyTrackList))
                 }
             }
-        })
+        }
     }
 
     fun addTrackToHistory(track: Track) {

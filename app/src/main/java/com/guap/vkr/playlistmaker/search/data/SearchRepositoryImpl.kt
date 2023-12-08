@@ -8,10 +8,8 @@ import com.guap.vkr.playlistmaker.search.data.dto.TracksSearchResponse
 import com.guap.vkr.playlistmaker.search.domain.api.SearchRepository
 import com.guap.vkr.playlistmaker.search.domain.model.Track
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.toList
 import javax.net.ssl.HttpsURLConnection
 
 class SearchRepositoryImpl(
@@ -64,31 +62,24 @@ class SearchRepositoryImpl(
         }
 
 
-    override fun getTrackHistoryList(): List<Track> {
-        val tracksHistory = searchDataStorage.getSearchHistory()
-
-        getFavoriteTracksIds().map { favoriteTracksIds ->
-            tracksHistory.forEach { track ->
-                if (favoriteTracksIds.contains(track.trackId)) {
-                    track.isFavorite = true
-                }
+    override fun getTrackHistoryList(): Flow<List<Track>?> {
+        return flow {
+            val data = searchDataStorage.getSearchHistory().map {
+                Track(
+                    it.trackId,
+                    it.trackName,
+                    it.artistName,
+                    it.trackTimeMillis,
+                    it.artworkUrl100,
+                    it.collectionName,
+                    it.releaseDate,
+                    it.primaryGenreName,
+                    it.country,
+                    it.previewUrl,
+                    it.isFavorite
+                )
             }
-        }
-
-        return tracksHistory.map {
-            Track(
-                it.trackId,
-                it.trackName,
-                it.artistName,
-                it.trackTimeMillis,
-                it.artworkUrl100,
-                it.collectionName,
-                it.releaseDate,
-                it.primaryGenreName,
-                it.country,
-                it.previewUrl,
-                it.isFavorite
-            )
+            emit(data)
         }
     }
 
