@@ -4,8 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.guap.vkr.playlistmaker.library.domain.api.LibraryInteractor
 import com.guap.vkr.playlistmaker.player.domain.api.MediaPlayerInteractor
 import com.guap.vkr.playlistmaker.player.ui.model.MediaPlayerState
+import com.guap.vkr.playlistmaker.search.domain.model.Track
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -15,7 +17,8 @@ import java.util.Locale
 
 class PlayerViewModel(
     private val mediaPlayerInteractor: MediaPlayerInteractor,
-    private val trackUrl: String
+    private val track: Track,
+    private val favoriteTracksInteractor: LibraryInteractor
 ) : ViewModel() {
 
     private var timerJob: Job? = null
@@ -23,22 +26,24 @@ class PlayerViewModel(
 
     private val stateLiveData = MutableLiveData<MediaPlayerState>()
     private val timerLiveData = MutableLiveData<String>()
+    private val likeLiveData = MutableLiveData<Boolean>()
     fun observeState(): LiveData<MediaPlayerState> = stateLiveData
     fun observeTimer(): LiveData<String> = timerLiveData
+    fun observeLike(): LiveData<Boolean> = likeLiveData
 
     init {
         renderState(MediaPlayerState.Default)
         prepareAudioPlayer()
         setOnCompleteListener()
         isClickAllowed()
+        likeLiveData.postValue(track.isFavorite)
     }
 
     private fun prepareAudioPlayer() {
-        mediaPlayerInteractor.preparePlayer(trackUrl) {
+        mediaPlayerInteractor.preparePlayer(track.previewUrl) {
             renderState(MediaPlayerState.Prepared)
         }
     }
-
 
     private fun startAudioPlayer() {
         renderState(MediaPlayerState.Playing)
@@ -68,9 +73,11 @@ class PlayerViewModel(
             is MediaPlayerState.Playing -> {
                 pauseAudioPlayer()
             }
+
             is MediaPlayerState.Prepared, MediaPlayerState.Paused -> {
                 startAudioPlayer()
             }
+
             else -> {}
         }
         updateTimer()
@@ -108,6 +115,19 @@ class PlayerViewModel(
             }
         }
         return current
+    }
+
+    fun isLikeButtonClicked(track: Track) {
+        viewModelScope.launch {
+            if (track.isFavorite) {
+                favoriteTracksInteractor.deleteTrackFromFavorites(track)
+                track.isFavorite = false
+            } else {
+                favoriteTracksInteractor.addTrackToFavorites(track)
+                track.isFavorite = true
+            }
+            likeLiveData.postValue(track.isFavorite)
+        }
     }
 
     companion object {

@@ -23,9 +23,13 @@ class SharedPrefsSearchDataStorage(
     }
 
     override fun addTrackToHistory(track: TrackDto) {
-        if (historyList.contains(track)) {
-            historyList.remove(track)
+        val iterator = historyList.iterator()
+        for (i in iterator) {
+            if(i.trackId == track.trackId) {
+                iterator.remove()
+            }
         }
+
         if (historyList.size == HISTORY_LIST_SIZE) {
             historyList.removeLast()
         }

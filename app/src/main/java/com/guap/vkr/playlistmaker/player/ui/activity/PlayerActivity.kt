@@ -18,17 +18,16 @@ import org.koin.core.parameter.parametersOf
 class PlayerActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityPlayerBinding
-
     private val viewModel: PlayerViewModel by viewModel {
-        parametersOf(getTrack().previewUrl)
+        parametersOf(getTrack())
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        bind(getTrack())
+        val track = getTrack()
+        bind(track)
 
         viewModel.observeState().observe(this) {
             updateScreen(it)
@@ -36,6 +35,10 @@ class PlayerActivity : AppCompatActivity() {
 
         viewModel.observeTimer().observe(this) {
             updateTimer(it)
+        }
+
+        viewModel.observeLike().observe(this) {
+            updateLikeButton(it)
         }
 
         binding.btnPlay.setOnClickListener {
@@ -46,6 +49,10 @@ class PlayerActivity : AppCompatActivity() {
 
         binding.btnBack.setOnClickListener {
             finish()
+        }
+
+        binding.btnLike.setOnClickListener {
+            viewModel.isLikeButtonClicked(track = track)
         }
     }
 
@@ -97,6 +104,13 @@ class PlayerActivity : AppCompatActivity() {
 
             else -> {}
         }
+    }
+
+    private fun updateLikeButton(isFavorite: Boolean) {
+        binding.btnLike.setImageResource(
+            if (isFavorite) R.drawable.ic_like_pressed
+            else R.drawable.ic_like_unpressed
+        )
     }
 
     override fun onPause() {

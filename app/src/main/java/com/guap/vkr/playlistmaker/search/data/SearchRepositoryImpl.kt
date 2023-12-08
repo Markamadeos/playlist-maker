@@ -9,7 +9,6 @@ import com.guap.vkr.playlistmaker.search.domain.api.SearchRepository
 import com.guap.vkr.playlistmaker.search.domain.model.Track
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
 import javax.net.ssl.HttpsURLConnection
 
 class SearchRepositoryImpl(
@@ -41,14 +40,13 @@ class SearchRepositoryImpl(
                                 it.releaseDate,
                                 it.primaryGenreName,
                                 it.country,
-                                it.previewUrl
+                                it.previewUrl,
+                                it.isFavorite
                             )
                         }
-                        getFavoriteTracksIds().map { favoriteTracksIds ->
+                        getFavoriteTracksIds().collect { favoriteTracksIds ->
                             data.forEach { track ->
-                                if (favoriteTracksIds.contains(track.trackId)) {
-                                    track.isFavorite = true
-                                }
+                                track.isFavorite = favoriteTracksIds.contains(track.trackId)
                             }
                         }
                         emit(ResponseStatus.Success(data = data))
@@ -64,7 +62,13 @@ class SearchRepositoryImpl(
 
     override fun getTrackHistoryList(): Flow<List<Track>?> {
         return flow {
-            val data = searchDataStorage.getSearchHistory().map {
+            val data = searchDataStorage.getSearchHistory()
+            getFavoriteTracksIds().collect { favoriteTracksIds ->
+                data.forEach { track ->
+                    track.isFavorite = favoriteTracksIds.contains(track.trackId)
+                }
+            }
+            emit(data.map {
                 Track(
                     it.trackId,
                     it.trackName,
@@ -78,8 +82,7 @@ class SearchRepositoryImpl(
                     it.previewUrl,
                     it.isFavorite
                 )
-            }
-            emit(data)
+            })
         }
     }
 
