@@ -13,5 +13,5 @@ data class TrackDto(
     val primaryGenreName: String,
     val country: String,
     val previewUrl: String,
-    var isFavorite: Boolean = false
+   // var isFavorite: Boolean = false
 ) : Serializable

@@ -40,8 +40,7 @@ class SearchRepositoryImpl(
                                 it.releaseDate,
                                 it.primaryGenreName,
                                 it.country,
-                                it.previewUrl,
-                                it.isFavorite
+                                it.previewUrl
                             )
                         }
                         getFavoriteTracksIds().collect { favoriteTracksIds ->
@@ -62,13 +61,7 @@ class SearchRepositoryImpl(
 
     override fun getTrackHistoryList(): Flow<List<Track>?> {
         return flow {
-            val data = searchDataStorage.getSearchHistory()
-            getFavoriteTracksIds().collect { favoriteTracksIds ->
-                data.forEach { track ->
-                    track.isFavorite = favoriteTracksIds.contains(track.trackId)
-                }
-            }
-            emit(data.map {
+            val data = searchDataStorage.getSearchHistory().map {
                 Track(
                     it.trackId,
                     it.trackName,
@@ -79,10 +72,15 @@ class SearchRepositoryImpl(
                     it.releaseDate,
                     it.primaryGenreName,
                     it.country,
-                    it.previewUrl,
-                    it.isFavorite
+                    it.previewUrl
                 )
-            })
+            }
+            getFavoriteTracksIds().collect { favoriteTracksIds ->
+                data.forEach { track ->
+                    track.isFavorite = favoriteTracksIds.contains(track.trackId)
+                }
+            }
+            emit(data)
         }
     }
 
@@ -98,8 +96,7 @@ class SearchRepositoryImpl(
                 track.releaseDate,
                 track.primaryGenreName,
                 track.country,
-                track.previewUrl,
-                track.isFavorite
+                track.previewUrl
             )
         )
     }

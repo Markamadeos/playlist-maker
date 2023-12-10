@@ -33,7 +33,7 @@ val viewModelModule = module {
     }
 
     viewModel {
-        FavoriteViewModel()
+        FavoriteViewModel(libraryInteractor = get())
     }
 
     viewModel {

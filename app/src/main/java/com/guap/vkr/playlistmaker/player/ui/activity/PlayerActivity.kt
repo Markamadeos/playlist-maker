@@ -54,16 +54,15 @@ class PlayerActivity : AppCompatActivity() {
         binding.btnLike.setOnClickListener {
             viewModel.isLikeButtonClicked(track = track)
         }
+
     }
+
 
     private fun bind(track: Track) {
         val cornerRadius = this.resources.getDimensionPixelSize(R.dimen._8dp)
 
-        Glide.with(this)
-            .load(track.getCoverArtwork())
-            .placeholder(R.drawable.iv_track_cover)
-            .transform(CenterCrop(), RoundedCorners(cornerRadius))
-            .into(binding.ivCover)
+        Glide.with(this).load(track.getCoverArtwork()).placeholder(R.drawable.iv_track_cover)
+            .transform(CenterCrop(), RoundedCorners(cornerRadius)).into(binding.ivCover)
 
         binding.apply {
             tvTrackName.text = track.trackName
@@ -74,14 +73,12 @@ class PlayerActivity : AppCompatActivity() {
             tvYearValue.text = track.getReleaseYear()
             tvGenreValue.text = track.primaryGenreName
             tvCountryValue.text = track.country
-
             tvTrackName.isSelected = true
             tvArtistName.isSelected = true
         }
     }
 
-    private fun getTrack() =
-        Gson().fromJson(intent.getStringExtra(TRACK), Track::class.java)
+    private fun getTrack() = Gson().fromJson(intent.getStringExtra(TRACK), Track::class.java)
 
     private fun updateTimer(time: String) {
         binding.tvPlaytime.text = time
