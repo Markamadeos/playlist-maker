@@ -1,8 +1,11 @@
-package com.guap.vkr.playlistmaker.search.data.dto
+package com.guap.vkr.playlistmaker.library.data.db.entity
 
-import java.io.Serializable
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
-data class TrackDto(
+@Entity(tableName = "track_table")
+data class TrackEntity(
+    @PrimaryKey
     val trackId: Long,
     val trackName: String,
     val artistName: String,
@@ -13,5 +16,5 @@ data class TrackDto(
     val primaryGenreName: String,
     val country: String,
     val previewUrl: String,
-   // var isFavorite: Boolean = false
-) : Serializable
+    val addedToFavorite: Long = System.currentTimeMillis()
+)

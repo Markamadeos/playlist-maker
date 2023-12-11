@@ -4,15 +4,16 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.guap.vkr.playlistmaker.search.domain.SearchInteractor
-import com.guap.vkr.playlistmaker.search.domain.model.TrackSearchModel
+import com.guap.vkr.playlistmaker.library.domain.api.LibraryInteractor
+import com.guap.vkr.playlistmaker.search.domain.api.SearchInteractor
+import com.guap.vkr.playlistmaker.search.domain.model.Track
 import com.guap.vkr.playlistmaker.search.ui.model.ScreenState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class SearchViewModel(
-    private val searchInteractor: SearchInteractor,
+    private val searchInteractor: SearchInteractor
 ) : ViewModel() {
 
     private var searchJob: Job? = null
@@ -50,7 +51,7 @@ class SearchViewModel(
         }
     }
 
-    private fun processResult(foundTracks: List<TrackSearchModel>?) {
+    private fun processResult(foundTracks: List<Track>?) {
         if (foundTracks != null) {
             when {
                 foundTracks.isEmpty() -> {
@@ -67,18 +68,19 @@ class SearchViewModel(
     }
 
     fun getTracksHistory() {
-        searchInteractor.getTracksHistory(object : SearchInteractor.HistoryConsumer {
-            override fun consume(tracks: List<TrackSearchModel>?) {
-                if (tracks.isNullOrEmpty()) {
+        viewModelScope.launch {
+            searchInteractor.getTracksHistory().collect {
+                val historyTrackList = it
+                if (historyTrackList.isNullOrEmpty()) {
                     renderState(ScreenState.EmptyHistoryList())
                 } else {
-                    renderState(ScreenState.ContentHistoryList(tracks))
+                    renderState(ScreenState.ContentHistoryList(historyTrackList))
                 }
             }
-        })
+        }
     }
 
-    fun addTrackToHistory(track: TrackSearchModel) {
+    fun addTrackToHistory(track: Track) {
         searchInteractor.addTrackToHistory(track)
     }
 

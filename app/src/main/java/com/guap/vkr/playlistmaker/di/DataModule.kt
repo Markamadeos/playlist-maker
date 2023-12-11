@@ -2,7 +2,10 @@ package com.guap.vkr.playlistmaker.di
 
 import android.content.Context.MODE_PRIVATE
 import android.media.MediaPlayer
+import androidx.room.Room
 import com.google.gson.Gson
+import com.guap.vkr.playlistmaker.library.data.converters.TrackDbConverter
+import com.guap.vkr.playlistmaker.library.data.db.AppDatabase
 import com.guap.vkr.playlistmaker.search.data.NetworkClient
 import com.guap.vkr.playlistmaker.search.data.SearchDataStorage
 import com.guap.vkr.playlistmaker.search.data.network.ITunesApi
@@ -51,4 +54,11 @@ val dataModule = module {
     }
 
     factory { Gson() }
+
+    single {
+        Room.databaseBuilder(androidContext(), AppDatabase::class.java, "database.db")
+            .build()
+    }
+
+    factory { TrackDbConverter() }
 }

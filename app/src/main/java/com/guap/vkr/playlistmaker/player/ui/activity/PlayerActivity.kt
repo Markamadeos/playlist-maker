@@ -8,9 +8,9 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.gson.Gson
 import com.guap.vkr.playlistmaker.R
 import com.guap.vkr.playlistmaker.databinding.ActivityPlayerBinding
-import com.guap.vkr.playlistmaker.player.domain.model.TrackPlayerModel
 import com.guap.vkr.playlistmaker.player.ui.model.MediaPlayerState
 import com.guap.vkr.playlistmaker.player.ui.view_model.PlayerViewModel
+import com.guap.vkr.playlistmaker.search.domain.model.Track
 import com.guap.vkr.playlistmaker.utils.TRACK
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -18,17 +18,16 @@ import org.koin.core.parameter.parametersOf
 class PlayerActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityPlayerBinding
-
     private val viewModel: PlayerViewModel by viewModel {
-        parametersOf(getTrack().previewUrl)
+        parametersOf(getTrack())
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        bind(getTrack())
+        val track = getTrack()
+        bind(track)
 
         viewModel.observeState().observe(this) {
             updateScreen(it)
@@ -36,6 +35,10 @@ class PlayerActivity : AppCompatActivity() {
 
         viewModel.observeTimer().observe(this) {
             updateTimer(it)
+        }
+
+        viewModel.observeLike().observe(this) {
+            updateLikeButton(it)
         }
 
         binding.btnPlay.setOnClickListener {
@@ -47,16 +50,19 @@ class PlayerActivity : AppCompatActivity() {
         binding.btnBack.setOnClickListener {
             finish()
         }
+
+        binding.btnLike.setOnClickListener {
+            viewModel.isLikeButtonClicked(track = track)
+        }
+
     }
 
-    private fun bind(track: TrackPlayerModel) {
+
+    private fun bind(track: Track) {
         val cornerRadius = this.resources.getDimensionPixelSize(R.dimen._8dp)
 
-        Glide.with(this)
-            .load(track.getCoverArtwork())
-            .placeholder(R.drawable.iv_track_cover)
-            .transform(CenterCrop(), RoundedCorners(cornerRadius))
-            .into(binding.ivCover)
+        Glide.with(this).load(track.getCoverArtwork()).placeholder(R.drawable.iv_track_cover)
+            .transform(CenterCrop(), RoundedCorners(cornerRadius)).into(binding.ivCover)
 
         binding.apply {
             tvTrackName.text = track.trackName
@@ -67,14 +73,12 @@ class PlayerActivity : AppCompatActivity() {
             tvYearValue.text = track.getReleaseYear()
             tvGenreValue.text = track.primaryGenreName
             tvCountryValue.text = track.country
-
             tvTrackName.isSelected = true
             tvArtistName.isSelected = true
         }
     }
 
-    private fun getTrack() =
-        Gson().fromJson(intent.getStringExtra(TRACK), TrackPlayerModel::class.java)
+    private fun getTrack() = Gson().fromJson(intent.getStringExtra(TRACK), Track::class.java)
 
     private fun updateTimer(time: String) {
         binding.tvPlaytime.text = time
@@ -97,6 +101,13 @@ class PlayerActivity : AppCompatActivity() {
 
             else -> {}
         }
+    }
+
+    private fun updateLikeButton(isFavorite: Boolean) {
+        binding.btnLike.setImageResource(
+            if (isFavorite) R.drawable.ic_like_pressed
+            else R.drawable.ic_like_unpressed
+        )
     }
 
     override fun onPause() {
