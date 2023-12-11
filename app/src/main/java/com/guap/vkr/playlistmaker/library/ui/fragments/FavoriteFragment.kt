@@ -94,6 +94,6 @@ class FavoriteFragment : Fragment() {
 
     companion object {
         fun newInstance() = FavoriteFragment()
-        private const val CLICK_DEBOUNCE_DELAY_MS = 1000L
+        private const val CLICK_DEBOUNCE_DELAY_MS = 300L
     }
 }
