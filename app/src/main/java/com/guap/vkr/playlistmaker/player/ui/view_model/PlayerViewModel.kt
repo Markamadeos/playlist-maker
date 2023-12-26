@@ -88,7 +88,7 @@ class PlayerViewModel(
     }
 
     override fun onCleared() {
-        releaseRecourses()
+        releaseResources()
     }
 
     fun onPause() {
@@ -130,7 +130,7 @@ class PlayerViewModel(
         }
     }
 
-    fun releaseRecourses() {
+    fun releaseResources() {
         mediaPlayerInteractor.destroyPlayer()
     }
 

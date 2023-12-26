@@ -125,7 +125,7 @@ class PlayerFragment : Fragment() {
 
     override fun onDetach() {
         super.onDetach()
-        viewModel.releaseRecourses()
+        viewModel.releaseResources()
     }
 
     private fun getTrack() =  Gson().fromJson(requireArguments().getString(TRACK), Track::class.java)
