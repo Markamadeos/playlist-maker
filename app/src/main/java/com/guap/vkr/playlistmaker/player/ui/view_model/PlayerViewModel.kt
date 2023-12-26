@@ -88,7 +88,7 @@ class PlayerViewModel(
     }
 
     override fun onCleared() {
-        mediaPlayerInteractor.destroyPlayer()
+        releaseRecourses()
     }
 
     fun onPause() {
@@ -128,6 +128,10 @@ class PlayerViewModel(
             }
             likeLiveData.postValue(track.isFavorite)
         }
+    }
+
+    fun releaseRecourses() {
+        mediaPlayerInteractor.destroyPlayer()
     }
 
     companion object {

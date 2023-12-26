@@ -1,18 +1,18 @@
 package com.guap.vkr.playlistmaker.library.ui.fragments
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.google.gson.Gson
 import com.guap.vkr.playlistmaker.R
 import com.guap.vkr.playlistmaker.databinding.FragmentFavoriteBinding
 import com.guap.vkr.playlistmaker.library.ui.model.FavoriteState
 import com.guap.vkr.playlistmaker.library.ui.view_model.FavoriteViewModel
-import com.guap.vkr.playlistmaker.player.ui.activity.PlayerActivity
 import com.guap.vkr.playlistmaker.search.domain.model.Track
 import com.guap.vkr.playlistmaker.search.ui.TracksAdapter
 import com.guap.vkr.playlistmaker.utils.TRACK
@@ -83,12 +83,8 @@ class FavoriteFragment : Fragment() {
 
     private fun trackClickListener(track: Track) {
         if (isClickAllowed()) {
-            val playIntent =
-                Intent(requireContext(), PlayerActivity::class.java).putExtra(
-                    TRACK,
-                    Gson().toJson(track)
-                )
-            startActivity(playIntent)
+            val trackBundle = bundleOf(TRACK to Gson().toJson(track))
+            findNavController().navigate(R.id.action_libraryFragment_to_playerFragment, trackBundle)
         }
     }
 

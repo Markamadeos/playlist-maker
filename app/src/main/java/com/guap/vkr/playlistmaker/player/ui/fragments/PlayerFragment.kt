@@ -1,13 +1,17 @@
-package com.guap.vkr.playlistmaker.player.ui.activity
+package com.guap.vkr.playlistmaker.player.ui.fragments
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.gson.Gson
 import com.guap.vkr.playlistmaker.R
-import com.guap.vkr.playlistmaker.databinding.ActivityPlayerBinding
+import com.guap.vkr.playlistmaker.databinding.FragmentPlayerBinding
 import com.guap.vkr.playlistmaker.player.ui.model.MediaPlayerState
 import com.guap.vkr.playlistmaker.player.ui.view_model.PlayerViewModel
 import com.guap.vkr.playlistmaker.search.domain.model.Track
@@ -15,29 +19,31 @@ import com.guap.vkr.playlistmaker.utils.TRACK
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
-class PlayerActivity : AppCompatActivity() {
+class PlayerFragment : Fragment() {
 
-    private lateinit var binding: ActivityPlayerBinding
-    private val viewModel: PlayerViewModel by viewModel {
+    private var _binding: FragmentPlayerBinding? = null
+    private val binding get() = _binding!!
+    private val viewModel by viewModel<PlayerViewModel> {
         parametersOf(getTrack())
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityPlayerBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentPlayerBinding.inflate(inflater, container, false)
         val track = getTrack()
         bind(track)
 
-        viewModel.observeState().observe(this) {
+        viewModel.observeState().observe(viewLifecycleOwner) {
             updateScreen(it)
         }
 
-        viewModel.observeTimer().observe(this) {
+        viewModel.observeTimer().observe(viewLifecycleOwner) {
             updateTimer(it)
         }
 
-        viewModel.observeLike().observe(this) {
+        viewModel.observeLike().observe(viewLifecycleOwner) {
             updateLikeButton(it)
         }
 
@@ -48,15 +54,19 @@ class PlayerActivity : AppCompatActivity() {
         }
 
         binding.btnBack.setOnClickListener {
-            finish()
+            findNavController().popBackStack()
         }
 
         binding.btnLike.setOnClickListener {
             viewModel.isLikeButtonClicked(track = track)
         }
-
+        return binding.root
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 
     private fun bind(track: Track) {
         val cornerRadius = this.resources.getDimensionPixelSize(R.dimen._8dp)
@@ -77,8 +87,6 @@ class PlayerActivity : AppCompatActivity() {
             tvArtistName.isSelected = true
         }
     }
-
-    private fun getTrack() = Gson().fromJson(intent.getStringExtra(TRACK), Track::class.java)
 
     private fun updateTimer(time: String) {
         binding.tvPlaytime.text = time
@@ -114,4 +122,12 @@ class PlayerActivity : AppCompatActivity() {
         super.onPause()
         viewModel.onPause()
     }
+
+    override fun onDetach() {
+        super.onDetach()
+        viewModel.releaseRecourses()
+    }
+
+    private fun getTrack() =  Gson().fromJson(requireArguments().getString(TRACK), Track::class.java)
+
 }
