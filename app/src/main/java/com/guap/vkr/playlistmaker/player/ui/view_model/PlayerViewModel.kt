@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.guap.vkr.playlistmaker.library.domain.api.LibraryInteractor
+import com.guap.vkr.playlistmaker.library.domain.api.FavoritesInteractor
 import com.guap.vkr.playlistmaker.player.domain.api.MediaPlayerInteractor
 import com.guap.vkr.playlistmaker.player.ui.model.MediaPlayerState
 import com.guap.vkr.playlistmaker.search.domain.model.Track
@@ -18,7 +18,7 @@ import java.util.Locale
 class PlayerViewModel(
     private val mediaPlayerInteractor: MediaPlayerInteractor,
     private val track: Track,
-    private val favoriteTracksInteractor: LibraryInteractor
+    private val favoriteTracksInteractor: FavoritesInteractor
 ) : ViewModel() {
 
     private var timerJob: Job? = null

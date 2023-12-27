@@ -38,7 +38,7 @@
         style="@style/TitleTextStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/_12dp"
+        android:layout_marginStart="@dimen/_16dp"
         android:text="@string/new_playlist_title"
         app:layout_constraintBottom_toBottomOf="@+id/btn_back"
         app:layout_constraintStart_toEndOf="@id/btn_back" />
@@ -47,7 +47,7 @@
         android:id="@+id/iv_playlist_picture"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="@dimen/_24dp"
+        android:layout_marginTop="@dimen/_42dp"
         android:layout_marginBottom="@dimen/_24dp"
         android:background="@drawable/image_contour"
         android:scaleType="centerCrop"
