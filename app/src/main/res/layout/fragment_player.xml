@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="?attr/background_color"
     android:theme="@style/Theme.PlaylistMaker"
-   tools:context="com.guap.vkr.playlistmaker.player.ui.fragments.PlayerFragment">
+    tools:context="com.guap.vkr.playlistmaker.player.ui.fragments.PlayerFragment">
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/left_guideline"

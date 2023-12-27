@@ -23,5 +23,4 @@
     <attr name="bottom_navigation_selected_color" format="reference" />
     <attr name="bottom_navigation_unselected_color" format="reference" />
     <attr name="bottom_navigation_background_color" format="reference" />
-
 </resources>
