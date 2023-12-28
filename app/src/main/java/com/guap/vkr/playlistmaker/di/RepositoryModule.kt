@@ -1,8 +1,10 @@
 package com.guap.vkr.playlistmaker.di
 
 import com.guap.vkr.playlistmaker.library.data.FavoritesRepositoryImpl
+import com.guap.vkr.playlistmaker.library.data.PlaylistRepositoryImpl
 import com.guap.vkr.playlistmaker.library.data.converters.TrackDbConverter
 import com.guap.vkr.playlistmaker.library.domain.api.FavoritesRepository
+import com.guap.vkr.playlistmaker.library.domain.api.PlaylistRepository
 import com.guap.vkr.playlistmaker.player.data.MediaPlayerRepositoryImpl
 import com.guap.vkr.playlistmaker.player.domain.api.MediaPlayerRepository
 import com.guap.vkr.playlistmaker.search.data.SearchRepositoryImpl
@@ -36,4 +38,8 @@ val repositoryModule = module {
     }
 
     factory { TrackDbConverter() }
+
+    single<PlaylistRepository> {
+        PlaylistRepositoryImpl(appDatabase = get(), playlistDbConverter = get())
+    }
 }

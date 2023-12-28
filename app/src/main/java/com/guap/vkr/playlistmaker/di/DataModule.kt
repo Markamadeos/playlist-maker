@@ -4,6 +4,7 @@ import android.content.Context.MODE_PRIVATE
 import android.media.MediaPlayer
 import androidx.room.Room
 import com.google.gson.Gson
+import com.guap.vkr.playlistmaker.library.data.converters.PlaylistDbConverter
 import com.guap.vkr.playlistmaker.library.data.converters.TrackDbConverter
 import com.guap.vkr.playlistmaker.library.data.db.AppDatabase
 import com.guap.vkr.playlistmaker.search.data.NetworkClient
@@ -61,4 +62,6 @@ val dataModule = module {
     }
 
     factory { TrackDbConverter() }
+
+    factory { PlaylistDbConverter() }
 }
