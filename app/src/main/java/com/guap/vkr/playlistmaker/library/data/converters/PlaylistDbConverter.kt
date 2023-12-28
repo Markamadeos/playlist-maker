@@ -1,7 +1,7 @@
 package com.guap.vkr.playlistmaker.library.data.converters
 
 import com.guap.vkr.playlistmaker.library.data.db.entity.PlaylistEntity
-import com.guap.vkr.playlistmaker.library.domain.Playlist
+import com.guap.vkr.playlistmaker.library.domain.model.Playlist
 
 class PlaylistDbConverter {
 

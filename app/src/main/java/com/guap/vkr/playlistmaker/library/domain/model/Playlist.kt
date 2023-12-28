@@ -1,4 +1,4 @@
-package com.guap.vkr.playlistmaker.library.domain
+package com.guap.vkr.playlistmaker.library.domain.model
 
 data class Playlist(
     val playlistId: Long,
