@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.tabs.TabLayoutMediator
 import com.guap.vkr.playlistmaker.R
 import com.guap.vkr.playlistmaker.databinding.FragmentLibraryBinding
+import com.guap.vkr.playlistmaker.library.ui.adapters.LibraryViewPagerAdapter
 
 class LibraryFragment : Fragment() {
 

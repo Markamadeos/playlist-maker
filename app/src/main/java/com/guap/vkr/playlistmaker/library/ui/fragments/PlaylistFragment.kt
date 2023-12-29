@@ -8,26 +8,62 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.guap.vkr.playlistmaker.R
 import com.guap.vkr.playlistmaker.databinding.FragmentPlaylistBinding
-import com.guap.vkr.playlistmaker.library.ui.view_model.PlaylistViewModel
+import com.guap.vkr.playlistmaker.library.domain.model.Playlist
+import com.guap.vkr.playlistmaker.library.ui.model.PlaylistsState
+import com.guap.vkr.playlistmaker.library.ui.view_model.PlaylistsViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlaylistFragment : Fragment() {
 
     private var _binding: FragmentPlaylistBinding? = null
     private val binding get() = _binding!!
-    private val viewModel by viewModel<PlaylistViewModel>()
+    private val viewModel by viewModel<PlaylistsViewModel>()
+    private val playlists = ArrayList<Playlist>()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentPlaylistBinding.inflate(inflater, container, false)
-        binding.ivEmptyList.setImageResource(R.drawable.ic_search_err)
-        binding.tvEmptyList.text = getString(R.string.empty_playlists_text)
-        binding.btnCreatePlaylist.setOnClickListener {
-            findNavController().navigate(R.id.action_libraryFragment_to_newPlaylistFragment)
-        }
+        bind()
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewModel.observeState().observe(viewLifecycleOwner) {
+            updateScreen(it)
+        }
+    }
+
+    private fun bind() {
+        with(binding) {
+            ivEmptyList.setImageResource(R.drawable.ic_search_err)
+            tvEmptyList.text = getString(R.string.empty_playlists_text)
+            btnCreatePlaylist.setOnClickListener {
+                findNavController().navigate(R.id.action_libraryFragment_to_newPlaylistFragment)
+            }
+        }
+    }
+
+    private fun updateScreen(state: PlaylistsState) {
+        with(binding) {
+            when (state) {
+                is PlaylistsState.StateEmpty -> {
+                    ivEmptyList.visibility = View.VISIBLE
+                    tvEmptyList.visibility = View.VISIBLE
+                    // rv visibility gone
+                }
+
+                is PlaylistsState.StateContent -> {
+                    ivEmptyList.visibility = View.GONE
+                    tvEmptyList.visibility = View.GONE
+                    playlists.clear()
+                    playlists.addAll(state.playlists as ArrayList<Playlist>)
+                    // adapter data set changed
+                }
+            }
+        }
     }
 
     override fun onDestroy() {
