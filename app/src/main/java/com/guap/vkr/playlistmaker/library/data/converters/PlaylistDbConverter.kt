@@ -10,9 +10,7 @@ class PlaylistDbConverter {
             playlistId = playlist.playlistId,
             playlistName = playlist.playlistName,
             playlistDescription = playlist.playlistDescription,
-            imgUri = playlist.imgUri,
-            tracks = playlist.tracks,
-            tracksCount = playlist.tracksCount
+            imgUri = playlist.imgUri
         )
     }
 
@@ -21,9 +19,7 @@ class PlaylistDbConverter {
             playlistId = playlist.playlistId,
             playlistName = playlist.playlistName,
             playlistDescription = playlist.playlistDescription,
-            imgUri = playlist.imgUri,
-            tracks = playlist.tracks,
-            tracksCount = playlist.tracksCount
+            imgUri = playlist.imgUri
         )
     }
 }

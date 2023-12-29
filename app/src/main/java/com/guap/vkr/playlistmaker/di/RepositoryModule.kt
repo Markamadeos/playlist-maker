@@ -1,9 +1,11 @@
 package com.guap.vkr.playlistmaker.di
 
 import com.guap.vkr.playlistmaker.library.data.FavoritesRepositoryImpl
+import com.guap.vkr.playlistmaker.library.data.InternalStorageRepositoryImpl
 import com.guap.vkr.playlistmaker.library.data.PlaylistRepositoryImpl
 import com.guap.vkr.playlistmaker.library.data.converters.TrackDbConverter
 import com.guap.vkr.playlistmaker.library.domain.api.FavoritesRepository
+import com.guap.vkr.playlistmaker.library.domain.api.InternalStorageRepository
 import com.guap.vkr.playlistmaker.library.domain.api.PlaylistRepository
 import com.guap.vkr.playlistmaker.player.data.MediaPlayerRepositoryImpl
 import com.guap.vkr.playlistmaker.player.domain.api.MediaPlayerRepository
@@ -13,6 +15,7 @@ import com.guap.vkr.playlistmaker.settings.data.SettingsRepositoryImpl
 import com.guap.vkr.playlistmaker.settings.domain.SettingsRepository
 import com.guap.vkr.playlistmaker.sharing.data.ExternalNavigatorImpl
 import com.guap.vkr.playlistmaker.sharing.domain.ExternalNavigator
+import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
 val repositoryModule = module {
@@ -41,5 +44,9 @@ val repositoryModule = module {
 
     single<PlaylistRepository> {
         PlaylistRepositoryImpl(appDatabase = get(), playlistDbConverter = get())
+    }
+
+    single<InternalStorageRepository> {
+        InternalStorageRepositoryImpl(context = androidContext())
     }
 }
