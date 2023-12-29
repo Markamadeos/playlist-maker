@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.widget.doAfterTextChanged
@@ -37,6 +38,11 @@ class NewPlaylistFragment : Fragment() {
                 setCover()
             }
         }
+    private val onBackPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            showExitConfirmDialog()
+        }
+    }
 
     private fun isDataFilled(): Boolean {
         return coverUri != Uri.EMPTY
@@ -88,6 +94,10 @@ class NewPlaylistFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            onBackPressedCallback
+        )
         _binding = FragmentNewPlaylistBinding.inflate(inflater, container, false)
         return binding.root
     }
