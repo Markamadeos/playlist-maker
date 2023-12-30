@@ -11,6 +11,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.guap.vkr.playlistmaker.R
 import com.guap.vkr.playlistmaker.databinding.FragmentPlayerBinding
@@ -18,6 +19,7 @@ import com.guap.vkr.playlistmaker.library.domain.model.Playlist
 import com.guap.vkr.playlistmaker.player.ui.adapters.BottomSheetPlaylistAdapter
 import com.guap.vkr.playlistmaker.player.ui.model.MediaPlayerState
 import com.guap.vkr.playlistmaker.player.ui.model.PlayerBottomSheetState
+import com.guap.vkr.playlistmaker.player.ui.model.TrackInPlaylistState
 import com.guap.vkr.playlistmaker.player.ui.view_model.PlayerViewModel
 import com.guap.vkr.playlistmaker.search.domain.model.Track
 import com.guap.vkr.playlistmaker.utils.TRACK
@@ -76,6 +78,10 @@ class PlayerFragment : Fragment() {
             updateBottomSheetState(it)
         }
 
+        viewModel.observeTrackInPlaylistState().observe(viewLifecycleOwner) {
+            showStatusMessage(it)
+        }
+
         binding.btnPlay.setOnClickListener {
             if (viewModel.isClickAllowed()) {
                 viewModel.playbackControl()
@@ -91,6 +97,7 @@ class PlayerFragment : Fragment() {
         }
 
         binding.btnAddToPlaylist.setOnClickListener {
+            viewModel.getPlaylists()
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
         }
 
@@ -115,6 +122,31 @@ class PlayerFragment : Fragment() {
         binding.rvPlaylists.adapter = playlistAdapter
         binding.btnCreatePlaylist.setOnClickListener {
             findNavController().navigate(R.id.action_playerFragment_to_newPlaylistFragment)
+        }
+    }
+
+    private fun showSnackBar(message: String) {
+        Snackbar.make(
+            binding.root,
+            message,
+            Snackbar.LENGTH_SHORT
+        ).show()
+    }
+
+    private fun showStatusMessage(state: TrackInPlaylistState) {
+        when (state) {
+            is TrackInPlaylistState.Added -> {
+                showSnackBar(getString(R.string.added_to_playlist, state.playlist.playlistName))
+            }
+
+            is TrackInPlaylistState.Exist -> {
+                showSnackBar(
+                    getString(
+                        R.string.alrady_added_to_playlist,
+                        state.playlist.playlistName
+                    )
+                )
+            }
         }
     }
 

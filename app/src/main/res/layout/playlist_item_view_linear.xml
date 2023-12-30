@@ -25,7 +25,6 @@
             style="@style/TrackNameTextStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_4dp"
             android:layout_marginBottom="@dimen/_1dp"
             tools:text="Best songs!" />
 

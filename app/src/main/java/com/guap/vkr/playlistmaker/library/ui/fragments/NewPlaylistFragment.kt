@@ -46,20 +46,21 @@ class NewPlaylistFragment : Fragment() {
     private fun isDataFilled(): Boolean {
         return coverUri != Uri.EMPTY
                 || !binding.etPlaylistName.text.isNullOrEmpty()
-                || !binding.etPlaylistDiscription.text.isNullOrEmpty()
+                || !binding.etPlaylistDescription.text.isNullOrEmpty()
     }
 
     private fun showExitConfirmDialog() {
         if (isDataFilled()) {
-            closeModalWindow = MaterialAlertDialogBuilder(requireContext())
-                .setTitle(getString(R.string.finalize_the_playlist))
-                .setMessage(getString(R.string.all_unsaved_data_will_be_lost))
-                .setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
-                    dialog.cancel()
-                }
-                .setPositiveButton(getString(R.string.complete)) { _, _ ->
-                    findNavController().popBackStack()
-                }
+            closeModalWindow =
+                MaterialAlertDialogBuilder(requireContext())
+                    .setTitle(getString(R.string.finalize_the_playlist))
+                    .setMessage(getString(R.string.all_unsaved_data_will_be_lost))
+                    .setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
+                        dialog.cancel()
+                    }
+                    .setPositiveButton(getString(R.string.complete)) { _, _ ->
+                        findNavController().popBackStack()
+                    }
             closeModalWindow.show()
         } else {
             findNavController().popBackStack()
@@ -129,7 +130,7 @@ class NewPlaylistFragment : Fragment() {
             etPlaylistName.doAfterTextChanged {
                 playlistName = it.toString()
             }
-            etPlaylistDiscription.doAfterTextChanged {
+            etPlaylistDescription.doAfterTextChanged {
                 playlistDescription = it.toString()
             }
         }
