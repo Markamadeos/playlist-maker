@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="@dimen/_4dp"
+    android:layout_marginVertical="@dimen/_8dp"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/iv_cover"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
+        tools:src="@drawable/ic_album_placeholder_2x" />
+
+    <TextView
+        android:id="@+id/tv_name"
+        style="@style/TitleTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_4dp"
+        android:textSize="@dimen/_12sp"
+        tools:text="Cool songs" />
+
+    <TextView
+        android:id="@+id/tv_tracks_count"
+        style="@style/TitleTextStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_2dp"
+        android:textSize="@dimen/_12sp"
+        tools:text="87 треков" />
+
+</LinearLayout>

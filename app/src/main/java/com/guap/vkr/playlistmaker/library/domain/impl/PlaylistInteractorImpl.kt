@@ -1,11 +1,10 @@
 package com.guap.vkr.playlistmaker.library.domain.impl
 
 import com.guap.vkr.playlistmaker.library.domain.api.InternalStorageRepository
-import com.guap.vkr.playlistmaker.library.domain.model.Playlist
 import com.guap.vkr.playlistmaker.library.domain.api.PlaylistInteractor
 import com.guap.vkr.playlistmaker.library.domain.api.PlaylistRepository
+import com.guap.vkr.playlistmaker.library.domain.model.Playlist
 import kotlinx.coroutines.flow.Flow
-import java.io.File
 
 class PlaylistInteractorImpl(
     private val playlistRepository: PlaylistRepository,
@@ -29,7 +28,7 @@ class PlaylistInteractorImpl(
         internalStorageRepository.saveFile(uri = uri, fileName = fileName)
     }
 
-    override fun getFile(fileName: String): File {
+    override fun getFile(fileName: String): String {
         return internalStorageRepository.getFile(fileName = fileName)
     }
 }

@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.guap.vkr.playlistmaker.library.domain.api.PlaylistInteractor
 import com.guap.vkr.playlistmaker.library.domain.model.Playlist
 import kotlinx.coroutines.launch
-import java.io.File
 
 class NewPlaylistViewModel(private val playlistInteractor: PlaylistInteractor) : ViewModel() {
 
@@ -16,14 +15,13 @@ class NewPlaylistViewModel(private val playlistInteractor: PlaylistInteractor) :
         }
     }
 
-    // returns filename
     fun saveCover(uri: Uri?): String {
         val fileName = System.currentTimeMillis().toString()
         playlistInteractor.saveFile(uri = uri.toString(), fileName = fileName)
-        return fileName
+        return getCover(fileName)
     }
 
-    fun getCover(fileName: String): File {
-        return playlistInteractor.getFile(fileName = fileName)
+    private fun getCover(fileName: String): String {
+        return playlistInteractor.getFile(fileName = fileName).toString()
     }
 }

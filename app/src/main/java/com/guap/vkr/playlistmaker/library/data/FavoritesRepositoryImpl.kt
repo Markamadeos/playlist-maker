@@ -2,7 +2,7 @@ package com.guap.vkr.playlistmaker.library.data
 
 import com.guap.vkr.playlistmaker.library.data.converters.TrackDbConverter
 import com.guap.vkr.playlistmaker.library.data.db.AppDatabase
-import com.guap.vkr.playlistmaker.library.data.db.entity.TrackEntity
+import com.guap.vkr.playlistmaker.library.data.db.entity.FavoriteTrackEntity
 import com.guap.vkr.playlistmaker.library.domain.api.FavoritesRepository
 import com.guap.vkr.playlistmaker.search.domain.model.Track
 import kotlinx.coroutines.flow.Flow
@@ -29,7 +29,7 @@ class FavoritesRepositoryImpl(
         }
     }
 
-    private fun convertFromTrackEntity(tracks: List<TrackEntity>): List<Track> {
+    private fun convertFromTrackEntity(tracks: List<FavoriteTrackEntity>): List<Track> {
         return tracks.map { track -> trackDbConverter.map(track) }
     }
 

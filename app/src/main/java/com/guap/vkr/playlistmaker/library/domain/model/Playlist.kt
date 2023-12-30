@@ -5,4 +5,6 @@ data class Playlist(
     val playlistName: String,
     val playlistDescription: String?,
     val imgUri: String?,
+    val trackIds: String?,
+    val tracksCount: Int?
 )

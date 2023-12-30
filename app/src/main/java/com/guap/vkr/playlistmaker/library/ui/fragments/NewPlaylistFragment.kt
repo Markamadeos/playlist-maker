@@ -132,7 +132,9 @@ class NewPlaylistFragment : Fragment() {
                         playlistId = null,
                         playlistName = playlistName,
                         playlistDescription = playlistDescription,
-                        imgUri = getInternalStorageCoverName(coverUri)
+                        imgUri = getInternalStorageCoverName(coverUri),
+                        trackIds = null,
+                        tracksCount = null
                     )
                 )
                 playlistCreatedShowNotification()

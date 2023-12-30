@@ -25,9 +25,9 @@ class InternalStorageRepositoryImpl(private val context: Context) : InternalStor
             .compress(Bitmap.CompressFormat.JPEG, QUALITY, outputStream)
     }
 
-    override fun getFile(fileName: String): File {
+    override fun getFile(fileName: String): String {
         val filePath = File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), PATH)
-        return File(filePath, fileName)
+        return File(filePath, fileName).toString()
     }
 
     companion object {

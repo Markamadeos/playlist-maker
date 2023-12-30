@@ -9,6 +9,7 @@ import androidx.navigation.fragment.findNavController
 import com.guap.vkr.playlistmaker.R
 import com.guap.vkr.playlistmaker.databinding.FragmentPlaylistBinding
 import com.guap.vkr.playlistmaker.library.domain.model.Playlist
+import com.guap.vkr.playlistmaker.library.ui.adapters.PlaylistsAdapter
 import com.guap.vkr.playlistmaker.library.ui.model.PlaylistsState
 import com.guap.vkr.playlistmaker.library.ui.view_model.PlaylistsViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -19,6 +20,7 @@ class PlaylistFragment : Fragment() {
     private val binding get() = _binding!!
     private val viewModel by viewModel<PlaylistsViewModel>()
     private val playlists = ArrayList<Playlist>()
+    private val playlistAdapter = PlaylistsAdapter(playlists)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -36,6 +38,11 @@ class PlaylistFragment : Fragment() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.updateData()
+    }
+
     private fun bind() {
         with(binding) {
             ivEmptyList.setImageResource(R.drawable.ic_search_err)
@@ -43,6 +50,7 @@ class PlaylistFragment : Fragment() {
             btnCreatePlaylist.setOnClickListener {
                 findNavController().navigate(R.id.action_libraryFragment_to_newPlaylistFragment)
             }
+            rvPlaylists.adapter = playlistAdapter
         }
     }
 
@@ -52,15 +60,16 @@ class PlaylistFragment : Fragment() {
                 is PlaylistsState.StateEmpty -> {
                     ivEmptyList.visibility = View.VISIBLE
                     tvEmptyList.visibility = View.VISIBLE
-                    // rv visibility gone
+                    rvPlaylists.visibility = View.GONE
                 }
 
                 is PlaylistsState.StateContent -> {
                     ivEmptyList.visibility = View.GONE
                     tvEmptyList.visibility = View.GONE
+                    rvPlaylists.visibility = View.VISIBLE
                     playlists.clear()
                     playlists.addAll(state.playlists as ArrayList<Playlist>)
-                    // adapter data set changed
+                    playlistAdapter.notifyDataSetChanged()
                 }
             }
         }

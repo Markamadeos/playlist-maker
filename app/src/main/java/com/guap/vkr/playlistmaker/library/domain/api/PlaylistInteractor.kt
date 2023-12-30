@@ -2,7 +2,6 @@ package com.guap.vkr.playlistmaker.library.domain.api
 
 import com.guap.vkr.playlistmaker.library.domain.model.Playlist
 import kotlinx.coroutines.flow.Flow
-import java.io.File
 
 interface PlaylistInteractor {
 
@@ -14,6 +13,6 @@ interface PlaylistInteractor {
 
     fun saveFile(uri: String, fileName: String)
 
-    fun getFile(fileName: String): File
+    fun getFile(fileName: String): String
 
 }

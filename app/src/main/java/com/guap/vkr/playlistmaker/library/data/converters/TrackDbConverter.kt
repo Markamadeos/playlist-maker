@@ -1,12 +1,12 @@
 package com.guap.vkr.playlistmaker.library.data.converters
 
-import com.guap.vkr.playlistmaker.library.data.db.entity.TrackEntity
+import com.guap.vkr.playlistmaker.library.data.db.entity.FavoriteTrackEntity
 import com.guap.vkr.playlistmaker.search.domain.model.Track
 
 class TrackDbConverter {
 
-    fun map(track: Track): TrackEntity {
-        return TrackEntity(
+    fun map(track: Track): FavoriteTrackEntity {
+        return FavoriteTrackEntity(
             track.trackId,
             track.trackName,
             track.artistName,
@@ -20,7 +20,7 @@ class TrackDbConverter {
         )
     }
 
-    fun map(track: TrackEntity): Track {
+    fun map(track: FavoriteTrackEntity): Track {
         return Track(
             track.trackId,
             track.trackName,
