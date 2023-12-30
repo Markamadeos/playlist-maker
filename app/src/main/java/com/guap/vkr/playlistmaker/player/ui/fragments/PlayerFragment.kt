@@ -9,6 +9,7 @@ import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.gson.Gson
 import com.guap.vkr.playlistmaker.R
 import com.guap.vkr.playlistmaker.databinding.FragmentPlayerBinding
@@ -32,8 +33,17 @@ class PlayerFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentPlayerBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         val track = getTrack()
         bind(track)
+        val bottomSheetContainer = binding.playlistsBottomSheet
+        val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetContainer).apply {
+            state = BottomSheetBehavior.STATE_HIDDEN
+        }
 
         viewModel.observeState().observe(viewLifecycleOwner) {
             updateScreen(it)
@@ -60,7 +70,28 @@ class PlayerFragment : Fragment() {
         binding.btnLike.setOnClickListener {
             viewModel.isLikeButtonClicked(track = track)
         }
-        return binding.root
+
+        binding.btnAddToPlaylist.setOnClickListener {
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+        }
+
+        bottomSheetBehavior.addBottomSheetCallback(object :
+            BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                when (newState) {
+                    BottomSheetBehavior.STATE_COLLAPSED -> {
+                        binding.overlay.visibility = View.VISIBLE
+                    }
+                    BottomSheetBehavior.STATE_HIDDEN -> {
+                        // возобновляем трейлер
+                        binding.overlay.visibility = View.GONE
+                    }
+                    else -> {}
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+        })
     }
 
     override fun onDestroyView() {
@@ -128,6 +159,6 @@ class PlayerFragment : Fragment() {
         viewModel.releaseResources()
     }
 
-    private fun getTrack() =  Gson().fromJson(requireArguments().getString(TRACK), Track::class.java)
+    private fun getTrack() = Gson().fromJson(requireArguments().getString(TRACK), Track::class.java)
 
 }

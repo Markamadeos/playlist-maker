@@ -35,7 +35,7 @@ class PlaylistsViewHolder(
             .into(cover)
 
         title.text = playlist.playlistName
-        // TODO
-        tracksCount.text = "456 треков"
+        // TODO plurals
+        tracksCount.text = playlist.tracksCount.toString()
     }
 }

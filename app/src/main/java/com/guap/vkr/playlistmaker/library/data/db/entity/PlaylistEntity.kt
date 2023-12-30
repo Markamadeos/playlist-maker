@@ -10,6 +10,6 @@ data class PlaylistEntity(
     val playlistName: String,
     val playlistDescription: String?,
     val imgUri: String?,
-    val trackIds: String?,
+    val trackIds: ArrayList<Long>?,
     val tracksCount: Int?
 )
