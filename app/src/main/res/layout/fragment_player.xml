@@ -302,7 +302,6 @@
             android:layout_marginTop="@dimen/_24dp"
             android:text="@string/create_playlist_button_text" />
 
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_playlists"
             android:layout_width="match_parent"

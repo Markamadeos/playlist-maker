@@ -1,8 +1,6 @@
-package com.guap.vkr.playlistmaker.library.ui.view_holders
+package com.guap.vkr.playlistmaker.player.ui.view_holders
 
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -12,15 +10,12 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.guap.vkr.playlistmaker.R
 import com.guap.vkr.playlistmaker.library.domain.model.Playlist
 
-class PlaylistsViewHolder(
-    parentView: ViewGroup,
-    itemView: View = LayoutInflater.from(parentView.context)
-        .inflate(R.layout.playlist_item_view_grid, parentView, false)
-) : RecyclerView.ViewHolder(itemView) {
+class BottomSheetPlaylistViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
-    private val cover: ImageView = itemView.findViewById(R.id.iv_cover)
-    private val name: TextView = itemView.findViewById(R.id.tv_name)
-    private val tracksCount: TextView = itemView.findViewById(R.id.tv_tracks_count)
+    private val cover: ImageView = view.findViewById(R.id.iv_cover)
+    private val name: TextView = view.findViewById(R.id.tv_playlist_name)
+    private val tracksCount: TextView = view.findViewById(R.id.tv_tracks_count)
+
 
     fun bind(playlist: Playlist) {
         Glide.with(itemView)
@@ -33,9 +28,15 @@ class PlaylistsViewHolder(
                 )
             )
             .into(cover)
-
         name.text = playlist.playlistName
-        // TODO plurals
         tracksCount.text = playlist.tracksCount.toString()
+        // TODO plurals
+
+//        numberOfTracks.text = playlist.tracksCount?.let {
+//            itemView.resources.getQuantityString(
+//                R.plurals.track_count,
+//                it, playlist.numberOfTracks
+//            )
+//        }
     }
 }

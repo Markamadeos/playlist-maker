@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
@@ -13,7 +14,10 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.gson.Gson
 import com.guap.vkr.playlistmaker.R
 import com.guap.vkr.playlistmaker.databinding.FragmentPlayerBinding
+import com.guap.vkr.playlistmaker.library.domain.model.Playlist
+import com.guap.vkr.playlistmaker.player.ui.adapters.BottomSheetPlaylistAdapter
 import com.guap.vkr.playlistmaker.player.ui.model.MediaPlayerState
+import com.guap.vkr.playlistmaker.player.ui.model.PlayerBottomSheetState
 import com.guap.vkr.playlistmaker.player.ui.view_model.PlayerViewModel
 import com.guap.vkr.playlistmaker.search.domain.model.Track
 import com.guap.vkr.playlistmaker.utils.TRACK
@@ -26,6 +30,22 @@ class PlayerFragment : Fragment() {
     private val binding get() = _binding!!
     private val viewModel by viewModel<PlayerViewModel> {
         parametersOf(getTrack())
+    }
+    private var _bottomSheetBehavior: BottomSheetBehavior<LinearLayout>? = null
+    private val bottomSheetBehavior get() = _bottomSheetBehavior!!
+    private var playlists = ArrayList<Playlist>()
+    private val playlistAdapter = BottomSheetPlaylistAdapter(playlists) {
+        onPlaylistClick(it)
+    }
+
+    private fun onPlaylistClick(playlist: Playlist) {
+        //viewModel.addTrackToPlaylist(playlist, getTrack())
+        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+        showSnackeBar()
+    }
+
+    private fun showSnackeBar() {
+        //
     }
 
     override fun onCreateView(
@@ -41,7 +61,7 @@ class PlayerFragment : Fragment() {
         val track = getTrack()
         bind(track)
         val bottomSheetContainer = binding.playlistsBottomSheet
-        val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetContainer).apply {
+        _bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetContainer).apply {
             state = BottomSheetBehavior.STATE_HIDDEN
         }
 
@@ -55,6 +75,10 @@ class PlayerFragment : Fragment() {
 
         viewModel.observeLike().observe(viewLifecycleOwner) {
             updateLikeButton(it)
+        }
+
+        viewModel.observeBottomSheetState().observe(viewLifecycleOwner) {
+            updateBottomSheetState(it)
         }
 
         binding.btnPlay.setOnClickListener {
@@ -82,16 +106,33 @@ class PlayerFragment : Fragment() {
                     BottomSheetBehavior.STATE_COLLAPSED -> {
                         binding.overlay.visibility = View.VISIBLE
                     }
+
                     BottomSheetBehavior.STATE_HIDDEN -> {
-                        // возобновляем трейлер
                         binding.overlay.visibility = View.GONE
                     }
+
                     else -> {}
                 }
             }
 
             override fun onSlide(bottomSheet: View, slideOffset: Float) {}
         })
+        binding.rvPlaylists.adapter = playlistAdapter
+    }
+
+    private fun updateBottomSheetState(state: PlayerBottomSheetState) {
+        when (state) {
+            is PlayerBottomSheetState.Empty -> {
+                binding.rvPlaylists.visibility = View.GONE
+            }
+
+            is PlayerBottomSheetState.Content -> {
+                playlists.clear()
+                playlists.addAll(state.playlists as ArrayList<Playlist>)
+                binding.rvPlaylists.visibility = View.VISIBLE
+                playlistAdapter.notifyDataSetChanged()
+            }
+        }
     }
 
     override fun onDestroyView() {

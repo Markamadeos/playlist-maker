@@ -5,9 +5,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.guap.vkr.playlistmaker.library.domain.api.FavoritesInteractor
+import com.guap.vkr.playlistmaker.library.domain.api.PlaylistInteractor
+import com.guap.vkr.playlistmaker.library.domain.model.Playlist
 import com.guap.vkr.playlistmaker.player.domain.api.MediaPlayerInteractor
 import com.guap.vkr.playlistmaker.player.ui.model.MediaPlayerState
+import com.guap.vkr.playlistmaker.player.ui.model.PlayerBottomSheetState
 import com.guap.vkr.playlistmaker.search.domain.model.Track
+import com.guap.vkr.playlistmaker.search.ui.model.ScreenState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -18,7 +22,8 @@ import java.util.Locale
 class PlayerViewModel(
     private val mediaPlayerInteractor: MediaPlayerInteractor,
     private val track: Track,
-    private val favoriteTracksInteractor: FavoritesInteractor
+    private val favoriteTracksInteractor: FavoritesInteractor,
+    private val playlistInteractor: PlaylistInteractor
 ) : ViewModel() {
 
     private var timerJob: Job? = null
@@ -27,32 +32,35 @@ class PlayerViewModel(
     private val stateLiveData = MutableLiveData<MediaPlayerState>()
     private val timerLiveData = MutableLiveData<String>()
     private val likeLiveData = MutableLiveData<Boolean>()
+    private val bottomSheetLiveData = MutableLiveData<PlayerBottomSheetState>()
     fun observeState(): LiveData<MediaPlayerState> = stateLiveData
     fun observeTimer(): LiveData<String> = timerLiveData
     fun observeLike(): LiveData<Boolean> = likeLiveData
+    fun observeBottomSheetState(): LiveData<PlayerBottomSheetState> = bottomSheetLiveData
 
     init {
-        renderState(MediaPlayerState.Default)
+        renderPlayerScreenState(MediaPlayerState.Default)
         prepareAudioPlayer()
         setOnCompleteListener()
         isClickAllowed()
         likeLiveData.postValue(track.isFavorite)
+        getPlaylists()
     }
 
     private fun prepareAudioPlayer() {
         mediaPlayerInteractor.preparePlayer(track.previewUrl) {
-            renderState(MediaPlayerState.Prepared)
+            renderPlayerScreenState(MediaPlayerState.Prepared)
         }
     }
 
     private fun startAudioPlayer() {
-        renderState(MediaPlayerState.Playing)
+        renderPlayerScreenState(MediaPlayerState.Playing)
         mediaPlayerInteractor.startPlayer()
     }
 
     private fun pauseAudioPlayer() {
         mediaPlayerInteractor.pausePlayer()
-        renderState(MediaPlayerState.Paused)
+        renderPlayerScreenState(MediaPlayerState.Paused)
     }
 
 
@@ -63,7 +71,7 @@ class PlayerViewModel(
 
     private fun setOnCompleteListener() {
         mediaPlayerInteractor.setOnCompletionListener {
-            renderState(MediaPlayerState.Prepared)
+            renderPlayerScreenState(MediaPlayerState.Prepared)
         }
         timerJob?.cancel()
     }
@@ -83,7 +91,7 @@ class PlayerViewModel(
         updateTimer()
     }
 
-    private fun renderState(state: MediaPlayerState) {
+    private fun renderPlayerScreenState(state: MediaPlayerState) {
         stateLiveData.postValue(state)
     }
 
@@ -132,6 +140,31 @@ class PlayerViewModel(
 
     fun releaseResources() {
         mediaPlayerInteractor.destroyPlayer()
+    }
+
+    fun getPlaylists() {
+        viewModelScope.launch {
+            playlistInteractor.getPlaylists()
+                .collect {
+                    processResult(it)
+                }
+        }
+    }
+
+    private fun processResult(playlists: List<Playlist>) {
+        when {
+            playlists.isEmpty() -> {
+                renderBottomSheetState(PlayerBottomSheetState.Empty)
+            }
+
+            playlists.isNotEmpty() -> {
+                renderBottomSheetState(PlayerBottomSheetState.Content(playlists))
+            }
+        }
+    }
+
+    private fun renderBottomSheetState(state: PlayerBottomSheetState) {
+        bottomSheetLiveData.postValue(state)
     }
 
     companion object {
