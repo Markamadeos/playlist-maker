@@ -36,10 +36,9 @@
     <string name="search">Поиск</string>
     <string name="library">Медиатека</string>
     <string name="settings">Настройки</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="create_playlist_text">Создать</string>
-    <string name="discription_playlist_text">Описание</string>
+    <string name="description_playlist_text">Описание</string>
     <string name="playlist_name_text">Название*</string>
     <string name="new_playlist_title">Новый плейлист</string>
     <string name="finalize_the_playlist">Завершить создание плейлиста?</string>
@@ -48,4 +47,12 @@
     <string name="complete">Завершить</string>
     <string name="playlist_created">Плейлист %1$s создан</string>
     <string name="add_to_playlist_text">Добавить в плейлист</string>
+    <plurals name="tracks_count">
+        <item quantity="zero">%d треков</item>
+        <item quantity="one">%d трек</item>
+        <item quantity="two">%d трека</item>
+        <item quantity="few">%d трека</item>
+        <item quantity="many">%d треков</item>
+        <item quantity="other">%d треков</item>
+    </plurals>
 </resources>

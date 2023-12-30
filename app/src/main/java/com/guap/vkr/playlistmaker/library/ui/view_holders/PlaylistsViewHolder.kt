@@ -35,7 +35,11 @@ class PlaylistsViewHolder(
             .into(cover)
 
         name.text = playlist.playlistName
-        // TODO plurals
-        tracksCount.text = playlist.tracksCount.toString()
+        tracksCount.text =
+            itemView.resources.getQuantityString(
+                R.plurals.tracks_count,
+                playlist.tracksCount,
+                playlist.tracksCount
+            )
     }
 }

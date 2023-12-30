@@ -1,9 +1,11 @@
 package com.guap.vkr.playlistmaker.library.domain.impl
 
+import com.guap.vkr.playlistmaker.di.repositoryModule
 import com.guap.vkr.playlistmaker.library.domain.api.InternalStorageRepository
 import com.guap.vkr.playlistmaker.library.domain.api.PlaylistInteractor
 import com.guap.vkr.playlistmaker.library.domain.api.PlaylistRepository
 import com.guap.vkr.playlistmaker.library.domain.model.Playlist
+import com.guap.vkr.playlistmaker.search.domain.model.Track
 import kotlinx.coroutines.flow.Flow
 
 class PlaylistInteractorImpl(
@@ -30,5 +32,9 @@ class PlaylistInteractorImpl(
 
     override fun getFile(fileName: String): String {
         return internalStorageRepository.getFile(fileName = fileName)
+    }
+
+    override suspend fun addTrackToPlaylist(playlist: Playlist, track: Track) {
+        playlistRepository.addTrackToPlaylist(playlist, track)
     }
 }

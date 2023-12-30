@@ -18,7 +18,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.guap.vkr.playlistmaker.R
 import com.guap.vkr.playlistmaker.databinding.FragmentNewPlaylistBinding
-import com.guap.vkr.playlistmaker.library.domain.model.Playlist
 import com.guap.vkr.playlistmaker.library.ui.view_model.NewPlaylistViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -65,12 +64,6 @@ class NewPlaylistFragment : Fragment() {
         } else {
             findNavController().popBackStack()
         }
-    }
-
-    private fun getInternalStorageCoverName(uri: Uri?): String {
-        return if (uri != Uri.EMPTY) {
-            viewModel.saveCover(uri)
-        } else R.drawable.ic_album_placeholder_2x.toString()
     }
 
     private fun pickCover() {
@@ -128,14 +121,7 @@ class NewPlaylistFragment : Fragment() {
             }
             btnCreatePlaylist.setOnClickListener {
                 viewModel.createPlaylist(
-                    Playlist(
-                        playlistId = null,
-                        playlistName = playlistName,
-                        playlistDescription = playlistDescription,
-                        imgUri = getInternalStorageCoverName(coverUri),
-                        trackIds = null,
-                        tracksCount = null
-                    )
+                    playlistName, playlistDescription, coverUri
                 )
                 playlistCreatedShowNotification()
                 findNavController().popBackStack()

@@ -10,8 +10,8 @@ import com.guap.vkr.playlistmaker.library.domain.model.Playlist
 import com.guap.vkr.playlistmaker.player.domain.api.MediaPlayerInteractor
 import com.guap.vkr.playlistmaker.player.ui.model.MediaPlayerState
 import com.guap.vkr.playlistmaker.player.ui.model.PlayerBottomSheetState
+import com.guap.vkr.playlistmaker.player.ui.model.TrackInPlaylistState
 import com.guap.vkr.playlistmaker.search.domain.model.Track
-import com.guap.vkr.playlistmaker.search.ui.model.ScreenState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -165,6 +165,21 @@ class PlayerViewModel(
 
     private fun renderBottomSheetState(state: PlayerBottomSheetState) {
         bottomSheetLiveData.postValue(state)
+    }
+
+    fun addTrackToPlaylist(playlist: Playlist, track: Track) {
+        if (playlist.trackIds.contains(track.trackId)) {
+            renderTrackToPlaylistState(TrackInPlaylistState.Exist)
+        } else {
+            viewModelScope.launch {
+                playlistInteractor.addTrackToPlaylist(playlist, track)
+            }
+            renderTrackToPlaylistState(TrackInPlaylistState.Added)
+        }
+    }
+
+    private fun renderTrackToPlaylistState(state: TrackInPlaylistState) {
+        // livedata post
     }
 
     companion object {

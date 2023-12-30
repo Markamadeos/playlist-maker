@@ -39,13 +39,8 @@ class PlayerFragment : Fragment() {
     }
 
     private fun onPlaylistClick(playlist: Playlist) {
-        //viewModel.addTrackToPlaylist(playlist, getTrack())
+        viewModel.addTrackToPlaylist(playlist, getTrack())
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-        showSnackeBar()
-    }
-
-    private fun showSnackeBar() {
-        //
     }
 
     override fun onCreateView(
@@ -118,6 +113,14 @@ class PlayerFragment : Fragment() {
             override fun onSlide(bottomSheet: View, slideOffset: Float) {}
         })
         binding.rvPlaylists.adapter = playlistAdapter
+        binding.btnCreatePlaylist.setOnClickListener {
+            findNavController().navigate(R.id.action_playerFragment_to_newPlaylistFragment)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.getPlaylists()
     }
 
     private fun updateBottomSheetState(state: PlayerBottomSheetState) {

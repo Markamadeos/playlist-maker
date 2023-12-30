@@ -28,15 +28,13 @@ class BottomSheetPlaylistViewHolder(view: View) : RecyclerView.ViewHolder(view) 
                 )
             )
             .into(cover)
-        name.text = playlist.playlistName
-        tracksCount.text = playlist.tracksCount.toString()
-        // TODO plurals
 
-//        numberOfTracks.text = playlist.tracksCount?.let {
-//            itemView.resources.getQuantityString(
-//                R.plurals.track_count,
-//                it, playlist.numberOfTracks
-//            )
-//        }
+        name.text = playlist.playlistName
+        tracksCount.text =
+            itemView.resources.getQuantityString(
+                R.plurals.tracks_count,
+                playlist.tracksCount,
+                playlist.tracksCount
+            )
     }
 }

@@ -1,6 +1,7 @@
 package com.guap.vkr.playlistmaker.library.domain.api
 
 import com.guap.vkr.playlistmaker.library.domain.model.Playlist
+import com.guap.vkr.playlistmaker.search.domain.model.Track
 import kotlinx.coroutines.flow.Flow
 
 interface PlaylistRepository {
@@ -10,4 +11,6 @@ interface PlaylistRepository {
     suspend fun updatePlaylist(playlist: Playlist)
 
     fun getPlaylists(): Flow<List<Playlist>>
+
+    suspend fun addTrackToPlaylist(playlist: Playlist, track: Track)
 }

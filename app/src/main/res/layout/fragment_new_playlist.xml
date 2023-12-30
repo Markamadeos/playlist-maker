@@ -95,7 +95,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/_16dp"
-        android:hint="@string/discription_playlist_text"
+        android:hint="@string/description_playlist_text"
         android:textColorHint="?attr/refresh_button_tint_color"
         app:boxStrokeColor="@color/yp_blue"
         app:layout_constraintEnd_toEndOf="@id/right_guideline"

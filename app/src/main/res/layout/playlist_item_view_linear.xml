@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginHorizontal="@dimen/_14dp"
+    android:layout_marginVertical="@dimen/_8dp"
     android:background="?android:attr/selectableItemBackground"
     android:gravity="center"
     android:orientation="horizontal">
@@ -21,9 +23,9 @@
         <TextView
             android:id="@+id/tv_playlist_name"
             style="@style/TrackNameTextStyle"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_14dp"
+            android:layout_marginTop="@dimen/_4dp"
             android:layout_marginBottom="@dimen/_1dp"
             tools:text="Best songs!" />
 

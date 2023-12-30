@@ -9,16 +9,28 @@ import kotlinx.coroutines.launch
 
 class NewPlaylistViewModel(private val playlistInteractor: PlaylistInteractor) : ViewModel() {
 
-    fun createPlaylist(playlist: Playlist) {
+    fun createPlaylist(playlistName: String, playlistDescription: String, cover: Uri?) {
         viewModelScope.launch {
-            playlistInteractor.createPlaylist(playlist = playlist)
+            playlistInteractor.createPlaylist(
+                playlist = Playlist(
+                    playlistId = null,
+                    playlistName = playlistName,
+                    playlistDescription = playlistDescription,
+                    imgUri = saveCover(cover),
+                    trackIds = arrayListOf()
+                )
+            )
         }
     }
 
-    fun saveCover(uri: Uri?): String {
-        val fileName = System.currentTimeMillis().toString()
-        playlistInteractor.saveFile(uri = uri.toString(), fileName = fileName)
-        return getCover(fileName)
+    private fun saveCover(uri: Uri?): String? {
+        return if (uri != Uri.EMPTY) {
+            val fileName = System.currentTimeMillis().toString()
+            playlistInteractor.saveFile(uri = uri.toString(), fileName = fileName)
+            getCover(fileName)
+        } else {
+            null
+        }
     }
 
     private fun getCover(fileName: String): String {

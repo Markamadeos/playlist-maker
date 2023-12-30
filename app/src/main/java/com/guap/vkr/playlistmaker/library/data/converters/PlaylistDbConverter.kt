@@ -11,8 +11,8 @@ class PlaylistDbConverter {
             playlistName = playlist.playlistName,
             playlistDescription = playlist.playlistDescription,
             imgUri = playlist.imgUri,
-            trackIds = playlist.trackIds ?: arrayListOf(),
-            tracksCount = playlist.trackIds?.size
+            trackIds = playlist.trackIds,
+            tracksCount = playlist.tracksCount
         )
     }
 
@@ -22,8 +22,8 @@ class PlaylistDbConverter {
             playlistName = playlist.playlistName,
             playlistDescription = playlist.playlistDescription,
             imgUri = playlist.imgUri,
-            trackIds = playlist.trackIds ?: arrayListOf(),
-            tracksCount = playlist.trackIds?.size
+            trackIds = playlist.trackIds,
+            tracksCount = playlist.tracksCount
         )
     }
 }
