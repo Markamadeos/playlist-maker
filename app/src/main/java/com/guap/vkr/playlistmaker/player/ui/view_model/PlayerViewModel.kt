@@ -102,7 +102,9 @@ class PlayerViewModel(
     }
 
     fun onPause() {
-        pauseAudioPlayer()
+        if (stateLiveData.value is MediaPlayerState.Playing) {
+            pauseAudioPlayer()
+        }
         timerJob?.cancel()
     }
 

@@ -13,6 +13,7 @@ import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
@@ -52,7 +53,7 @@ class NewPlaylistFragment : Fragment() {
     private fun showExitConfirmDialog() {
         if (isDataFilled()) {
             closeModalWindow =
-                MaterialAlertDialogBuilder(requireContext())
+                MaterialAlertDialogBuilder(requireContext(), R.style.AlertDialogTheme)
                     .setTitle(getString(R.string.finalize_the_playlist))
                     .setMessage(getString(R.string.all_unsaved_data_will_be_lost))
                     .setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
@@ -72,10 +73,11 @@ class NewPlaylistFragment : Fragment() {
     }
 
     private fun setCover() {
-        Glide.with(this)
+        Glide.with(requireContext())
             .load(coverUri)
-            .centerCrop()
+            .placeholder(R.drawable.ic_album_placeholder_2x)
             .transform(
+                CenterCrop(),
                 RoundedCorners(
                     requireContext().resources.getDimensionPixelSize(R.dimen._8dp)
                 )
