@@ -4,14 +4,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.guap.vkr.playlistmaker.library.domain.api.LibraryInteractor
+import com.guap.vkr.playlistmaker.library.domain.api.FavoritesInteractor
 import com.guap.vkr.playlistmaker.library.ui.model.FavoriteState
 import com.guap.vkr.playlistmaker.search.domain.model.Track
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class FavoriteViewModel(
-    private val libraryInteractor: LibraryInteractor
+    private val favoritesInteractor: FavoritesInteractor
 ) : ViewModel() {
 
     private val stateLivedata = MutableLiveData<FavoriteState>()
@@ -19,7 +19,7 @@ class FavoriteViewModel(
 
     fun updateFavoriteTracksList() {
         viewModelScope.launch(Dispatchers.IO) {
-            libraryInteractor.getFavoriteTracks().collect {
+            favoritesInteractor.getFavoriteTracks().collect {
                 setScreenState(it)
             }
         }

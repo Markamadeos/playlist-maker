@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.guap.vkr.playlistmaker.library.domain.api.LibraryInteractor
 import com.guap.vkr.playlistmaker.search.domain.api.SearchInteractor
 import com.guap.vkr.playlistmaker.search.domain.model.Track
 import com.guap.vkr.playlistmaker.search.ui.model.ScreenState

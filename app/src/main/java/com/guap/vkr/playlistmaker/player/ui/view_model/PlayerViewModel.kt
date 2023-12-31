@@ -4,9 +4,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.guap.vkr.playlistmaker.library.domain.api.LibraryInteractor
+import com.guap.vkr.playlistmaker.library.domain.api.FavoritesInteractor
+import com.guap.vkr.playlistmaker.library.domain.api.PlaylistInteractor
+import com.guap.vkr.playlistmaker.library.domain.model.Playlist
 import com.guap.vkr.playlistmaker.player.domain.api.MediaPlayerInteractor
 import com.guap.vkr.playlistmaker.player.ui.model.MediaPlayerState
+import com.guap.vkr.playlistmaker.player.ui.model.PlayerBottomSheetState
+import com.guap.vkr.playlistmaker.player.ui.model.TrackInPlaylistState
 import com.guap.vkr.playlistmaker.search.domain.model.Track
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -18,7 +22,8 @@ import java.util.Locale
 class PlayerViewModel(
     private val mediaPlayerInteractor: MediaPlayerInteractor,
     private val track: Track,
-    private val favoriteTracksInteractor: LibraryInteractor
+    private val favoriteTracksInteractor: FavoritesInteractor,
+    private val playlistInteractor: PlaylistInteractor
 ) : ViewModel() {
 
     private var timerJob: Job? = null
@@ -27,32 +32,37 @@ class PlayerViewModel(
     private val stateLiveData = MutableLiveData<MediaPlayerState>()
     private val timerLiveData = MutableLiveData<String>()
     private val likeLiveData = MutableLiveData<Boolean>()
+    private val bottomSheetLiveData = MutableLiveData<PlayerBottomSheetState>()
+    private val trackInPlaylistLiveData = MutableLiveData<TrackInPlaylistState>()
     fun observeState(): LiveData<MediaPlayerState> = stateLiveData
     fun observeTimer(): LiveData<String> = timerLiveData
     fun observeLike(): LiveData<Boolean> = likeLiveData
+    fun observeBottomSheetState(): LiveData<PlayerBottomSheetState> = bottomSheetLiveData
+    fun observeTrackInPlaylistState(): LiveData<TrackInPlaylistState> = trackInPlaylistLiveData
 
     init {
-        renderState(MediaPlayerState.Default)
+        renderPlayerScreenState(MediaPlayerState.Default)
         prepareAudioPlayer()
         setOnCompleteListener()
         isClickAllowed()
         likeLiveData.postValue(track.isFavorite)
+        getPlaylists()
     }
 
     private fun prepareAudioPlayer() {
         mediaPlayerInteractor.preparePlayer(track.previewUrl) {
-            renderState(MediaPlayerState.Prepared)
+            renderPlayerScreenState(MediaPlayerState.Prepared)
         }
     }
 
     private fun startAudioPlayer() {
-        renderState(MediaPlayerState.Playing)
+        renderPlayerScreenState(MediaPlayerState.Playing)
         mediaPlayerInteractor.startPlayer()
     }
 
     private fun pauseAudioPlayer() {
         mediaPlayerInteractor.pausePlayer()
-        renderState(MediaPlayerState.Paused)
+        renderPlayerScreenState(MediaPlayerState.Paused)
     }
 
 
@@ -63,7 +73,7 @@ class PlayerViewModel(
 
     private fun setOnCompleteListener() {
         mediaPlayerInteractor.setOnCompletionListener {
-            renderState(MediaPlayerState.Prepared)
+            renderPlayerScreenState(MediaPlayerState.Prepared)
         }
         timerJob?.cancel()
     }
@@ -83,16 +93,18 @@ class PlayerViewModel(
         updateTimer()
     }
 
-    private fun renderState(state: MediaPlayerState) {
+    private fun renderPlayerScreenState(state: MediaPlayerState) {
         stateLiveData.postValue(state)
     }
 
     override fun onCleared() {
-        mediaPlayerInteractor.destroyPlayer()
+        releaseResources()
     }
 
     fun onPause() {
-        pauseAudioPlayer()
+        if (stateLiveData.value is MediaPlayerState.Playing) {
+            pauseAudioPlayer()
+        }
         timerJob?.cancel()
     }
 
@@ -128,6 +140,50 @@ class PlayerViewModel(
             }
             likeLiveData.postValue(track.isFavorite)
         }
+    }
+
+    fun releaseResources() {
+        mediaPlayerInteractor.destroyPlayer()
+    }
+
+    fun getPlaylists() {
+        viewModelScope.launch {
+            playlistInteractor.getPlaylists()
+                .collect {
+                    processResult(it)
+                }
+        }
+    }
+
+    private fun processResult(playlists: List<Playlist>) {
+        when {
+            playlists.isEmpty() -> {
+                renderBottomSheetState(PlayerBottomSheetState.Empty)
+            }
+
+            playlists.isNotEmpty() -> {
+                renderBottomSheetState(PlayerBottomSheetState.Content(playlists))
+            }
+        }
+    }
+
+    private fun renderBottomSheetState(state: PlayerBottomSheetState) {
+        bottomSheetLiveData.postValue(state)
+    }
+
+    fun addTrackToPlaylist(playlist: Playlist, track: Track) {
+        if (playlist.trackIds.contains(track.trackId)) {
+            renderTrackToPlaylistState(TrackInPlaylistState.Exist(playlist))
+        } else {
+            viewModelScope.launch {
+                playlistInteractor.addTrackToPlaylist(playlist, track)
+            }
+            renderTrackToPlaylistState(TrackInPlaylistState.Added(playlist))
+        }
+    }
+
+    private fun renderTrackToPlaylistState(state: TrackInPlaylistState) {
+        trackInPlaylistLiveData.postValue(state)
     }
 
     companion object {

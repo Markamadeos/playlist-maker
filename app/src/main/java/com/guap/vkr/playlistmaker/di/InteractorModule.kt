@@ -1,7 +1,9 @@
 package com.guap.vkr.playlistmaker.di
 
-import com.guap.vkr.playlistmaker.library.domain.api.LibraryInteractor
-import com.guap.vkr.playlistmaker.library.domain.impl.LibraryInteractorImpl
+import com.guap.vkr.playlistmaker.library.domain.api.FavoritesInteractor
+import com.guap.vkr.playlistmaker.library.domain.api.PlaylistInteractor
+import com.guap.vkr.playlistmaker.library.domain.impl.FavoritesInteractorImpl
+import com.guap.vkr.playlistmaker.library.domain.impl.PlaylistInteractorImpl
 import com.guap.vkr.playlistmaker.player.domain.api.MediaPlayerInteractor
 import com.guap.vkr.playlistmaker.player.domain.impl.MediaPlayerInteractorImpl
 import com.guap.vkr.playlistmaker.search.domain.api.SearchInteractor
@@ -30,7 +32,11 @@ val interactorModule = module {
         SearchInteractorImpl(repository = get())
     }
 
-    single<LibraryInteractor> {
-        LibraryInteractorImpl(libraryRepository = get())
+    single<FavoritesInteractor> {
+        FavoritesInteractorImpl(favoritesRepository = get())
+    }
+
+    single<PlaylistInteractor> {
+        PlaylistInteractorImpl(playlistRepository = get(), internalStorageRepository = get())
     }
 }

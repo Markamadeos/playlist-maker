@@ -1,19 +1,18 @@
 package com.guap.vkr.playlistmaker.search.ui
 
-import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.google.gson.Gson
 import com.guap.vkr.playlistmaker.R
 import com.guap.vkr.playlistmaker.databinding.FragmentSearchBinding
-import com.guap.vkr.playlistmaker.player.ui.activity.PlayerActivity
 import com.guap.vkr.playlistmaker.search.domain.model.Track
 import com.guap.vkr.playlistmaker.search.ui.model.ScreenState
 import com.guap.vkr.playlistmaker.search.ui.view_model.SearchViewModel
@@ -126,12 +125,8 @@ class SearchFragment : Fragment() {
         if (isClickAllowed()) {
             viewModel.addTrackToHistory(track)
             viewModel.getTracksHistory()
-            val playIntent =
-                Intent(requireContext(), PlayerActivity::class.java).putExtra(
-                    TRACK,
-                    Gson().toJson(track)
-                )
-            startActivity(playIntent)
+            val trackBundle = bundleOf(TRACK to Gson().toJson(track))
+            findNavController().navigate(R.id.action_searchFragment_to_playerFragment, trackBundle)
         }
     }
 

@@ -1,8 +1,13 @@
 package com.guap.vkr.playlistmaker.di
 
-import com.guap.vkr.playlistmaker.library.data.LibraryRepositoryImpl
+import com.guap.vkr.playlistmaker.library.data.FavoritesRepositoryImpl
+import com.guap.vkr.playlistmaker.library.data.InternalStorageRepositoryImpl
+import com.guap.vkr.playlistmaker.library.data.PlaylistRepositoryImpl
+import com.guap.vkr.playlistmaker.library.data.converters.PlaylisttrackDbConverter
 import com.guap.vkr.playlistmaker.library.data.converters.TrackDbConverter
-import com.guap.vkr.playlistmaker.library.domain.api.LibraryRepository
+import com.guap.vkr.playlistmaker.library.domain.api.FavoritesRepository
+import com.guap.vkr.playlistmaker.library.domain.api.InternalStorageRepository
+import com.guap.vkr.playlistmaker.library.domain.api.PlaylistRepository
 import com.guap.vkr.playlistmaker.player.data.MediaPlayerRepositoryImpl
 import com.guap.vkr.playlistmaker.player.domain.api.MediaPlayerRepository
 import com.guap.vkr.playlistmaker.search.data.SearchRepositoryImpl
@@ -11,6 +16,7 @@ import com.guap.vkr.playlistmaker.settings.data.SettingsRepositoryImpl
 import com.guap.vkr.playlistmaker.settings.domain.SettingsRepository
 import com.guap.vkr.playlistmaker.sharing.data.ExternalNavigatorImpl
 import com.guap.vkr.playlistmaker.sharing.domain.ExternalNavigator
+import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
 val repositoryModule = module {
@@ -31,9 +37,23 @@ val repositoryModule = module {
         SearchRepositoryImpl(networkClient = get(), searchDataStorage = get(), appDatabase = get())
     }
 
-    single<LibraryRepository> {
-        LibraryRepositoryImpl(appDatabase = get(), trackDbConverter = get())
+    single<FavoritesRepository> {
+        FavoritesRepositoryImpl(appDatabase = get(), trackDbConverter = get())
     }
 
     factory { TrackDbConverter() }
+
+    factory { PlaylisttrackDbConverter() }
+
+    single<PlaylistRepository> {
+        PlaylistRepositoryImpl(
+            appDatabase = get(),
+            playlistDbConverter = get(),
+            trackDbConverter = get()
+        )
+    }
+
+    single<InternalStorageRepository> {
+        InternalStorageRepositoryImpl(context = androidContext())
+    }
 }

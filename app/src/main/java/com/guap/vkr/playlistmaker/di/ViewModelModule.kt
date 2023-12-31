@@ -1,7 +1,8 @@
 package com.guap.vkr.playlistmaker.di
 
 import com.guap.vkr.playlistmaker.library.ui.view_model.FavoriteViewModel
-import com.guap.vkr.playlistmaker.library.ui.view_model.PlaylistViewModel
+import com.guap.vkr.playlistmaker.library.ui.view_model.NewPlaylistViewModel
+import com.guap.vkr.playlistmaker.library.ui.view_model.PlaylistsViewModel
 import com.guap.vkr.playlistmaker.player.ui.view_model.PlayerViewModel
 import com.guap.vkr.playlistmaker.search.domain.model.Track
 import com.guap.vkr.playlistmaker.search.ui.view_model.SearchViewModel
@@ -15,7 +16,8 @@ val viewModelModule = module {
         PlayerViewModel(
             mediaPlayerInteractor = get(),
             favoriteTracksInteractor = get(),
-            track = track
+            track = track,
+            playlistInteractor = get()
         )
     }
 
@@ -33,10 +35,14 @@ val viewModelModule = module {
     }
 
     viewModel {
-        FavoriteViewModel(libraryInteractor = get())
+        FavoriteViewModel(favoritesInteractor = get())
     }
 
     viewModel {
-        PlaylistViewModel()
+        PlaylistsViewModel(playlistInteractor = get())
+    }
+
+    viewModel {
+        NewPlaylistViewModel(playlistInteractor = get())
     }
 }
