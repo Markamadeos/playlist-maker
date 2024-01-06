@@ -4,14 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.google.gson.Gson
 import com.guap.vkr.playlistmaker.R
 import com.guap.vkr.playlistmaker.databinding.FragmentPlaylistBinding
 import com.guap.vkr.playlistmaker.library.domain.model.Playlist
 import com.guap.vkr.playlistmaker.library.ui.adapters.PlaylistsAdapter
 import com.guap.vkr.playlistmaker.library.ui.model.PlaylistsState
 import com.guap.vkr.playlistmaker.library.ui.view_model.PlaylistsViewModel
+import com.guap.vkr.playlistmaker.utils.PLAYLIST
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlaylistsFragment : Fragment() {
@@ -20,7 +23,17 @@ class PlaylistsFragment : Fragment() {
     private val binding get() = _binding!!
     private val viewModel by viewModel<PlaylistsViewModel>()
     private val playlists = ArrayList<Playlist>()
-    private val playlistAdapter = PlaylistsAdapter(playlists)
+    private val playlistAdapter = PlaylistsAdapter(playlists) {
+        onPlaylistClickListener(it)
+    }
+
+    private fun onPlaylistClickListener(playlist: Playlist) {
+        val playlistBundle = bundleOf(PLAYLIST to Gson().toJson(playlist))
+        findNavController().navigate(
+            R.id.action_libraryFragment_to_playlistDetailFragment,
+            playlistBundle
+        )
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
