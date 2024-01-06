@@ -14,7 +14,7 @@ import com.guap.vkr.playlistmaker.library.ui.model.PlaylistsState
 import com.guap.vkr.playlistmaker.library.ui.view_model.PlaylistsViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class PlaylistFragment : Fragment() {
+class PlaylistsFragment : Fragment() {
 
     private var _binding: FragmentPlaylistBinding? = null
     private val binding get() = _binding!!
@@ -81,6 +81,6 @@ class PlaylistFragment : Fragment() {
     }
 
     companion object {
-        fun newInstance() = PlaylistFragment()
+        fun newInstance() = PlaylistsFragment()
     }
 }
