@@ -17,7 +17,7 @@ class NewPlaylistViewModel(private val playlistInteractor: PlaylistInteractor) :
                     playlistName = playlistName,
                     playlistDescription = playlistDescription,
                     imgUri = saveCover(cover),
-                    tracks = arrayListOf()
+                    trackIds = arrayListOf()
                 )
             )
         }

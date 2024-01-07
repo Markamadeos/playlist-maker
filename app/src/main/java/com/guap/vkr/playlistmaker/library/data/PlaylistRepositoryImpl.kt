@@ -34,7 +34,7 @@ class PlaylistRepositoryImpl(
     override suspend fun addTrackToPlaylist(playlist: Playlist, track: Track) {
         appDatabase.playlistTrackDao().insertTrack(trackDbConverter.map(track))
         val playlistUpdated = playlist.apply {
-            tracks.add(track)
+            trackIds.add(track)
             tracksCount++
         }
         appDatabase.playlistDao().updatePlaylist(playlistDbConverter.map(playlistUpdated))

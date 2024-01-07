@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.google.gson.Gson
 import com.guap.vkr.playlistmaker.R
-import com.guap.vkr.playlistmaker.databinding.FragmentPlaylistBinding
+import com.guap.vkr.playlistmaker.databinding.FragmentPlaylistsBinding
 import com.guap.vkr.playlistmaker.library.domain.model.Playlist
 import com.guap.vkr.playlistmaker.library.ui.adapters.PlaylistsAdapter
 import com.guap.vkr.playlistmaker.library.ui.model.PlaylistsState
@@ -19,7 +19,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlaylistsFragment : Fragment() {
 
-    private var _binding: FragmentPlaylistBinding? = null
+    private var _binding: FragmentPlaylistsBinding? = null
     private val binding get() = _binding!!
     private val viewModel by viewModel<PlaylistsViewModel>()
     private val playlists = ArrayList<Playlist>()
@@ -39,7 +39,7 @@ class PlaylistsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentPlaylistBinding.inflate(inflater, container, false)
+        _binding = FragmentPlaylistsBinding.inflate(inflater, container, false)
         bind()
         return binding.root
     }

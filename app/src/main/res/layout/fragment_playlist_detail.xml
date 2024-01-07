@@ -177,8 +177,20 @@
             android:layout_height="match_parent"
             android:layout_marginHorizontal="@dimen/_12dp"
             android:layout_marginTop="@dimen/_12dp"
+            android:visibility="gone"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/track_item_view" />
+
+        <TextView
+            android:id="@+id/tv_empty_playlist"
+            style="@style/PlaceholderTextStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_80dp"
+            android:text="@string/empty_playlist_text"
+            android:textAlignment="center"
+            android:textColor="?attr/placeholder_error_text_color"
+            android:textSize="@dimen/_19sp" />
     </LinearLayout>
 
     <LinearLayout
