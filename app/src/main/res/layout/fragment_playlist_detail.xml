@@ -27,17 +27,6 @@
             android:orientation="vertical"
             app:layout_constraintGuide_end="@dimen/_16dp" />
 
-        <ImageButton
-            android:id="@+id/btn_back"
-            android:layout_width="@dimen/_24dp"
-            android:layout_height="@dimen/_24dp"
-            android:layout_marginTop="@dimen/_16dp"
-            android:background="@null"
-            android:src="@drawable/ic_arrow_back"
-            app:layout_constraintStart_toStartOf="@id/left_guideline"
-            app:layout_constraintTop_toTopOf="parent"
-            app:tint="@color/yp_black" />
-
         <ImageView
             android:id="@+id/iv_cover"
             android:layout_width="0dp"
@@ -50,6 +39,17 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@drawable/ic_album_placeholder_2x" />
+
+        <ImageButton
+            android:id="@+id/btn_back"
+            android:layout_width="@dimen/_24dp"
+            android:layout_height="@dimen/_24dp"
+            android:layout_marginTop="@dimen/_16dp"
+            android:background="@null"
+            android:src="@drawable/ic_arrow_back"
+            app:layout_constraintStart_toStartOf="@id/left_guideline"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@color/yp_black" />
 
         <TextView
             android:id="@+id/tv_playlist_name"
