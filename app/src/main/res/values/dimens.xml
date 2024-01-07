@@ -37,4 +37,7 @@
     <dimen name="_24sp">24sp</dimen>
     <dimen name="_28sp">28sp</dimen>
     <dimen name="_18sp">18sp</dimen>
+    <dimen name="_50dp">50dp</dimen>
+    <dimen name="_266dp">266dp</dimen>
+    <dimen name="_282dp">282dp</dimen>
 </resources>
