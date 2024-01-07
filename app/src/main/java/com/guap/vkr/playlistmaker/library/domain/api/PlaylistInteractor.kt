@@ -18,4 +18,8 @@ interface PlaylistInteractor {
 
     suspend fun addTrackToPlaylist(playlist: Playlist, track: Track)
 
+    suspend fun getTracks(playlist: Playlist): Flow<List<Track>>
+
+    suspend fun deleteTrack(track: Track)
+
 }

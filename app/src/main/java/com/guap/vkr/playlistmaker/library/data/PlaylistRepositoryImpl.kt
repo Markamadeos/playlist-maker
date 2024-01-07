@@ -4,6 +4,7 @@ import com.guap.vkr.playlistmaker.library.data.converters.PlaylistDbConverter
 import com.guap.vkr.playlistmaker.library.data.converters.PlaylisttrackDbConverter
 import com.guap.vkr.playlistmaker.library.data.db.AppDatabase
 import com.guap.vkr.playlistmaker.library.data.db.entity.PlaylistEntity
+import com.guap.vkr.playlistmaker.library.data.db.entity.PlaylistTrackEntity
 import com.guap.vkr.playlistmaker.library.domain.api.PlaylistRepository
 import com.guap.vkr.playlistmaker.library.domain.model.Playlist
 import com.guap.vkr.playlistmaker.search.domain.model.Track
@@ -34,14 +35,37 @@ class PlaylistRepositoryImpl(
     override suspend fun addTrackToPlaylist(playlist: Playlist, track: Track) {
         appDatabase.playlistTrackDao().insertTrack(trackDbConverter.map(track))
         val playlistUpdated = playlist.apply {
-            trackIds.add(track)
+            trackIds.add(FIRST, track.trackId)
             tracksCount++
         }
         appDatabase.playlistDao().updatePlaylist(playlistDbConverter.map(playlistUpdated))
     }
 
+    override suspend fun getTracks(playlist: Playlist): Flow<List<Track>> {
+        return flow {
+            val tracks = convertFromTrackEntity(appDatabase.playlistTrackDao().getTracks())
+            emit(
+                tracks.filter {
+                    playlist.trackIds.contains(it.trackId)
+                }
+            )
+        }
+    }
+
+    override suspend fun deleteTrack(track: Track) {
+        // appDatabase.playlistTrackDao().deleteTrack(trackDbConverter.map(track)) //TODO
+    }
+
     private fun convertFromPlaylistEntity(playlists: List<PlaylistEntity>): List<Playlist> {
         return playlists.map { playlist -> playlistDbConverter.map(playlist) }
+    }
+
+    private fun convertFromTrackEntity(tracks: List<PlaylistTrackEntity>): List<Track> {
+        return tracks.map { track -> trackDbConverter.map(track) }
+    }
+
+    companion object {
+        private const val FIRST = 0
     }
 
 }

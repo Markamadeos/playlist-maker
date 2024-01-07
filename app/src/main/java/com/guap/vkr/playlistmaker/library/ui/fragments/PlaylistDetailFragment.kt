@@ -52,7 +52,7 @@ class PlaylistDetailFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val playlist = getPlaylist()
         bind(playlist)
-        viewModel.initState()
+        viewModel.getTracks()
         viewModel.observeState().observe(viewLifecycleOwner) {
             updateScreen(it)
         }
@@ -68,7 +68,7 @@ class PlaylistDetailFragment : Fragment() {
             is PlaylistDetailState.Content -> {
                 binding.tvEmptyPlaylist.visibility = View.GONE
                 tracks.clear()
-                tracks.addAll(state.playlist.trackIds)
+                tracks.addAll(state.tracks)
                 tracksAdapter.notifyDataSetChanged()
                 binding.rvTracks.visibility = View.VISIBLE
             }
