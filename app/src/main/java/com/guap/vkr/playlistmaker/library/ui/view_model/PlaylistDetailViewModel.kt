@@ -48,4 +48,11 @@ class PlaylistDetailViewModel(
         }
     }
 
+    fun deleteTrack(track: Track, playlist: Playlist) {
+        viewModelScope.launch {
+            playlistInteractor.deleteTrack(track = track, playlist = playlist)
+        }
+        renderPlaylistDetailState(PlaylistDetailState.TrackDeleted)
+    }
+
 }

@@ -4,12 +4,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.gson.Gson
 import com.guap.vkr.playlistmaker.R
 import com.guap.vkr.playlistmaker.databinding.FragmentPlaylistDetailBinding
@@ -33,9 +33,19 @@ class PlaylistDetailFragment : Fragment() {
     private val tracks = ArrayList<Track>()
     private val tracksAdapter =
         TracksAdapter(tracks, { trackClickListener(it) }, { trackLongClickListener(it) })
+    private lateinit var deleteTrackModalWindow: MaterialAlertDialogBuilder
 
     private fun trackLongClickListener(track: Track) {
-        Toast.makeText(requireContext(), track.trackName, Toast.LENGTH_LONG).show()
+        deleteTrackModalWindow =
+            MaterialAlertDialogBuilder(requireContext(), R.style.AlertDialogTheme)
+                .setTitle(getString(R.string.do_you_want_delete_a_track))
+                .setNegativeButton(getString(R.string.answer_yes)) { _, _ ->
+                    viewModel.deleteTrack(track, playlist = getPlaylist())
+                }
+                .setPositiveButton(getString(R.string.answer_no)) { dialog, _ ->
+                    dialog.cancel()
+                }
+        deleteTrackModalWindow.show()
     }
 
     private fun trackClickListener(track: Track) {
@@ -78,6 +88,10 @@ class PlaylistDetailFragment : Fragment() {
                 tracks.addAll(state.tracks)
                 tracksAdapter.notifyDataSetChanged()
                 binding.rvTracks.visibility = View.VISIBLE
+            }
+
+            is PlaylistDetailState.TrackDeleted -> {
+                // TODO update screen some how
             }
 
             else -> {}

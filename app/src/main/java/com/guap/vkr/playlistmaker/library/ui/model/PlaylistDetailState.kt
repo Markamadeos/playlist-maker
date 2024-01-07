@@ -7,4 +7,6 @@ sealed class PlaylistDetailState {
     object Empty : PlaylistDetailState()
     data class Content(val tracks: List<Track>, val playlist: Playlist) :
         PlaylistDetailState()
+
+    object TrackDeleted : PlaylistDetailState()
 }

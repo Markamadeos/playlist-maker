@@ -54,8 +54,21 @@ class PlaylistRepositoryImpl(
         }
     }
 
-    override suspend fun deleteTrack(track: Track) {
-        // appDatabase.playlistTrackDao().deleteTrack(trackDbConverter.map(track)) //TODO
+    override suspend fun deleteTrack(track: Track, playlist: Playlist) {
+        val playlistUpdated = playlist.apply {
+            trackIds.remove(track.trackId)
+            tracksCount--
+        }
+        appDatabase.playlistDao().updatePlaylist(playlistDbConverter.map(playlistUpdated))
+        var playlistsContainsTrack = false
+        appDatabase.playlistDao().getPlaylists().map {
+            if (it.trackIds.contains(track.trackId)) {
+                playlistsContainsTrack = true
+            }
+        }
+        if (!playlistsContainsTrack) {
+            appDatabase.playlistTrackDao().deleteTrack(trackDbConverter.map(track))
+        }
     }
 
     override suspend fun getPlaylistById(playlistId: Long): Flow<Playlist> {
