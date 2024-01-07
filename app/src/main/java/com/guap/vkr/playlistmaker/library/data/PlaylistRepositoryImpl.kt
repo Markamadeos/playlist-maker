@@ -1,7 +1,7 @@
 package com.guap.vkr.playlistmaker.library.data
 
 import com.guap.vkr.playlistmaker.library.data.converters.PlaylistDbConverter
-import com.guap.vkr.playlistmaker.library.data.converters.PlaylisttrackDbConverter
+import com.guap.vkr.playlistmaker.library.data.converters.PlaylistTrackDbConverter
 import com.guap.vkr.playlistmaker.library.data.db.AppDatabase
 import com.guap.vkr.playlistmaker.library.data.db.entity.PlaylistEntity
 import com.guap.vkr.playlistmaker.library.data.db.entity.PlaylistTrackEntity
@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.flow
 class PlaylistRepositoryImpl(
     private val appDatabase: AppDatabase,
     private val playlistDbConverter: PlaylistDbConverter,
-    private val trackDbConverter: PlaylisttrackDbConverter
+    private val trackDbConverter: PlaylistTrackDbConverter
 ) : PlaylistRepository {
 
     override suspend fun createPlaylist(playlist: Playlist) {
@@ -47,6 +47,8 @@ class PlaylistRepositoryImpl(
             emit(
                 tracks.filter {
                     playlist.trackIds.contains(it.trackId)
+                }.sortedBy { track ->
+                    playlist.trackIds.indexOf(track.trackId)
                 }
             )
         }
@@ -54,6 +56,10 @@ class PlaylistRepositoryImpl(
 
     override suspend fun deleteTrack(track: Track) {
         // appDatabase.playlistTrackDao().deleteTrack(trackDbConverter.map(track)) //TODO
+    }
+
+    override suspend fun getPlaylistById(playlistId: Long): Flow<Playlist> {
+        return flow { appDatabase.playlistDao().getPlaytlistById(playlistId) }
     }
 
     private fun convertFromPlaylistEntity(playlists: List<PlaylistEntity>): List<Playlist> {

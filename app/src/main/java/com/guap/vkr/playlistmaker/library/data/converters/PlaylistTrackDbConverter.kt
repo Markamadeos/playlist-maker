@@ -3,7 +3,7 @@ package com.guap.vkr.playlistmaker.library.data.converters
 import com.guap.vkr.playlistmaker.library.data.db.entity.PlaylistTrackEntity
 import com.guap.vkr.playlistmaker.search.domain.model.Track
 
-class PlaylisttrackDbConverter {
+class PlaylistTrackDbConverter {
     fun map(track: Track): PlaylistTrackEntity {
         return PlaylistTrackEntity(
             track.trackId,
@@ -30,8 +30,7 @@ class PlaylisttrackDbConverter {
             track.releaseDate,
             track.primaryGenreName,
             track.country,
-            track.previewUrl,
-            isFavorite = true
+            track.previewUrl
         )
     }
 }

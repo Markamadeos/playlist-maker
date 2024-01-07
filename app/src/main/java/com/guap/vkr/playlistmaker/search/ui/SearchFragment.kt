@@ -29,8 +29,8 @@ class SearchFragment : Fragment() {
 
     private val tracks = ArrayList<Track>()
     private val tracksHistory = ArrayList<Track>()
-    private val searchAdapter = TracksAdapter(tracks) { trackClickListener(it) }
-    private val historyAdapter = TracksAdapter(tracksHistory) { trackClickListener(it) }
+    private val searchAdapter = TracksAdapter(tracks, { trackClickListener(it) }, {})
+    private val historyAdapter = TracksAdapter(tracksHistory, { trackClickListener(it) }, {})
     private var userInput = ""
     private var clickAllowed = true
     private val viewModel by viewModel<SearchViewModel>()

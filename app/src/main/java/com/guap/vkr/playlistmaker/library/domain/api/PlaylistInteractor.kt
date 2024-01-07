@@ -22,4 +22,6 @@ interface PlaylistInteractor {
 
     suspend fun deleteTrack(track: Track)
 
+    suspend fun getPlaylistById(playlistId: Long): Flow<Playlist>
+
 }

@@ -16,5 +16,5 @@ data class PlaylistTrackEntity(
     val primaryGenreName: String,
     val country: String,
     val previewUrl: String,
-    val addedToFavorite: Long = System.currentTimeMillis()
+    val addedToFavorite: Long = System.currentTimeMillis(),
 )
