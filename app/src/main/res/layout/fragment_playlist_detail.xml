@@ -69,6 +69,7 @@
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@id/tv_description"
             app:layout_constraintStart_toEndOf="@id/left_guideline"
+            app:layout_goneMarginBottom="@dimen/_8dp"
             tools:text="Some playlist name" />
 
         <TextView
@@ -190,7 +191,7 @@
         app:behavior_hideable="true"
         app:behavior_peekHeight="@dimen/_505dp"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
-        tools:visibility="visible">
+        tools:visibility="gone">
 
         <View
             android:layout_width="@dimen/_50dp"

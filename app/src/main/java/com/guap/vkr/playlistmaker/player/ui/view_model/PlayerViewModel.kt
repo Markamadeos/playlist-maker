@@ -172,7 +172,7 @@ class PlayerViewModel(
     }
 
     fun addTrackToPlaylist(playlist: Playlist, track: Track) {
-        if (playlist.trackIds.contains(track.trackId)) {
+        if (playlist.tracks.contains(track)) {
             renderTrackToPlaylistState(TrackInPlaylistState.Exist(playlist))
         } else {
             viewModelScope.launch {

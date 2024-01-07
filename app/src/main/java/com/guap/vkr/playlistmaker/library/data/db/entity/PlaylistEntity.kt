@@ -2,6 +2,7 @@ package com.guap.vkr.playlistmaker.library.data.db.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.guap.vkr.playlistmaker.search.domain.model.Track
 
 @Entity(tableName = "playlist_table")
 data class PlaylistEntity(
@@ -10,6 +11,6 @@ data class PlaylistEntity(
     val playlistName: String,
     val playlistDescription: String?,
     val imgUri: String?,
-    val trackIds: ArrayList<Long> = arrayListOf(),
+    val tracks: ArrayList<Track> = arrayListOf(),
     val tracksCount: Int = 0
 )

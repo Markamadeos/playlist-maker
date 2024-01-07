@@ -1,60 +1,80 @@
 package com.guap.vkr.playlistmaker.library.ui.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.google.gson.Gson
 import com.guap.vkr.playlistmaker.R
+import com.guap.vkr.playlistmaker.databinding.FragmentPlaylistDetailBinding
+import com.guap.vkr.playlistmaker.library.domain.model.Playlist
+import com.guap.vkr.playlistmaker.utils.PLAYLIST
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [PlaylistDetailFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class PlaylistDetailFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private var _binding: FragmentPlaylistDetailBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_playlist_detail, container, false)
+    ): View {
+        _binding = FragmentPlaylistDetailBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment PlaylistDetailFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            PlaylistDetailFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val playlist = getPlaylist()
+        bind(playlist)
+    }
+
+    private fun bind(playlist: Playlist) {
+        with(binding) {
+            btnBack.setOnClickListener {
+                findNavController().popBackStack()
             }
+
+            Glide.with(requireContext()).load(playlist.imgUri)
+                .placeholder(R.drawable.ic_album_placeholder_2x)
+                .transform(CenterCrop()).into(ivCover)
+
+            tvPlaylistName.text = playlist.playlistName
+            if (playlist.playlistDescription.isNullOrEmpty()) {
+                tvDescription.visibility = View.GONE
+            } else {
+                tvDescription.text = playlist.playlistDescription
+            }
+            tvDuration.text = "120 минут" // TODO
+            tvTracksCount.text = resources.getQuantityString(
+                R.plurals.tracks_count,
+                playlist.tracksCount,
+                playlist.tracksCount
+            )
+            btnShare.setOnClickListener {
+                // TODO
+            }
+            tvPlaylistNameBs.text = playlist.playlistName
+            tvTracksCountBs.text = resources.getQuantityString(
+                R.plurals.tracks_count,
+                playlist.tracksCount,
+                playlist.tracksCount
+            )
+            Glide.with(requireContext()).load(playlist.imgUri)
+                .placeholder(R.drawable.ic_album_placeholder_2x)
+                .transform(CenterCrop()).into(ivCoverBs)
+        }
+    }
+
+    private fun getPlaylist() =
+        Gson().fromJson(requireArguments().getString(PLAYLIST), Playlist::class.java)
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
