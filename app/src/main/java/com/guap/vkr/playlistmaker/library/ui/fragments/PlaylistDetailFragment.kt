@@ -4,11 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
@@ -39,7 +41,23 @@ class PlaylistDetailFragment : Fragment() {
         TracksAdapter(tracks, { trackClickListener(it) }, { trackLongClickListener(it) })
     private lateinit var deleteTrackModalWindow: MaterialAlertDialogBuilder
 
+    private var _bottomSheetBehaviorMenu: BottomSheetBehavior<LinearLayout>? = null
+    private val bottomSheetBehaviorMenu get() = _bottomSheetBehaviorMenu!!
+
+
+    private fun trackClickListener(track: Track) {
+        val trackBundle = bundleOf(TRACK to Gson().toJson(track))
+        findNavController().navigate(
+            R.id.action_playlistDetailFragment_to_playerFragment,
+            trackBundle
+        )
+    }
+
     private fun trackLongClickListener(track: Track) {
+        deleteTrack(track)
+    }
+
+    private fun deleteTrack(track: Track) {
         deleteTrackModalWindow =
             MaterialAlertDialogBuilder(requireContext(), R.style.AlertDialogTheme)
                 .setTitle(getString(R.string.do_you_want_delete_a_track))
@@ -53,14 +71,6 @@ class PlaylistDetailFragment : Fragment() {
                     dialog.cancel()
                 }
         deleteTrackModalWindow.show()
-    }
-
-    private fun trackClickListener(track: Track) {
-        val trackBundle = bundleOf(TRACK to Gson().toJson(track))
-        findNavController().navigate(
-            R.id.action_playlistDetailFragment_to_playerFragment,
-            trackBundle
-        )
     }
 
     override fun onCreateView(
@@ -82,6 +92,28 @@ class PlaylistDetailFragment : Fragment() {
             shareStateUpdate(it)
         }
         viewModel.updateData()
+        val bottomSheetContainer = binding.bsMenu
+        _bottomSheetBehaviorMenu = BottomSheetBehavior.from(bottomSheetContainer).apply {
+            state = BottomSheetBehavior.STATE_HIDDEN
+        }
+        bottomSheetBehaviorMenu.addBottomSheetCallback(object :
+            BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                when (newState) {
+                    BottomSheetBehavior.STATE_COLLAPSED -> {
+                        binding.overlay.visibility = View.VISIBLE
+                    }
+
+                    BottomSheetBehavior.STATE_HIDDEN -> {
+                        binding.overlay.visibility = View.GONE
+                    }
+
+                    else -> {}
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+        })
     }
 
     private fun shareStateUpdate(state: PlaylistDetailShareState?) {
@@ -175,7 +207,7 @@ class PlaylistDetailFragment : Fragment() {
                 sharePlaylist()
             }
             btnDotsMenu.setOnClickListener {
-                // TODO
+                bottomSheetBehaviorMenu.state = BottomSheetBehavior.STATE_COLLAPSED
             }
         }
     }
