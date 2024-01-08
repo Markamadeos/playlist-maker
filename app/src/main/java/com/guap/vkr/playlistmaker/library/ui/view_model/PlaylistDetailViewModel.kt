@@ -6,18 +6,26 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.guap.vkr.playlistmaker.library.domain.api.PlaylistInteractor
 import com.guap.vkr.playlistmaker.library.domain.model.Playlist
+import com.guap.vkr.playlistmaker.library.ui.model.PlaylistDetailShareState
 import com.guap.vkr.playlistmaker.library.ui.model.PlaylistDetailState
 import com.guap.vkr.playlistmaker.search.domain.model.Track
+import com.guap.vkr.playlistmaker.sharing.domain.SharingInteractor
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class PlaylistDetailViewModel(
     private val playlistInteractor: PlaylistInteractor,
-    private val playlistId: Long
+    private val playlistId: Long,
+    private val sharingInteractor: SharingInteractor
 ) : ViewModel() {
 
+    private lateinit var _tracks: List<Track>
+    private lateinit var _playlist: Playlist
+
     private val stateLiveData = MutableLiveData<PlaylistDetailState>()
+    private val shareStateLiveData = MutableLiveData<PlaylistDetailShareState>()
     fun observeState(): LiveData<PlaylistDetailState> = stateLiveData
+    fun observeShareState(): LiveData<PlaylistDetailShareState> = shareStateLiveData
 
     private fun renderPlaylistDetailState(state: PlaylistDetailState) {
         stateLiveData.postValue(state)
@@ -32,6 +40,8 @@ class PlaylistDetailViewModel(
                 }
             playlistInteractor.getPlaylistById(playlistId).collect {
                 processResult(it, tracks)
+                _tracks = tracks
+                _playlist = it
             }
         }
     }
@@ -55,7 +65,7 @@ class PlaylistDetailViewModel(
     }
 
     private fun getDuration(tracks: List<Track>): Long {
-        var duration: Long = 0L
+        var duration = 0L
         tracks.map {
             duration += it.trackTimeMillis
         }
@@ -66,6 +76,15 @@ class PlaylistDetailViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             playlistInteractor.deleteTrack(track = track, playlistId = playlistId)
             updateData()
+        }
+    }
+
+    fun sharePlaylist() {
+        if (stateLiveData.value is PlaylistDetailState.Empty) {
+            shareStateLiveData.postValue(PlaylistDetailShareState.NothingToShare)
+        } else {
+            sharingInteractor.sharePlaylist(_playlist, _tracks)
+            shareStateLiveData.postValue(PlaylistDetailShareState.Sharing)
         }
     }
 

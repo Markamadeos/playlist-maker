@@ -10,10 +10,12 @@ import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
 import com.guap.vkr.playlistmaker.R
 import com.guap.vkr.playlistmaker.databinding.FragmentPlaylistDetailBinding
 import com.guap.vkr.playlistmaker.library.domain.model.Playlist
+import com.guap.vkr.playlistmaker.library.ui.model.PlaylistDetailShareState
 import com.guap.vkr.playlistmaker.library.ui.model.PlaylistDetailState
 import com.guap.vkr.playlistmaker.library.ui.view_model.PlaylistDetailViewModel
 import com.guap.vkr.playlistmaker.search.domain.model.Track
@@ -23,9 +25,7 @@ import com.guap.vkr.playlistmaker.utils.TRACK
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 import java.text.SimpleDateFormat
-import java.util.Formatter
 import java.util.Locale
-import kotlin.time.Duration
 
 class PlaylistDetailFragment : Fragment() {
 
@@ -78,7 +78,28 @@ class PlaylistDetailFragment : Fragment() {
         viewModel.observeState().observe(viewLifecycleOwner) {
             updateScreen(it)
         }
+        viewModel.observeShareState().observe(viewLifecycleOwner) {
+            shareStateUpdate(it)
+        }
         viewModel.updateData()
+    }
+
+    private fun shareStateUpdate(state: PlaylistDetailShareState?) {
+        when (state) {
+            is PlaylistDetailShareState.NothingToShare -> {
+                showNothingToShareMessage()
+            }
+
+            else -> {}
+        }
+    }
+
+    private fun showNothingToShareMessage() {
+        Snackbar.make(
+            binding.root,
+            getString(R.string.nothing_to_share),
+            Snackbar.LENGTH_SHORT
+        ).show()
     }
 
     private fun updateScreen(state: PlaylistDetailState?) {
@@ -148,12 +169,19 @@ class PlaylistDetailFragment : Fragment() {
                 findNavController().popBackStack()
             }
             btnShare.setOnClickListener {
-                // TODO
+                sharePlaylist()
+            }
+            btnShareBs.setOnClickListener {
+                sharePlaylist()
             }
             btnDotsMenu.setOnClickListener {
                 // TODO
             }
         }
+    }
+
+    private fun sharePlaylist() {
+        viewModel.sharePlaylist()
     }
 
     private fun getPlaylistId() = requireArguments().getLong(PLAYLIST_ID)

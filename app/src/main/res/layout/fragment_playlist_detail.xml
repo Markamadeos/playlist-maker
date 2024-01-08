@@ -146,13 +146,6 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <View
-        android:id="@+id/overlay"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/_99000000"
-        android:visibility="gone" />
-
     <LinearLayout
         android:id="@+id/bs_tracks"
         android:layout_width="match_parent"
@@ -192,6 +185,14 @@
             android:textColor="?attr/placeholder_error_text_color"
             android:textSize="@dimen/_19sp" />
     </LinearLayout>
+
+
+    <View
+        android:id="@+id/overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/_99000000"
+        android:visibility="gone" />
 
     <LinearLayout
         android:id="@+id/bs_menu"

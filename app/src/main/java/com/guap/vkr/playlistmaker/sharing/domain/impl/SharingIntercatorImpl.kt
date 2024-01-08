@@ -1,5 +1,7 @@
 package com.guap.vkr.playlistmaker.sharing.domain.impl
 
+import com.guap.vkr.playlistmaker.library.domain.model.Playlist
+import com.guap.vkr.playlistmaker.search.domain.model.Track
 import com.guap.vkr.playlistmaker.sharing.domain.ExternalNavigator
 import com.guap.vkr.playlistmaker.sharing.domain.SharingInteractor
 import com.guap.vkr.playlistmaker.sharing.domain.model.EmailData
@@ -18,6 +20,10 @@ class SharingIntercatorImpl(
 
     override fun openSupport() {
         externalNavigator.openEmail(getSupportEmailData())
+    }
+
+    override fun sharePlaylist(playlist: Playlist, tracks: List<Track>) {
+        externalNavigator.sharePlaylist(playlist, tracks)
     }
 
     private fun getShareAppLink(): String {
