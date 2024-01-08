@@ -83,6 +83,14 @@ class PlaylistRepositoryImpl(
         }
     }
 
+    override suspend fun deletePlaylist(playlist: Playlist) {
+        playlist.trackIds.map {
+            val track = trackDbConverter.map(appDatabase.playlistTrackDao().getTrackById(it))
+            deleteTrack(track, playlist.playlistId!!)
+        }
+        appDatabase.playlistDao().deletePlaylist(playlistDbConverter.map(playlist))
+    }
+
     private fun convertFromPlaylistEntity(playlists: List<PlaylistEntity>): List<Playlist> {
         return playlists.map { playlist -> playlistDbConverter.map(playlist) }
     }

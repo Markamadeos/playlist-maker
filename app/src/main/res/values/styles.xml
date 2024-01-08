@@ -120,6 +120,7 @@
     </style>
 
     <style name="AlertDialogTheme">
+        <item name="background">@color/white</item>
         <item name="buttonBarPositiveButtonStyle">@style/Alert.Button.Positive</item>
         <item name="buttonBarNegativeButtonStyle">@style/Alert.Button.Negative</item>
     </style>

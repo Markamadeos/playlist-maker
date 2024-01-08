@@ -39,7 +39,7 @@ class PlaylistDetailFragment : Fragment() {
     private val tracks = ArrayList<Track>()
     private val tracksAdapter =
         TracksAdapter(tracks, { trackClickListener(it) }, { trackLongClickListener(it) })
-    private lateinit var deleteTrackModalWindow: MaterialAlertDialogBuilder
+    private lateinit var deleteModalWindow: MaterialAlertDialogBuilder
 
     private var _bottomSheetBehaviorMenu: BottomSheetBehavior<LinearLayout>? = null
     private val bottomSheetBehaviorMenu get() = _bottomSheetBehaviorMenu!!
@@ -58,7 +58,7 @@ class PlaylistDetailFragment : Fragment() {
     }
 
     private fun deleteTrack(track: Track) {
-        deleteTrackModalWindow =
+        deleteModalWindow =
             MaterialAlertDialogBuilder(requireContext(), R.style.AlertDialogTheme)
                 .setTitle(getString(R.string.do_you_want_delete_a_track))
                 .setNegativeButton(getString(R.string.answer_yes)) { _, _ ->
@@ -70,7 +70,7 @@ class PlaylistDetailFragment : Fragment() {
                 .setPositiveButton(getString(R.string.answer_no)) { dialog, _ ->
                     dialog.cancel()
                 }
-        deleteTrackModalWindow.show()
+        deleteModalWindow.show()
     }
 
     override fun onCreateView(
@@ -119,17 +119,17 @@ class PlaylistDetailFragment : Fragment() {
     private fun shareStateUpdate(state: PlaylistDetailShareState?) {
         when (state) {
             is PlaylistDetailShareState.NothingToShare -> {
-                showNothingToShareMessage()
+                showMessage(getString(R.string.nothing_to_share))
             }
 
             else -> {}
         }
     }
 
-    private fun showNothingToShareMessage() {
+    private fun showMessage(message: String) {
         Snackbar.make(
             binding.root,
-            getString(R.string.nothing_to_share),
+            message,
             Snackbar.LENGTH_SHORT
         ).show()
     }
@@ -137,14 +137,12 @@ class PlaylistDetailFragment : Fragment() {
     private fun updateScreen(state: PlaylistDetailState?) {
         when (state) {
             is PlaylistDetailState.Empty -> {
-                binding.overlay.visibility = View.GONE
                 bind(state.playlist, ZERO_DURATION)
                 binding.tvEmptyPlaylist.visibility = View.VISIBLE
                 binding.rvTracks.visibility = View.GONE
             }
 
             is PlaylistDetailState.Content -> {
-                binding.overlay.visibility = View.GONE
                 bind(state.playlist, state.duration)
                 binding.tvEmptyPlaylist.visibility = View.GONE
                 tracks.clear()
@@ -209,11 +207,29 @@ class PlaylistDetailFragment : Fragment() {
             btnDotsMenu.setOnClickListener {
                 bottomSheetBehaviorMenu.state = BottomSheetBehavior.STATE_COLLAPSED
             }
+            btnDelete.setOnClickListener {
+                deletePlaylist()
+            }
         }
     }
 
     private fun sharePlaylist() {
         viewModel.sharePlaylist()
+    }
+
+    private fun deletePlaylist() {
+        deleteModalWindow =
+            MaterialAlertDialogBuilder(requireContext(), R.style.AlertDialogTheme)
+                .setTitle(getString(R.string.delete_playlist_question, binding.tvPlaylistName.text))
+                .setNegativeButton(getString(R.string.answer_yes)) { _, _ ->
+                    showMessage("Плейлист удален!")
+                    viewModel.deletePlaylist()
+                    findNavController().popBackStack()
+                }
+                .setPositiveButton(getString(R.string.answer_no)) { dialog, _ ->
+                    dialog.cancel()
+                }
+        deleteModalWindow.show()
     }
 
     private fun getPlaylistId() = requireArguments().getLong(PLAYLIST_ID)
