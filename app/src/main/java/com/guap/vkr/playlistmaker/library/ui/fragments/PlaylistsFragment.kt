@@ -7,14 +7,13 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import com.google.gson.Gson
 import com.guap.vkr.playlistmaker.R
 import com.guap.vkr.playlistmaker.databinding.FragmentPlaylistsBinding
 import com.guap.vkr.playlistmaker.library.domain.model.Playlist
 import com.guap.vkr.playlistmaker.library.ui.adapters.PlaylistsAdapter
 import com.guap.vkr.playlistmaker.library.ui.model.PlaylistsState
 import com.guap.vkr.playlistmaker.library.ui.view_model.PlaylistsViewModel
-import com.guap.vkr.playlistmaker.utils.PLAYLIST
+import com.guap.vkr.playlistmaker.utils.PLAYLIST_ID
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlaylistsFragment : Fragment() {
@@ -28,7 +27,7 @@ class PlaylistsFragment : Fragment() {
     }
 
     private fun onPlaylistClickListener(playlist: Playlist) {
-        val playlistBundle = bundleOf(PLAYLIST to Gson().toJson(playlist))
+        val playlistBundle = bundleOf(PLAYLIST_ID to playlist.playlistId!!)
         findNavController().navigate(
             R.id.action_libraryFragment_to_playlistDetailFragment,
             playlistBundle

@@ -8,11 +8,12 @@ import com.guap.vkr.playlistmaker.library.domain.api.PlaylistInteractor
 import com.guap.vkr.playlistmaker.library.domain.model.Playlist
 import com.guap.vkr.playlistmaker.library.ui.model.PlaylistDetailState
 import com.guap.vkr.playlistmaker.search.domain.model.Track
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class PlaylistDetailViewModel(
     private val playlistInteractor: PlaylistInteractor,
-    private val playlist: Playlist
+    private val playlistId: Long
 ) : ViewModel() {
 
     private val stateLiveData = MutableLiveData<PlaylistDetailState>()
@@ -22,37 +23,50 @@ class PlaylistDetailViewModel(
         stateLiveData.postValue(state)
     }
 
-    fun getTracks() {
-        viewModelScope.launch {
-            playlistInteractor.getTracks(playlist)
+    fun updateData() {
+        var tracks: List<Track> = listOf()
+        viewModelScope.launch(Dispatchers.IO) {
+            playlistInteractor.getTracks(playlistId)
                 .collect {
-                    processResult(it)
+                    tracks = it
                 }
+            playlistInteractor.getPlaylistById(playlistId).collect {
+                processResult(it, tracks)
+            }
         }
     }
 
-    private fun processResult(tracks: List<Track>) {
+    private fun processResult(playlist: Playlist, tracks: List<Track>) {
         when {
             tracks.isEmpty() -> {
-                renderPlaylistDetailState(PlaylistDetailState.Empty)
+                renderPlaylistDetailState(PlaylistDetailState.Empty(playlist))
             }
 
             else -> {
                 renderPlaylistDetailState(
                     PlaylistDetailState.Content(
                         tracks = tracks,
-                        playlist = playlist
+                        playlist = playlist,
+                        duration = getDuration(tracks)
                     )
                 )
             }
         }
     }
 
-    fun deleteTrack(track: Track, playlist: Playlist) {
-        viewModelScope.launch {
-            playlistInteractor.deleteTrack(track = track, playlist = playlist)
+    private fun getDuration(tracks: List<Track>): Long {
+        var duration: Long = 0L
+        tracks.map {
+            duration += it.trackTimeMillis
         }
-        renderPlaylistDetailState(PlaylistDetailState.TrackDeleted)
+        return duration
+    }
+
+    fun deleteTrack(track: Track, playlistId: Long) {
+        viewModelScope.launch(Dispatchers.IO) {
+            playlistInteractor.deleteTrack(track = track, playlistId = playlistId)
+            updateData()
+        }
     }
 
 }

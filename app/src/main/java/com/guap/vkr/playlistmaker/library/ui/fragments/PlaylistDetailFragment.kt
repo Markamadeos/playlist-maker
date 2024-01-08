@@ -18,17 +18,21 @@ import com.guap.vkr.playlistmaker.library.ui.model.PlaylistDetailState
 import com.guap.vkr.playlistmaker.library.ui.view_model.PlaylistDetailViewModel
 import com.guap.vkr.playlistmaker.search.domain.model.Track
 import com.guap.vkr.playlistmaker.search.ui.TracksAdapter
-import com.guap.vkr.playlistmaker.utils.PLAYLIST
+import com.guap.vkr.playlistmaker.utils.PLAYLIST_ID
 import com.guap.vkr.playlistmaker.utils.TRACK
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
+import java.text.SimpleDateFormat
+import java.util.Formatter
+import java.util.Locale
+import kotlin.time.Duration
 
 class PlaylistDetailFragment : Fragment() {
 
     private var _binding: FragmentPlaylistDetailBinding? = null
     private val binding get() = _binding!!
     private val viewModel by viewModel<PlaylistDetailViewModel> {
-        parametersOf(getPlaylist())
+        parametersOf(getPlaylistId())
     }
     private val tracks = ArrayList<Track>()
     private val tracksAdapter =
@@ -40,7 +44,10 @@ class PlaylistDetailFragment : Fragment() {
             MaterialAlertDialogBuilder(requireContext(), R.style.AlertDialogTheme)
                 .setTitle(getString(R.string.do_you_want_delete_a_track))
                 .setNegativeButton(getString(R.string.answer_yes)) { _, _ ->
-                    viewModel.deleteTrack(track, playlist = getPlaylist())
+                    viewModel.deleteTrack(
+                        track,
+                        getPlaylistId()
+                    )
                 }
                 .setPositiveButton(getString(R.string.answer_no)) { dialog, _ ->
                     dialog.cancel()
@@ -66,23 +73,26 @@ class PlaylistDetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val playlist = getPlaylist()
-        bind(playlist)
-        viewModel.getTracks()
+        setupButtons()
+        binding.rvTracks.adapter = tracksAdapter
         viewModel.observeState().observe(viewLifecycleOwner) {
             updateScreen(it)
         }
+        viewModel.updateData()
     }
 
     private fun updateScreen(state: PlaylistDetailState?) {
         when (state) {
             is PlaylistDetailState.Empty -> {
-                binding.tvDuration.text = getString(R.string.zero_duration_playlist)
+                binding.overlay.visibility = View.GONE
+                bind(state.playlist, ZERO_DURATION)
                 binding.tvEmptyPlaylist.visibility = View.VISIBLE
                 binding.rvTracks.visibility = View.GONE
             }
 
             is PlaylistDetailState.Content -> {
+                binding.overlay.visibility = View.GONE
+                bind(state.playlist, state.duration)
                 binding.tvEmptyPlaylist.visibility = View.GONE
                 tracks.clear()
                 tracks.addAll(state.tracks)
@@ -90,20 +100,12 @@ class PlaylistDetailFragment : Fragment() {
                 binding.rvTracks.visibility = View.VISIBLE
             }
 
-            is PlaylistDetailState.TrackDeleted -> {
-                // TODO update screen some how
-            }
-
             else -> {}
         }
     }
 
-    private fun bind(playlist: Playlist) {
+    private fun bind(playlist: Playlist, duration: Long) {
         with(binding) {
-            btnBack.setOnClickListener {
-                findNavController().popBackStack()
-            }
-
             Glide.with(requireContext()).load(playlist.imgUri)
                 .placeholder(R.drawable.ic_album_placeholder_2x)
                 .transform(CenterCrop()).into(ivCover)
@@ -114,15 +116,18 @@ class PlaylistDetailFragment : Fragment() {
             } else {
                 tvDescription.text = playlist.playlistDescription
             }
-            tvDuration.text = "120 минут" // TODO
+            val durationInMinutes =
+                SimpleDateFormat("m", Locale.getDefault()).format(duration).toInt()
+            tvDuration.text = resources.getQuantityString(
+                R.plurals.tracks_duration,
+                durationInMinutes,
+                durationInMinutes
+            )
             tvTracksCount.text = resources.getQuantityString(
                 R.plurals.tracks_count,
                 playlist.tracksCount,
                 playlist.tracksCount
             )
-            btnShare.setOnClickListener {
-                // TODO
-            }
             tvPlaylistNameBs.text = playlist.playlistName
             tvTracksCountBs.text = resources.getQuantityString(
                 R.plurals.tracks_count,
@@ -134,15 +139,31 @@ class PlaylistDetailFragment : Fragment() {
                 .placeholder(R.drawable.ic_album_placeholder_2x)
                 .transform(CenterCrop()).into(ivCoverBs)
 
-            rvTracks.adapter = tracksAdapter
         }
     }
 
-    private fun getPlaylist() =
-        Gson().fromJson(requireArguments().getString(PLAYLIST), Playlist::class.java)
+    private fun setupButtons() {
+        with(binding) {
+            btnBack.setOnClickListener {
+                findNavController().popBackStack()
+            }
+            btnShare.setOnClickListener {
+                // TODO
+            }
+            btnDotsMenu.setOnClickListener {
+                // TODO
+            }
+        }
+    }
+
+    private fun getPlaylistId() = requireArguments().getLong(PLAYLIST_ID)
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    companion object {
+        const val ZERO_DURATION = 0L
     }
 }

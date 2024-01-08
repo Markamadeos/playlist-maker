@@ -8,3 +8,5 @@ data class Playlist(
     val trackIds: ArrayList<Long> = arrayListOf(),
     var tracksCount: Int = 0
 )
+
+

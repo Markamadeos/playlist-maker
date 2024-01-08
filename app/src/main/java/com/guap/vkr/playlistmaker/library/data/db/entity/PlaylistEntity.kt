@@ -11,5 +11,5 @@ data class PlaylistEntity(
     val playlistDescription: String?,
     val imgUri: String?,
     val trackIds: ArrayList<Long> = arrayListOf(),
-    val tracksCount: Int = 0
+    var tracksCount: Int = 0
 )

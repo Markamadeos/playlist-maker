@@ -36,12 +36,13 @@ class PlaylistRepositoryImpl(
         appDatabase.playlistTrackDao().insertTrack(trackDbConverter.map(track))
         val playlistUpdated = playlist.apply {
             trackIds.add(FIRST, track.trackId)
-            tracksCount++
+            tracksCount = trackIds.size
         }
         appDatabase.playlistDao().updatePlaylist(playlistDbConverter.map(playlistUpdated))
     }
 
-    override suspend fun getTracks(playlist: Playlist): Flow<List<Track>> {
+    override suspend fun getTracks(playlistId: Long): Flow<List<Track>> {
+        val playlist = appDatabase.playlistDao().getPlaylistById(playlistId)
         return flow {
             val tracks = convertFromTrackEntity(appDatabase.playlistTrackDao().getTracks())
             emit(
@@ -54,12 +55,13 @@ class PlaylistRepositoryImpl(
         }
     }
 
-    override suspend fun deleteTrack(track: Track, playlist: Playlist) {
+    override suspend fun deleteTrack(track: Track, playlistId: Long) {
+        val playlist = appDatabase.playlistDao().getPlaylistById(playlistId)
         val playlistUpdated = playlist.apply {
             trackIds.remove(track.trackId)
-            tracksCount--
+            tracksCount = trackIds.size
         }
-        appDatabase.playlistDao().updatePlaylist(playlistDbConverter.map(playlistUpdated))
+        appDatabase.playlistDao().updatePlaylist((playlistUpdated))
         var playlistsContainsTrack = false
         appDatabase.playlistDao().getPlaylists().map {
             if (it.trackIds.contains(track.trackId)) {
@@ -72,7 +74,13 @@ class PlaylistRepositoryImpl(
     }
 
     override suspend fun getPlaylistById(playlistId: Long): Flow<Playlist> {
-        return flow { appDatabase.playlistDao().getPlaytlistById(playlistId) }
+        return flow {
+            emit(
+                playlistDbConverter.map(
+                    appDatabase.playlistDao().getPlaylistById(playlistId)
+                )
+            )
+        }
     }
 
     private fun convertFromPlaylistEntity(playlists: List<PlaylistEntity>): List<Playlist> {

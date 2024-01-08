@@ -48,10 +48,10 @@ val viewModelModule = module {
         NewPlaylistViewModel(playlistInteractor = get())
     }
 
-    viewModel { (playlist: Playlist) ->
+    viewModel { (playlistId: Long) ->
         PlaylistDetailViewModel(
             playlistInteractor = get(),
-            playlist = playlist
+            playlistId = playlistId
         )
     }
 }
