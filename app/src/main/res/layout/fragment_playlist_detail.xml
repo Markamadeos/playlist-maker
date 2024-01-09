@@ -137,7 +137,7 @@
             android:layout_width="@dimen/_24dp"
             android:layout_height="@dimen/_24dp"
             android:layout_marginStart="@dimen/_16dp"
-            android:layout_marginBottom="@dimen/_260dp"
+            android:layout_marginBottom="276dp"
             android:background="@null"
             android:src="@drawable/ic_dots_menu"
             app:layout_constraintBottom_toBottomOf="parent"

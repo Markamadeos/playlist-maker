@@ -165,6 +165,7 @@ class PlaylistDetailFragment : Fragment() {
             if (playlist.playlistDescription.isNullOrEmpty()) {
                 tvDescription.visibility = View.GONE
             } else {
+                tvDescription.visibility = View.VISIBLE
                 tvDescription.text = playlist.playlistDescription
             }
             val durationInMinutes =
