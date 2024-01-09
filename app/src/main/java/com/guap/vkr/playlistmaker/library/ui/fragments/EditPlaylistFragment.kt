@@ -15,7 +15,6 @@ import com.guap.vkr.playlistmaker.utils.PLAYLIST_ID
 
 class EditPlaylistFragment : NewPlaylistFragment() {
 
-
     private fun getPlaylistId() = requireArguments().getLong(PLAYLIST_ID)
 
     override val onBackPressedCallback = object : OnBackPressedCallback(true) {
