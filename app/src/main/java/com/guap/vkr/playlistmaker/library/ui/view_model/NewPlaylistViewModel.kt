@@ -44,7 +44,7 @@ open class NewPlaylistViewModel(private val playlistInteractor: PlaylistInteract
                     imgUri = if (cover != Uri.EMPTY) {
                         saveCover(cover)
                     } else playlist.imgUri,
-                    trackIds = arrayListOf()
+                    trackIds = playlist.trackIds
                 )
             )
         }
