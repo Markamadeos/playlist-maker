@@ -185,6 +185,9 @@ class PlaylistDetailFragment : Fragment() {
                 playlist.tracksCount,
                 playlist.tracksCount
             )
+            tvPlaylistName.isSelected = true
+            tvDescription.isSelected = true
+            tvPlaylistNameBs.isSelected = true
 
             Glide.with(requireContext()).load(playlist.imgUri)
                 .placeholder(R.drawable.ic_album_placeholder_2x)

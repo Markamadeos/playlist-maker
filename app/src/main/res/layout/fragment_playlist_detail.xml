@@ -137,7 +137,7 @@
             android:layout_width="@dimen/_24dp"
             android:layout_height="@dimen/_24dp"
             android:layout_marginStart="@dimen/_16dp"
-            android:layout_marginBottom="@dimen/_282dp"
+            android:layout_marginBottom="@dimen/_260dp"
             android:background="@null"
             android:src="@drawable/ic_dots_menu"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -154,7 +154,7 @@
         android:gravity="center_horizontal"
         android:orientation="vertical"
         app:behavior_hideable="false"
-        app:behavior_peekHeight="@dimen/_266dp"
+        app:behavior_peekHeight="@dimen/_250dp"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
         <View
@@ -185,7 +185,6 @@
             android:textColor="?attr/placeholder_error_text_color"
             android:textSize="@dimen/_19sp" />
     </LinearLayout>
-
 
     <View
         android:id="@+id/overlay"

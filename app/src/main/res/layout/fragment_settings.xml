@@ -24,10 +24,13 @@
             android:text="@string/settings_title_text" />
     </LinearLayout>
 
-    <com.google.android.material.switchmaterial.SwitchMaterial
+    <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/btn_dark_theme"
         style="@style/SettingsTextStyle"
+        app:trackTint="@drawable/switch_track_selector"
+        app:thumbTint="@drawable/switch_thumb_selector"
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:text="@string/settings_dark_theme_text" />
 
     <TextView
