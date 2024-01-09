@@ -210,6 +210,13 @@ class PlaylistDetailFragment : Fragment() {
             btnDelete.setOnClickListener {
                 deletePlaylist()
             }
+            btnEdit.setOnClickListener {
+                val playlistBundle = bundleOf(PLAYLIST_ID to getPlaylistId())
+                findNavController().navigate(
+                    R.id.action_playlistDetailFragment_to_editPlaylistFragment,
+                    playlistBundle
+                )
+            }
         }
     }
 
@@ -222,7 +229,6 @@ class PlaylistDetailFragment : Fragment() {
             MaterialAlertDialogBuilder(requireContext(), R.style.AlertDialogTheme)
                 .setTitle(getString(R.string.delete_playlist_question, binding.tvPlaylistName.text))
                 .setNegativeButton(getString(R.string.answer_yes)) { _, _ ->
-                    showMessage("Плейлист удален!")
                     viewModel.deletePlaylist()
                     findNavController().popBackStack()
                 }

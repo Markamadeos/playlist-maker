@@ -1,6 +1,5 @@
 package com.guap.vkr.playlistmaker.library.domain.impl
 
-import com.guap.vkr.playlistmaker.di.repositoryModule
 import com.guap.vkr.playlistmaker.library.domain.api.InternalStorageRepository
 import com.guap.vkr.playlistmaker.library.domain.api.PlaylistInteractor
 import com.guap.vkr.playlistmaker.library.domain.api.PlaylistRepository
@@ -19,7 +18,7 @@ class PlaylistInteractorImpl(
     }
 
     override suspend fun updatePlaylist(playlist: Playlist) {
-        updatePlaylist(playlist = playlist)
+        playlistRepository.updatePlaylist(playlist = playlist)
     }
 
     override fun getPlaylists(): Flow<List<Playlist>> {

@@ -217,7 +217,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="@dimen/_16dp"
-            android:layout_marginVertical="@dimen/_8dp"
+            android:layout_marginVertical="@dimen/_16dp"
             android:background="?android:attr/selectableItemBackground"
             android:gravity="center"
             android:orientation="horizontal">

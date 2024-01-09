@@ -1,6 +1,5 @@
 package com.guap.vkr.playlistmaker.di
 
-import com.guap.vkr.playlistmaker.library.domain.model.Playlist
 import com.guap.vkr.playlistmaker.library.ui.view_model.FavoriteViewModel
 import com.guap.vkr.playlistmaker.library.ui.view_model.NewPlaylistViewModel
 import com.guap.vkr.playlistmaker.library.ui.view_model.PlaylistDetailViewModel

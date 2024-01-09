@@ -22,15 +22,15 @@ import com.guap.vkr.playlistmaker.databinding.FragmentNewPlaylistBinding
 import com.guap.vkr.playlistmaker.library.ui.view_model.NewPlaylistViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class NewPlaylistFragment : Fragment() {
+open class NewPlaylistFragment : Fragment() {
 
     private var _binding: FragmentNewPlaylistBinding? = null
-    private val binding get() = _binding!!
-    private val viewModel by viewModel<NewPlaylistViewModel>()
-    private var coverUri: Uri? = Uri.EMPTY
+    val binding get() = _binding!!
+    val viewModel by viewModel<NewPlaylistViewModel>()
+    open var coverUri: Uri? = Uri.EMPTY
     private lateinit var closeModalWindow: MaterialAlertDialogBuilder
-    private var playlistName: String = ""
-    private var playlistDescription: String = ""
+    open var playlistName: String = ""
+    open var playlistDescription: String = ""
     private val imagePicker =
         registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
             uri?.let {
@@ -38,7 +38,7 @@ class NewPlaylistFragment : Fragment() {
                 setCover()
             }
         }
-    private val onBackPressedCallback = object : OnBackPressedCallback(true) {
+    open val onBackPressedCallback = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
             showExitConfirmDialog()
         }
@@ -103,7 +103,7 @@ class NewPlaylistFragment : Fragment() {
         bind()
     }
 
-    private fun playlistCreatedShowNotification() {
+    open fun playlistCreatedShowNotification() {
         Snackbar.make(
             binding.root,
             getString(R.string.playlist_created, playlistName),
@@ -111,7 +111,7 @@ class NewPlaylistFragment : Fragment() {
         ).show()
     }
 
-    private fun bind() {
+    open fun bind() {
         with(binding) {
             btnBack.setOnClickListener {
                 showExitConfirmDialog()
