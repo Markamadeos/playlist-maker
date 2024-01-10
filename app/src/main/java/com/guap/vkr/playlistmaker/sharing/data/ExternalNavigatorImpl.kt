@@ -77,11 +77,13 @@ class ExternalNavigatorImpl(private val context: Context) : ExternalNavigator {
                 append("\n")
             }
         }
-        val shareIntent = Intent().apply {
+        val sendIntent = Intent().apply {
             action = Intent.ACTION_SEND
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK
             type = "text/plan"
             putExtra(Intent.EXTRA_TEXT, sb.append(tracksString).toString())
+        }
+        val shareIntent = Intent.createChooser(sendIntent, null).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
         }
         context.startActivity(shareIntent)
     }
