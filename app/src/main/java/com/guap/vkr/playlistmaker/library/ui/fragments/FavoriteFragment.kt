@@ -25,7 +25,7 @@ class FavoriteFragment : Fragment() {
     private lateinit var binding: FragmentFavoriteBinding
     private val viewModel by viewModel<FavoriteViewModel>()
     private val tracks = ArrayList<Track>()
-    private val favoriteAdapter = TracksAdapter(tracks) { trackClickListener(it) }
+    private val favoriteAdapter = TracksAdapter(tracks,  { trackClickListener(it) }, {})
     private var clickAllowed = true
 
     override fun onCreateView(
